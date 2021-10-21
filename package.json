@@ -1,0 +1,39 @@
+{
+  "name": "@zenweb/form",
+  "version": "1.0.0",
+  "description": "Zenweb Form module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "YeFei",
+    "email": "316606233@qq.com"
+  },
+  "keywords": [
+    "web",
+    "app",
+    "http",
+    "framework",
+    "koa",
+    "form"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yefei/zenweb-form.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yefei/zenweb-form/issues"
+  },
+  "devDependencies": {
+    "@zenweb/body": "^1.1.0",
+    "@zenweb/core": "^1.2.1",
+    "@zenweb/router": "^1.1.2",
+    "eslint": "^7.16.0",
+    "koa": "^2.13.1"
+  },
+  "dependencies": {
+    "typecasts": "^1.6.0"
+  }
+}
