@@ -1,31 +1,35 @@
 'use strict';
 
-const { typeCastAs } = require('typecasts');
-
+const typecasts = require('typecasts');
 const FIELDS = Symbol('zenweb-form#fields');
 const DATA = Symbol('zenweb-form#data');
-const INITIAL = Symbol('zenweb-form#initial');
 const ERRORS = Symbol('zenweb-form#errors');
+const INITIAL = Symbol('zenweb-form#initial');
 
 class Form {
   constructor(fileds, data, initial) {
+    this[FIELDS] = {};
+    this[DATA] = {};
+    this[ERRORS] = {};
+    this[INITIAL] = initial;
     for (const [ name, option ] of Object.entries(fileds)) {
-      if (option.defaultValue === undefined) {
-        option.required = true;
+      const opt = Object.assign({}, option);
+      if (opt.required === undefined) {
+        opt.required = true;
       }
+      if (initial && initial[name] !== undefined) {
+        opt.defaultValue = initial[name];
+      }
+      this[FIELDS][name] = opt;
       if (data) {
-        this[DATA] = {};
-        this[ERRORS] = {};
         try {
-          const [ as, value ] = typeCastAs(data[name], option, name);
+          const [ as, value ] = typecasts.typeCastAs(data[name], opt, name);
           if (value !== undefined) this[DATA][as] = value;
         } catch (e) {
           this[ERRORS][name] = e;
         }
       }
     }
-    this[FIELDS] = fileds;
-    this[INITIAL] = initial;
   }
 
   get fields() {
@@ -33,7 +37,7 @@ class Form {
   }
 
   get valid() {
-    return !this[ERRORS];
+    return Object.keys(this[ERRORS]).length === 0;
   }
 
   get errors() {
@@ -56,7 +60,7 @@ function formRouter(path, controller) {
     if (controller.get) {
       return controller.get(ctx, form);
     }
-    const out = { form: form.fields };
+    const out = { fields: form.fields };
     if (ctx.success) {
       return ctx.success(out);
     }
@@ -71,7 +75,7 @@ function formRouter(path, controller) {
     if (controller.fail) {
       return controller.fail(ctx, form);
     }
-    const out = { form: form.errors };
+    const out = { errors: form.errors };
     if (ctx.fail) {
       return ctx.fail(out);
     }

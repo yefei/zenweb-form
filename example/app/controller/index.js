@@ -2,27 +2,31 @@
 
 const app = require('../../app');
 
-app.formRouter('/form', {
-  fields: {
-    name: {
-      label: '姓名',
-    },
-    age: {
-      type: 'int',
-      validate: {
-        gt: 18,
-      }
-    }
+const fields = {
+  name: {
+    label: '姓名',
   },
+  age: {
+    type: 'int',
+    validate: {
+      gt: 18,
+    }
+  }
+};
 
-  // get(ctx, form) {
-  //   ctx.body = form.fields;
-  // },
-
-  // fail(ctx, form) {
-  // },
-
+app.formRouter('/form', {
+  fields,
   post(ctx, form) {
-    ctx.body = 'success';
+    ctx.body = { success: true, data: form.data };
+  },
+});
+
+app.formRouter('/form/:name/:age', {
+  fields,
+  initial(ctx) {
+    return ctx.params;
+  },
+  post(ctx, form) {
+    ctx.body = { success: true, data: form.data };
   },
 });
