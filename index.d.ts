@@ -14,6 +14,7 @@ declare class Form {
   get fileds(): Fields;
   get valid(): boolean;
   get data(): { [name: string]: any };
+  get errors(): { [name: string]: any };
 }
 
 interface FormController {
