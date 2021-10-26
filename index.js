@@ -36,6 +36,10 @@ class Form {
     return this[FIELDS];
   }
 
+  get initial() {
+    return this[INITIAL];
+  }
+
   get valid() {
     return Object.keys(this[ERRORS]).length === 0;
   }
@@ -55,8 +59,8 @@ class Form {
  */
 function formRouter(path, controller) {
   this.router.get(path, ...controller.middleware || [], async ctx => {
-    const form = new Form(controller.fields, undefined,
-      controller.initial ? await controller.initial(ctx) : undefined);
+    const initial = controller.initial ? await controller.initial(ctx) : undefined;
+    const form = new Form(controller.fields, undefined, initial);
     if (controller.get) {
       return controller.get(ctx, form);
     }
@@ -68,7 +72,8 @@ function formRouter(path, controller) {
   });
 
   this.router.post(path, ...controller.middleware || [], async ctx => {
-    const form = new Form(controller.fields, ctx.request.body);
+    const initial = controller.initial ? await controller.initial(ctx) : undefined;
+    const form = new Form(controller.fields, ctx.request.body, initial);
     if (form.valid) {
       return controller.post(ctx, form);
     }

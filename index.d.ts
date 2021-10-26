@@ -12,6 +12,7 @@ type Fields = { [name: string]: FormField };
 declare class Form {
   constructor(data: { [name: string]: any }, initial: { [name: string]: any });
   get fileds(): Fields;
+  get initial(): { [name: string]: any };
   get valid(): boolean;
   get data(): { [name: string]: any };
   get errors(): { [name: string]: any };
