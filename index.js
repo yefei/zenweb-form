@@ -82,7 +82,7 @@ function formRouter(path, controller) {
     }
     const out = { errors: form.errors };
     if (ctx.fail) {
-      return ctx.fail(out);
+      return ctx.fail({ message: 'form valid error', data: out });
     }
     ctx.body = out;
     ctx.status = 422;
