@@ -27,6 +27,9 @@ interface FormController {
   fail(ctx: Context, form: Form): Promise<void>;
 }
 
+export interface FormOption {
+}
+
 declare module '@zenweb/core' {
   interface Core {
     formRouter(
