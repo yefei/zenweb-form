@@ -1,13 +1,15 @@
 'use strict';
 
 const typecasts = require('typecasts');
+const CORE = Symbol('zenweb-form#core');
 const FIELDS = Symbol('zenweb-form#fields');
 const DATA = Symbol('zenweb-form#data');
 const ERRORS = Symbol('zenweb-form#errors');
 const INITIAL = Symbol('zenweb-form#initial');
 
 class Form {
-  constructor(fileds, data, initial) {
+  constructor(core, fileds, data, initial) {
+    this[CORE] = core;
     this[FIELDS] = {};
     this[DATA] = {};
     this[ERRORS] = {};
@@ -48,6 +50,22 @@ class Form {
     return this[ERRORS];
   }
 
+  get errorMessages() {
+    const messages = {};
+    Object.entries(this.errors).map(([filed, e]) => {
+      if (e instanceof typecasts.RequiredError) {
+        messages[filed] = this[CORE].messageCodeResolver.format(`form.required-error.${e.filed}`);
+      }
+      else if (e instanceof typecasts.ValidateError) {
+        messages[filed] = this[CORE].messageCodeResolver.format(`form.validate-error.${e.validate}.${e.field}`, e);
+      }
+      else {
+        messages[filed] = e.message;
+      }
+    });
+    return messages;
+  }
+
   get data() {
     return this[DATA];
   }
@@ -60,7 +78,7 @@ class Form {
 function formRouter(path, controller) {
   this.router.get(path, ...controller.middleware || [], async ctx => {
     const initial = controller.initial ? await controller.initial(ctx) : undefined;
-    const form = new Form(controller.fields, undefined, initial);
+    const form = new Form(this, controller.fields, undefined, initial);
     if (controller.get) {
       return controller.get(ctx, form);
     }
@@ -73,14 +91,14 @@ function formRouter(path, controller) {
 
   this.router.post(path, ...controller.middleware || [], async ctx => {
     const initial = controller.initial ? await controller.initial(ctx) : undefined;
-    const form = new Form(controller.fields, ctx.request.body, initial);
+    const form = new Form(this, controller.fields, ctx.request.body, initial);
     if (form.valid) {
       return controller.post(ctx, form);
     }
     if (controller.fail) {
       return controller.fail(ctx, form);
     }
-    const out = { errors: form.errors };
+    const out = { errors: form.errorMessages };
     if (ctx.fail) {
       return ctx.fail({ message: 'form valid error', data: out });
     }
@@ -96,6 +114,7 @@ function formRouter(path, controller) {
 function setup(core) {
   core.check('@zenweb/router');
   core.check('@zenweb/body');
+  core.check('@zenweb/messagecode');
   Object.defineProperty(core, 'formRouter', { value: formRouter });
 }
 

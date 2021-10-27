@@ -1,0 +1,17 @@
+{
+  "form.required-error": "必填项",
+  "form.validate-error": "验证错误",
+  "form.validate-error.lt": "必须小于 {target}",
+  "form.validate-error.lte": "必须小于等于 {target}",
+  "form.validate-error.gt": "必须大于 {target}",
+  "form.validate-error.gte": "必须大于等于 {target}",
+  "form.validate-error.eq": "必须等于 {target}",
+  "form.validate-error.neq": "不能为 {target}",
+  "form.validate-error.maxLength": "长度不能超过 {target}",
+  "form.validate-error.minLength": "长度不能少于 {target}",
+  "form.validate-error.in": "必须为以下值 {target}",
+  "form.validate-error.notIn": "不能为以下值 {target}",
+  "form.validate-error.regexp": "不符合规则",
+  "form.validate-error.email": "必须符合电子邮件格式",
+  "form.validate-error.slug": "不符合路径规则"
+}

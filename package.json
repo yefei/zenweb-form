@@ -1,6 +1,6 @@
 {
   "name": "@zenweb/form",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Zenweb Form module",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,8 @@
   },
   "devDependencies": {
     "@zenweb/body": "^1.1.0",
-    "@zenweb/core": "^1.2.1",
+    "@zenweb/core": "^1.2.3",
+    "@zenweb/messagecode": "^1.0.0",
     "@zenweb/router": "^1.1.2",
     "eslint": "^7.16.0",
     "koa": "^2.13.1"
