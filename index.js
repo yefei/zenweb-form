@@ -6,15 +6,28 @@ const FIELDS = Symbol('zenweb-form#fields');
 const DATA = Symbol('zenweb-form#data');
 const ERRORS = Symbol('zenweb-form#errors');
 const INITIAL = Symbol('zenweb-form#initial');
+const LAYOUT = Symbol('zenweb-form#layout');
+
+function layoutExists(layout, name) {
+  for (const i of layout) {
+    if (i === name) return true;
+    if (Array.isArray(i)) return layoutExists(i, name);
+  }
+  return false;
+}
 
 class Form {
-  constructor(core, fileds, data, initial) {
+  constructor(core, fileds, data, initial, layout) {
     this[CORE] = core;
     this[FIELDS] = {};
     this[DATA] = {};
     this[ERRORS] = {};
     this[INITIAL] = initial;
+    this[LAYOUT] = layout || [];
     for (const [ name, option ] of Object.entries(fileds)) {
+      if (!layoutExists(this[LAYOUT], name)) {
+        this[LAYOUT].push(name);
+      }
       const opt = Object.assign({}, option);
       if (opt.required === undefined) {
         opt.required = true;
@@ -69,6 +82,10 @@ class Form {
   get data() {
     return this[DATA];
   }
+
+  get layout() {
+    return this[LAYOUT];
+  }
 }
 
 /**
@@ -78,11 +95,11 @@ class Form {
 function formRouter(path, controller) {
   this.router.get(path, ...controller.middleware || [], async ctx => {
     const initial = controller.initial ? await controller.initial(ctx) : undefined;
-    const form = new Form(this, controller.fields, undefined, initial);
+    const form = new Form(this, controller.fields, undefined, initial, controller.layout);
     if (controller.get) {
       return controller.get(ctx, form);
     }
-    const out = { fields: form.fields };
+    const out = { fields: form.fields, layout: form.layout };
     if (ctx.success) {
       return ctx.success(out);
     }
@@ -91,7 +108,7 @@ function formRouter(path, controller) {
 
   this.router.post(path, ...controller.middleware || [], async ctx => {
     const initial = controller.initial ? await controller.initial(ctx) : undefined;
-    const form = new Form(this, controller.fields, ctx.request.body, initial);
+    const form = new Form(this, controller.fields, ctx.request.body, initial, controller.layout);
     if (form.valid) {
       return controller.post(ctx, form);
     }
