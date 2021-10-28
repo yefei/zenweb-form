@@ -20,7 +20,7 @@ class Form {
         opt.required = true;
       }
       if (initial && initial[name] !== undefined) {
-        opt.defaultValue = initial[name];
+        opt.default = initial[name];
       }
       this[FIELDS][name] = opt;
       if (data) {
