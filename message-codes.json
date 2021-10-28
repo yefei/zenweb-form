@@ -13,5 +13,6 @@
   "form.validate-error.notIn": "不能为以下值 {target}",
   "form.validate-error.regexp": "不符合规则",
   "form.validate-error.email": "必须符合电子邮件格式",
-  "form.validate-error.slug": "不符合路径规则"
+  "form.validate-error.slug": "不符合路径规则",
+  "form.validate-error.url": "请输入正确的链接"
 }
