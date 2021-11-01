@@ -29,7 +29,7 @@ declare class Form {
 
 interface FormController {
   middleware?: Router.IMiddleware[];
-  fields: Fields;
+  fields: Fields | ((ctx: Context) => Promise<Fields>);
   layout?: Layout[];
   initial(ctx: Context): Promise<{ [name: string]: any }>;
   get(ctx: Context, form: Form): Promise<void>;

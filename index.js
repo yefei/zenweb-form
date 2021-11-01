@@ -89,13 +89,25 @@ class Form {
 }
 
 /**
+ * @param {import('@zenweb/core').Core} core 
+ * @param {import('.').FormController} controller 
+ * @param {import('koa').Context} ctx 
+ * @returns 
+ */
+async function formInit(core, controller, ctx, data) {
+  const fields = typeof controller.fields === 'function' ? await controller.fields(ctx) : controller.fields;
+  const initial = controller.initial ? await controller.initial(ctx) : undefined;
+  const form = new Form(core, fields, data, initial, controller.layout);
+  return form;
+}
+
+/**
  * @param {string | RegExp | (string | RegExp)[]} path 
  * @param {import('.').FormController} controller 
  */
 function formRouter(path, controller) {
   this.router.get(path, ...controller.middleware || [], async ctx => {
-    const initial = controller.initial ? await controller.initial(ctx) : undefined;
-    const form = new Form(this, controller.fields, undefined, initial, controller.layout);
+    const form = await formInit(this, controller, ctx);
     if (controller.get) {
       return controller.get(ctx, form);
     }
@@ -107,8 +119,7 @@ function formRouter(path, controller) {
   });
 
   this.router.post(path, ...controller.middleware || [], async ctx => {
-    const initial = controller.initial ? await controller.initial(ctx) : undefined;
-    const form = new Form(this, controller.fields, ctx.request.body, initial, controller.layout);
+    const form = await formInit(this, controller, ctx, ctx.request.body);
     if (form.valid) {
       return controller.post(ctx, form);
     }

@@ -37,3 +37,12 @@ app.formRouter('/form/:name/:age', {
     ctx.body = { success: true, data: form.data };
   },
 });
+
+app.formRouter('/form2', {
+  fields(ctx) {
+    return fields;
+  },
+  post(ctx, form) {
+    ctx.body = { success: true, data: form.data };
+  },
+});
