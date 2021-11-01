@@ -17,14 +17,14 @@ function layoutExists(layout, name) {
 }
 
 class Form {
-  constructor(core, fileds, data, initial, layout) {
+  constructor(core, init, data) {
     this[CORE] = core;
     this[FIELDS] = {};
     this[DATA] = {};
     this[ERRORS] = {};
-    this[INITIAL] = initial;
-    this[LAYOUT] = layout || [];
-    for (const [ name, option ] of Object.entries(fileds)) {
+    this[INITIAL] = init.initial;
+    this[LAYOUT] = init.layout || [];
+    for (const [ name, option ] of Object.entries(init.fields)) {
       if (!layoutExists(this[LAYOUT], name)) {
         this[LAYOUT].push(name);
       }
@@ -32,8 +32,8 @@ class Form {
       if (opt.required === undefined) {
         opt.required = true;
       }
-      if (initial && initial[name] !== undefined) {
-        opt.default = initial[name];
+      if (init.initial && init.initial[name] !== undefined) {
+        opt.default = init.initial[name];
       }
       this[FIELDS][name] = opt;
       if (data) {
@@ -95,9 +95,10 @@ class Form {
  * @returns 
  */
 async function formInit(core, controller, ctx, data) {
-  const fields = typeof controller.fields === 'function' ? await controller.fields(ctx) : controller.fields;
-  const initial = controller.initial ? await controller.initial(ctx) : undefined;
-  const form = new Form(core, fields, data, initial, controller.layout);
+  /** @type {import('.').FormInit} */
+  const init = {};
+  await controller.init(ctx, init);
+  const form = new Form(core, init, data);
   return form;
 }
 

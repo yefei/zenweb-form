@@ -11,13 +11,17 @@ interface FormField extends castTypeOption {
 type Fields = { [name: string]: FormField };
 type Layout = string | Layout[];
 
+interface FormInit {
+  fields: Fields;
+  layout?: Layout[];
+  initial?: { [name: string]: any };
+}
+
 declare class Form {
   constructor(
     core: Core,
-    fileds: Fields,
+    init: FormInit,
     data: { [name: string]: any },
-    initial: { [name: string]: any },
-    layout: Layout[],
   );
   get fileds(): Fields;
   get initial(): { [name: string]: any };
@@ -29,9 +33,7 @@ declare class Form {
 
 interface FormController {
   middleware?: Router.IMiddleware[];
-  fields: Fields | ((ctx: Context) => Promise<Fields>);
-  layout?: Layout[];
-  initial(ctx: Context): Promise<{ [name: string]: any }>;
+  init(ctx: Context, init: FormInit): Promise<void>;
   get(ctx: Context, form: Form): Promise<void>;
   post(ctx: Context, form: Form): Promise<void>;
   fail(ctx: Context, form: Form): Promise<void>;
