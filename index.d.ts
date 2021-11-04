@@ -4,16 +4,33 @@ import { castTypeOption } from 'typecasts';
 import { Core } from '@zenweb/core';
 
 interface FormField extends castTypeOption {
+  /** 显示标签 */
   label?: string;
+
+  /** 帮助信息 */
   help?: string;
+
+  /** 自定义组件 */
+  widget?: {
+    /** 组件类型 */
+    type: string;
+
+    /** 组件其他选项 */
+    [key: string]: string;
+  };
 }
 
 type Fields = { [name: string]: FormField };
 type Layout = string | Layout[];
 
 interface FormInit {
+  /** 表单字段 */
   fields: Fields;
+
+  /** 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾 */
   layout?: Layout[];
+
+  /** 表单字段初始值 */
   initial?: { [name: string]: any };
 }
 
@@ -32,10 +49,19 @@ declare class Form {
 }
 
 interface FormController {
+  /** koa 中间件 */
   middleware?: Router.IMiddleware[];
+
+  /** 表单初始化 */
   init(ctx: Context, init: FormInit): Promise<void>;
+
+  /** 覆盖默认表单 get 请求 */
   get(ctx: Context, form: Form): Promise<void>;
+
+  /** 表单提交时调用 */
   post(ctx: Context, form: Form): Promise<void>;
+
+  /** 表单验证失败时调用 */
   fail(ctx: Context, form: Form): Promise<void>;
 }
 
