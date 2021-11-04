@@ -70,7 +70,9 @@ class Form {
         messages[filed] = this[CORE].messageCodeResolver.format(`form.required-error.${e.filed}`);
       }
       else if (e instanceof typecasts.ValidateError) {
-        messages[filed] = this[CORE].messageCodeResolver.format(`form.validate-error.${e.validate}.${e.field}`, e);
+        let code = e.validate;
+        if (e.validate === 'cast') code += `.${e.target}`;
+        messages[filed] = this[CORE].messageCodeResolver.format(`form.validate-error.${code}.${e.field}`, e);
       }
       else {
         messages[filed] = e.message;
