@@ -21,10 +21,7 @@ app.formRouter('/form', {
           lte: 50,
         }
       },
-      shengxiao: widget.select({
-        label: '生肖',
-        type: 'int',
-      }).choices({label: '兔', value: 1}),
+      shengxiao: widget.select('生肖').type('int').choices([[1, '兔']]),
     };
   },
   post(ctx, form) {

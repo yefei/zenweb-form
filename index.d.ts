@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import * as Router from 'koa-router';
-import { castTypeOption } from 'typecasts';
+import { castTypeOption, castType, castTypeFunc, validates } from 'typecasts';
 import { Core } from '@zenweb/core';
 
 interface FormField extends castTypeOption {
@@ -64,21 +64,26 @@ export namespace widget {
     type: string;
   }
 
-  export declare class Widget {
-    constructor(options: FormField);
+  export declare class Widget<T extends Widget> {
+    constructor(label: string);
+    type(type: castType | castTypeFunc): T;
+    help(help: string): T;
+    required(is: boolean | string): T;
+    validate(validate: validates): T;
     build(): Promise<FormField & { widget: WidgetAttr }>;
     attr(): Promise<WidgetAttr>;
-    validate(data: any): Promise<void>;
+    postValidate(data: any): Promise<void>;
     fail(code: string, params?: any): void;
   }
 
-  export declare function widget(options: FormField): Widget;
+  export declare function widget(label: string): Widget;
 
-  export declare class Select extends Widget {
-    choices(...choices: { label: string, value: any }[]): Select;
+  export declare class Select extends Widget<Select> {
+    choices(choices: [value: any, label: string][]): Select;
+    choicesMap(choices: object[], labelKey: string, valueKey: string): Select;
   }
 
-  export declare function select(options: FormField): Select;
+  export declare function select(label: string): Select;
 }
 
 declare module '@zenweb/core' {
