@@ -9,15 +9,6 @@ interface FormField extends castTypeOption {
 
   /** 帮助信息 */
   help?: string;
-
-  /** 自定义组件 */
-  widget?: {
-    /** 组件类型 */
-    type: string;
-
-    /** 组件其他选项 */
-    [key: string]: string;
-  };
 }
 
 type Fields = { [name: string]: FormField };
@@ -66,6 +57,28 @@ interface FormController {
 }
 
 export interface FormOption {
+}
+
+export namespace widget {
+  interface WidgetAttr {
+    type: string;
+  }
+
+  export declare class Widget {
+    constructor(options: FormField);
+    build(): Promise<FormField & { widget: WidgetAttr }>;
+    attr(): Promise<WidgetAttr>;
+    validate(data: any): Promise<void>;
+    fail(code: string, params?: any): void;
+  }
+
+  export declare function widget(options: FormField): Widget;
+
+  export declare class Select extends Widget {
+    choices(...choices: { label: string, value: any }[]): Select;
+  }
+
+  export declare function select(options: FormField): Select;
 }
 
 declare module '@zenweb/core' {

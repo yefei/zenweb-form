@@ -1,6 +1,7 @@
 'use strict';
 
 const app = require('../../app');
+const { widget } = require('../../..');
 
 app.formRouter('/form', {
   init(ctx, init) {
@@ -19,7 +20,11 @@ app.formRouter('/form', {
           gte: 18,
           lte: 50,
         }
-      }
+      },
+      shengxiao: widget.select({
+        label: '生肖',
+        type: 'int',
+      }).choices({label: '兔', value: 1}),
     };
   },
   post(ctx, form) {
