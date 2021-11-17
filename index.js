@@ -1,7 +1,7 @@
 'use strict';
 
 const { formRouter } = require('./lib/router');
-const widget = require('./lib/widget');
+const widget = require('./lib/widget/index');
 
 /**
  * 安装

@@ -64,26 +64,47 @@ export namespace widget {
     type: string;
   }
 
-  export declare class Widget<T extends Widget> {
+  export declare class Widget {
     constructor(label: string);
-    type(type: castType | castTypeFunc): T;
-    help(help: string): T;
-    required(is: boolean | string): T;
-    validate(validate: validates): T;
+    get options(): FormField;
+    type(type: castType | castTypeFunc): this;
+    help(help: string): this;
+    required(is: boolean | string): this;
+    validate(validate: validates): this;
     build(): Promise<FormField & { widget: WidgetAttr }>;
     attr(): Promise<WidgetAttr>;
     postValidate(data: any): Promise<void>;
     fail(code: string, params?: any): void;
   }
 
-  export declare function widget(label: string): Widget;
+  export declare function number(label: string): Widget;
+  export declare function int(label: string): Widget;
+  export declare function float(label: string): Widget;
+  export declare function bool(label: string): Widget;
+  export declare function trim(label: string): Widget;
+  export declare function string(label: string): Widget;
+  export declare function origin(label: string): Widget;
+  export declare function date(label: string): Widget;
 
-  export declare class Select extends Widget<Select> {
-    choices(choices: [value: any, label: string][]): Select;
-    choicesMap(choices: object[], labelKey: string, valueKey: string): Select;
+  export declare class Select extends Widget {
+    choices(choices: {value: any, label: string}[]): this;
+    choicesMap(choices: {}[], valueKey: string, labelKey: string): this;
   }
 
   export declare function select(label: string): Select;
+
+  export declare class Radio extends Select {}
+  export declare function radio(label: string): Radio;
+
+  export declare class Multiple extends Select {
+    max(v: number): this;
+    min(v: number): this;
+  }
+
+  export declare function multiple(label: string): Multiple;
+
+  export declare class Checkbox extends Multiple {}
+  export declare function checkbox(label: string): Checkbox;
 }
 
 declare module '@zenweb/core' {
