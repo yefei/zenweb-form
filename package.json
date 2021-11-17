@@ -26,9 +26,17 @@
   "bugs": {
     "url": "https://github.com/yefei/zenweb-form/issues"
   },
+  "files": [
+    "lib",
+    "index.js",
+    "index.d.ts",
+    "message-codes.json"
+  ],
   "devDependencies": {
+    "@zenweb/api": "^1.2.0",
     "@zenweb/body": "^1.1.0",
     "@zenweb/core": "^1.2.3",
+    "@zenweb/cors": "^1.1.0",
     "@zenweb/messagecode": "^1.0.0",
     "@zenweb/router": "^1.1.2",
     "eslint": "^7.16.0",

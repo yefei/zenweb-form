@@ -22,8 +22,8 @@
   "form.validate-error.cast.bool": "必须为有效的布尔",
   "form.validate-error.cast.string": "必须为有效的字符串",
   "form.validate-error.cast.date": "必须为有效的时间日期",
-  "form.widget-error.select.options.empty": "没有可选择项",
-  "form.widget-error.select.choice-invalid": "请选择一个有效值",
-  "form.widget-error.select.choice-max": "选择不能超过 {max} 个",
-  "form.widget-error.select.choice-min": "选择不能少于 {min} 个"
+  "form.field-error.select.options.empty": "没有可选择项",
+  "form.field-error.select.choice-invalid": "请选择一个有效值",
+  "form.field-error.select.choice-max": "选择不能超过 {max} 个",
+  "form.field-error.select.choice-min": "选择不能少于 {min} 个"
 }

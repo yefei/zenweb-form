@@ -1,7 +1,7 @@
 'use strict';
 
 const { formRouter } = require('./lib/router');
-const widget = require('./lib/widget/index');
+const fields = require('./lib/field/index');
 
 /**
  * 安装
@@ -16,5 +16,5 @@ function setup(core) {
 
 module.exports = {
   setup,
-  widget,
+  fields,
 };

@@ -59,34 +59,30 @@ interface FormController {
 export interface FormOption {
 }
 
-export namespace widget {
-  interface WidgetAttr {
-    type: string;
-  }
-
-  export declare class Widget {
+export namespace fields {
+  export declare class Field {
     constructor(label: string);
     get options(): FormField;
     type(type: castType | castTypeFunc): this;
     help(help: string): this;
     required(is: boolean | string): this;
     validate(validate: validates): this;
-    build(): Promise<FormField & { widget: WidgetAttr }>;
-    attr(): Promise<WidgetAttr>;
+    build(): Promise<FormField & { widget: string }>;
+    attr(): Promise<{}>;
     postValidate(data: any): Promise<void>;
     fail(code: string, params?: any): void;
   }
 
-  export declare function number(label: string): Widget;
-  export declare function int(label: string): Widget;
-  export declare function float(label: string): Widget;
-  export declare function bool(label: string): Widget;
-  export declare function trim(label: string): Widget;
-  export declare function string(label: string): Widget;
-  export declare function origin(label: string): Widget;
-  export declare function date(label: string): Widget;
+  export declare function number(label: string): Field;
+  export declare function int(label: string): Field;
+  export declare function float(label: string): Field;
+  export declare function bool(label: string): Field;
+  export declare function trim(label: string): Field;
+  export declare function string(label: string): Field;
+  export declare function origin(label: string): Field;
+  export declare function date(label: string): Field;
 
-  export declare class Select extends Widget {
+  export declare class Select extends Field {
     choices(choices: {value: any, label: string}[]): this;
     choicesMap(choices: {}[], valueKey: string, labelKey: string): this;
   }
