@@ -9,7 +9,7 @@ app.formRouter('/form', {
       name: fields.trim('姓名').validate({ minLength: 2, maxLength: 4 }),
       desc: fields.trim('自我描述').validate({ maxLength: 1000 }).help('自我描述不要超过1000字'),
       age: fields.int('年龄').help('年龄18-50').validate({ gte: 18, lte: 50 }),
-      date: fields.date('预约时间'),
+      date: fields.date('日期'),
       gender: fields.radio('性别').choices([
         {value: 1, label: '男'},
         {value: 2, label: '女'},

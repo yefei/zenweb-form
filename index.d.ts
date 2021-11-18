@@ -60,7 +60,7 @@ export interface FormOption {
 }
 
 export namespace fields {
-  export declare class Field {
+  export declare class Input {
     constructor(label: string);
     get options(): FormField;
     type(type: castType | castTypeFunc): this;
@@ -73,16 +73,15 @@ export namespace fields {
     fail(code: string, params?: any): void;
   }
 
-  export declare function number(label: string): Field;
-  export declare function int(label: string): Field;
-  export declare function float(label: string): Field;
-  export declare function bool(label: string): Field;
-  export declare function trim(label: string): Field;
-  export declare function string(label: string): Field;
-  export declare function origin(label: string): Field;
-  export declare function date(label: string): Field;
+  export declare function number(label: string): Input;
+  export declare function int(label: string): Input;
+  export declare function float(label: string): Input;
+  export declare function bool(label: string): Input;
+  export declare function trim(label: string): Input;
+  export declare function string(label: string): Input;
+  export declare function origin(label: string): Input;
 
-  export declare class Select extends Field {
+  export declare class Select extends Input {
     choices(choices: {value: any, label: string}[]): this;
     choicesMap(choices: {}[], valueKey: string, labelKey: string): this;
   }
@@ -101,6 +100,11 @@ export namespace fields {
 
   export declare class Checkbox extends Multiple {}
   export declare function checkbox(label: string): Checkbox;
+
+  export declare class Date extends Input {
+  }
+
+  export declare function date(label: string): Date;
 }
 
 declare module '@zenweb/core' {
