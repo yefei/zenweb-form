@@ -60,51 +60,62 @@ export interface FormOption {
 }
 
 export namespace fields {
-  export declare class Input {
+  export class Input {
     constructor(label: string);
     get options(): FormField;
     type(type: castType | castTypeFunc): this;
     help(help: string): this;
     required(is: boolean | string): this;
     validate(validate: validates): this;
-    build(): Promise<FormField & { widget: string }>;
+    build(): Promise<FormField & { name: string }>;
     attr(): Promise<{}>;
     postValidate(data: any): Promise<void>;
     fail(code: string, params?: any): void;
   }
 
-  export declare function number(label: string): Input;
-  export declare function int(label: string): Input;
-  export declare function float(label: string): Input;
-  export declare function bool(label: string): Input;
-  export declare function trim(label: string): Input;
-  export declare function string(label: string): Input;
-  export declare function origin(label: string): Input;
+  export function number(label: string): Input;
+  export function int(label: string): Input;
+  export function float(label: string): Input;
+  export function bool(label: string): Input;
+  export function trim(label: string): Input;
+  export function string(label: string): Input;
+  export function origin(label: string): Input;
 
-  export declare class Select extends Input {
+  export class Select extends Input {
     choices(choices: {value: any, label: string}[]): this;
     choicesMap(choices: {}[], valueKey: string, labelKey: string): this;
   }
 
-  export declare function select(label: string): Select;
+  export function select(label: string): Select;
 
-  export declare class Radio extends Select {}
-  export declare function radio(label: string): Radio;
+  export class Radio extends Select {}
+  export function radio(label: string): Radio;
 
-  export declare class Multiple extends Select {
+  export class Multiple extends Select {
     max(v: number): this;
     min(v: number): this;
   }
 
-  export declare function multiple(label: string): Multiple;
+  export function multiple(label: string): Multiple;
 
-  export declare class Checkbox extends Multiple {}
-  export declare function checkbox(label: string): Checkbox;
+  export class Checkbox extends Multiple {}
+  export function checkbox(label: string): Checkbox;
 
-  export declare class Date extends Input {
+  export class Datetime extends Input {
+    format(fmt: string): this;
   }
+  export class Date extends Datetime {}
+  export class Time extends Datetime {}
 
-  export declare function date(label: string): Date;
+  export function datetime(label: string): Datetime;
+  export function date(label: string): Date;
+  export function time(label: string): Time;
+
+  export class Upload extends Input {
+    action(url: string): this;
+    limit(limit: number): this;
+  }
+  export function upload(label: string): Upload;
 }
 
 declare module '@zenweb/core' {

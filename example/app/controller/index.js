@@ -3,6 +3,12 @@
 const app = require('../../app');
 const { fields } = require('../../..');
 
+app.router.post('/upload', ctx => {
+  ctx.success({
+    url: 'test'
+  });
+});
+
 app.formRouter('/form', {
   init(ctx, init) {
     init.fields = {
@@ -10,6 +16,9 @@ app.formRouter('/form', {
       desc: fields.trim('自我描述').validate({ maxLength: 1000 }).help('自我描述不要超过1000字'),
       age: fields.int('年龄').help('年龄18-50').validate({ gte: 18, lte: 50 }),
       date: fields.date('日期'),
+      time: fields.time('时间'),
+      datetime: fields.datetime('日期时间'),
+      upload: fields.upload('上传').action('http://' + ctx.host + '/upload'),
       gender: fields.radio('性别').choices([
         {value: 1, label: '男'},
         {value: 2, label: '女'},

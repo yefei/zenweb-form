@@ -43,6 +43,7 @@
     "koa": "^2.13.1"
   },
   "dependencies": {
-    "typecasts": "^1.8.4"
+    "moment": "^2.29.1",
+    "typecasts": "^1.8.5"
   }
 }
