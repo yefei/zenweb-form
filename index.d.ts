@@ -116,6 +116,15 @@ export namespace fields {
     limit(limit: number): this;
   }
   export function upload(label: string): Upload;
+
+  export class Text extends Input {
+    length(minLength: number, maxLength: number): this;
+  }
+  export class Textarea extends Text {
+    rows(min: number, max: number): this;
+  }
+  export function text(label: string): Text;
+  export function textarea(label: string): Textarea;
 }
 
 declare module '@zenweb/core' {
