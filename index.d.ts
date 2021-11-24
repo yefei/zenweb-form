@@ -66,6 +66,7 @@ export namespace fields {
     type(type: castType | castTypeFunc): this;
     help(help: string): this;
     required(is: boolean | string): this;
+    default(value: any): this;
     validate(validate: validates): this;
     build(): Promise<FormField & { name: string }>;
     attr(): Promise<{}>;

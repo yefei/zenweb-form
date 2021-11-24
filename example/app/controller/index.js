@@ -38,6 +38,7 @@ app.formRouter('/form', {
       agreement: fields.checkbox('注册协议').choices([
         {value: 1, label: '同意并遵守'},
       ]).min(1).max(1),
+      a: fields.trim('可选填').default('a').required(false),
     };
   },
   post(ctx, form) {
