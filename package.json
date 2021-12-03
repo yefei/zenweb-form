@@ -45,6 +45,6 @@
   },
   "dependencies": {
     "moment": "^2.29.1",
-    "typecasts": "^1.8.6"
+    "typecasts": "^1.9.0"
   }
 }
