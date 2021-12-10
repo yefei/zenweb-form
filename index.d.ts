@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import * as Router from 'koa-router';
+import Router from '@koa/router';
 import { castTypeOption, castType, castTypeFunc, validates } from 'typecasts';
 import { Core } from '@zenweb/core';
 
@@ -41,7 +41,7 @@ declare class Form {
 
 interface FormController {
   /** koa 中间件 */
-  middleware?: Router.IMiddleware[];
+  middleware?: Router.Middleware[];
 
   /** 表单初始化 */
   init(ctx: Context, init: FormInit): Promise<void>;
@@ -128,11 +128,14 @@ export namespace fields {
   export function textarea(label: string): Textarea;
 }
 
-declare module '@zenweb/core' {
-  interface Core {
-    formRouter(
-      path: string | RegExp | (string | RegExp)[],
-      controller: FormController
-    ): Router;
-  }
-}
+/**
+ * 表单控制器, 从创建到校验
+ * @param router 
+ * @param path 
+ * @param controller 
+ */
+export declare function formRouter(
+  router: Router,
+  path: string | RegExp | (string | RegExp)[],
+  controller: FormController,
+): void;

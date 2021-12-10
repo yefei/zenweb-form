@@ -1,15 +1,14 @@
-'use strict';
+import { Router } from '@zenweb/router';
+import { formRouter, fields } from '@zenweb/form';
+export const router = new Router();
 
-const app = require('../../app');
-const { fields } = require('../../..');
-
-app.router.post('/upload', ctx => {
+router.post('/upload', ctx => {
   ctx.success({
     url: 'test'
   });
 });
 
-app.formRouter('/form', {
+formRouter(router, '/form', {
   init(ctx, init) {
     init.fields = {
       name: fields.trim('姓名').validate({ minLength: 2, maxLength: 4 }),

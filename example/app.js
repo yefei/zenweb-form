@@ -1,12 +1,8 @@
-'use strict';
+import { Core } from '@zenweb/core';
+import { setup } from '@zenweb/form';
+import fs from 'node:fs';
 
-process.env.NODE_ENV = 'development';
-process.env.DEBUG = '*';
-
-const { Core } = require('@zenweb/core');
-const { setup } =  require('..');
-
-const app = module.exports = new Core();
+const app = new Core();
 app.setup('@zenweb/router');
 app.setup('@zenweb/body');
 app.setup('@zenweb/cors', { origin: '*' });
@@ -18,7 +14,8 @@ app.setup('@zenweb/api', {
   },
 });
 app.setup('@zenweb/messagecode', {
-  codes: require('../message-codes.json'),
+  // 测试需要本地读取，正式项目中无需处理
+  codes: JSON.parse(fs.readFileSync('../message-codes.json')),
 });
 app.setup(setup);
 
