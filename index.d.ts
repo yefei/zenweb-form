@@ -28,7 +28,7 @@ interface FormInit {
 declare class Form {
   constructor(core: Core);
   init(init: FormInit, data: { [name: string]: any }): void;
-  get fileds(): Fields;
+  get fields(): Fields;
   get initial(): { [name: string]: any };
   get valid(): boolean;
   get data(): { [name: string]: any };
