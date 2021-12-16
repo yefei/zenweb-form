@@ -1,3 +1,4 @@
+export { Form } from './lib/form.js';
 export { formRouter } from './lib/router.js';
 export { fields } from './lib/field/index.js';
 
