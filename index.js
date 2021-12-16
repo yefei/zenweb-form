@@ -1,5 +1,6 @@
 'use strict';
 
+const { Form } = require('./lib/form');
 const { formRouter } = require('./lib/router');
 const fields = require('./lib/field/index');
 
@@ -17,4 +18,5 @@ function setup(core) {
 module.exports = {
   setup,
   fields,
+  Form,
 };

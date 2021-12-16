@@ -26,11 +26,8 @@ interface FormInit {
 }
 
 declare class Form {
-  constructor(
-    core: Core,
-    init: FormInit,
-    data: { [name: string]: any },
-  );
+  constructor(core: Core);
+  init(init: FormInit, data: { [name: string]: any }): void;
   get fileds(): Fields;
   get initial(): { [name: string]: any };
   get valid(): boolean;
@@ -68,9 +65,9 @@ export namespace fields {
     required(is: boolean | string): this;
     default(value: any): this;
     validate(validate: validates): this;
-    build(): Promise<FormField & { name: string }>;
-    attr(): Promise<{}>;
-    postValidate(data: any): Promise<void>;
+    build(): FormField & { name: string };
+    attr(): { [key: string]: any };
+    postValidate(data: any): void;
     fail(code: string, params?: any): void;
   }
 
