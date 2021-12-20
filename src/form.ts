@@ -51,7 +51,9 @@ export class Form {
       this[FIELDS][name] = opt;
       if (data) {
         try {
-          let [ as, value ] = typecasts.typeCastAs(data[name], opt, name);
+          // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
+          const _inputData = name in data ? data[name] : (`${name}[]` in data ? data[`${name}[]`] : undefined)
+          let [ as, value ] = typecasts.typeCastAs(_inputData, opt, name);
           if (value !== undefined) {
             if (option instanceof Input) {
               value = option.clean(value);
