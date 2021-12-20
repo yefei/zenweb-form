@@ -1,4 +1,4 @@
-import { Input } from './input.js';
+import { Input, simple } from './input.js';
 
 const SELECT_CHOICES = Symbol('Select#choices');
 
@@ -79,15 +79,7 @@ export class Select extends Input {
   }
 }
 
-export function select(label: string) {
-  return new Select(label);
-}
-
 export class Radio extends Select {}
-
-export function radio(label: string) {
-  return new Radio(label);
-}
 
 const MULTIPLE_MAX = Symbol('Multiple#max');
 const MULTIPLE_MIN = Symbol('Multiple#min');
@@ -133,12 +125,9 @@ export class Multiple extends Select {
   }
 }
 
-export function multiple(label: string) {
-  return new Multiple(label);
-}
-
 export class Checkbox extends Multiple {}
 
-export function checkbox(label: string) {
-  return new Checkbox(label);
-}
+export const select = simple(Select);
+export const radio = simple(Radio);
+export const multiple = simple(Multiple);
+export const checkbox = simple(Checkbox);

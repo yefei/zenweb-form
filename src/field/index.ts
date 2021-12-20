@@ -1,4 +1,4 @@
-import { Input } from './input.js';
+import { Input, simple } from './input.js';
 import * as select from './select.js';
 import * as datetime from './datetime.js';
 import * as upload from './upload.js';
@@ -16,9 +16,7 @@ export function typeInput(type: castType) {
 
 export const fields = {
   Input,
-  input(label: string) {
-    return new Input(label);
-  },
+  input: simple(Input),
   number: typeInput('number'),
   int: typeInput('int'),
   float: typeInput('float'),

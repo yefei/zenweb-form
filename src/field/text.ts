@@ -1,4 +1,4 @@
-import { Input } from './input.js';
+import { Input, simple } from './input.js';
 
 const ROWS = Symbol('Textarea#rows');
 
@@ -12,10 +12,6 @@ export class Text extends Input {
     this.validate({ minLength, maxLength });
     return this;
   }
-}
-
-export function text(label: string) {
-  return new Text(label);
 }
 
 export class Textarea extends Text {
@@ -39,6 +35,5 @@ export class Textarea extends Text {
   }
 }
 
-export function textarea(label: string) {
-  return new Textarea(label);
-}
+export const text = simple(Text);
+export const textarea = simple(Textarea);

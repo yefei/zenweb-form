@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { Input } from './input';
+import { Input, simple } from './input';
 
 const FORMAT = Symbol('Date#format');
 
@@ -35,18 +35,10 @@ export class Datetime extends Input {
   }
 }
 
-export function datetime(label: string) {
-  return new Datetime(label);
-}
-
 export class Date extends Datetime {
   get _format() {
     return this[FORMAT] || 'YYYY-MM-DD';
   }
-}
-
-export function date(label: string) {
-  return new Date(label);
 }
 
 export class Time extends Datetime {
@@ -55,6 +47,6 @@ export class Time extends Datetime {
   }
 }
 
-export function time(label: string) {
-  return new Time(label);
-}
+export const datetime = simple(Datetime);
+export const date = simple(Date);
+export const time = simple(Time);

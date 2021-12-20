@@ -111,3 +111,7 @@ export class Input {
     throw new InputFail(code, params);
   }
 }
+
+export function simple<T>(clazz: { new(label: string): T }) {
+  return (label: string): T => new clazz(label);
+} 

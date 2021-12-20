@@ -1,4 +1,4 @@
-import { Input } from './input.js';
+import { Input, simple } from './input.js';
 
 const ACTION = Symbol('Upload#action');
 const LIMIT = Symbol('Upload#limit');
@@ -32,6 +32,4 @@ export class Upload extends Input {
   }
 }
 
-export function upload(label: string) {
-  return new Upload(label);
-}
+export const upload = simple(Upload);
