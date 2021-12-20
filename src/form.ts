@@ -1,8 +1,7 @@
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import * as typecasts from 'typecasts';
 import { Input, InputFail } from './field/input.js';
-import { FormInit } from './router.js';
-import { Fields, FormData, FormField, Layout } from './types.js';
+import { Fields, FormData, FieldOption, Layout, FormInit } from './types.js';
 
 const FIELDS = Symbol('zenweb-form#fields');
 const DATA = Symbol('zenweb-form#data');
@@ -30,9 +29,9 @@ export class Form {
   private [ERRORS]: { [field: string]: any } = {};
   private [INITIAL]: FormData;
   private [LAYOUT]: Layout[];
-  private _defaultOption: FormField;
+  private _defaultOption: FieldOption;
 
-  constructor(defaultOption?: FormField) {
+  constructor(defaultOption?: FieldOption) {
     this._defaultOption = defaultOption || {
       required: true,
     };

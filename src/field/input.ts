@@ -1,7 +1,7 @@
 import { castType, castTypeFunc, validates } from 'typecasts';
-import { FormField } from '../types';
+import { FieldOption } from '../types';
 
-const OPTIONS = Symbol('Input#options');
+const OPTION = Symbol('Input#options');
 const NAME = Symbol('Input#name');
 
 export class InputFail extends Error {
@@ -17,17 +17,17 @@ export class InputFail extends Error {
 }
 
 export class Input {
-  [OPTIONS]: FormField;
+  [OPTION]: FieldOption;
   [NAME]: string;
 
   constructor(label: string) {
-    this[OPTIONS] = {
+    this[OPTION] = {
       label,
     };
   }
 
   get options() {
-    return this[OPTIONS];
+    return this[OPTION];
   }
 
   get _name() {
@@ -46,7 +46,7 @@ export class Input {
    * 输入值类型
    */
   type(type: castType | castTypeFunc) {
-    this[OPTIONS].type = type;
+    this[OPTION].type = type;
     return this;
   }
 
@@ -54,7 +54,7 @@ export class Input {
    * 帮助信息
    */
   help(help: string) {
-    this[OPTIONS].help = help;
+    this[OPTION].help = help;
     return this;
   }
 
@@ -62,7 +62,7 @@ export class Input {
    * 必填项
    */
   required(is: boolean | string = true) {
-    this[OPTIONS].required = is;
+    this[OPTION].required = is;
     return this;
   }
 
@@ -70,7 +70,7 @@ export class Input {
    * 默认值
    */
   default(value: any) {
-    this[OPTIONS].default = value;
+    this[OPTION].default = value;
     return this;
   }
 
@@ -78,7 +78,7 @@ export class Input {
    * 数据验证
    */
   validate(validate: validates) {
-    this[OPTIONS].validate = validate;
+    this[OPTION].validate = validate;
     return this;
   }
 
@@ -89,7 +89,7 @@ export class Input {
     const attr = this.attr();
     return Object.assign({
       name: this._name,
-    }, this[OPTIONS], attr);
+    }, this[OPTION], attr);
   }
 
   /**

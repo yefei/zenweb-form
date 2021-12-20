@@ -1,37 +1,7 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import { Form } from './form';
-import { Fields, FormData, Layout } from './types';
-
-type RouterPath = string | RegExp | (string | RegExp)[];
-
-export interface FormInit {
-  /** 表单字段 */
-  fields: Fields;
-
-  /** 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾 */
-  layout?: Layout[];
-
-  /** 表单字段初始值 */
-  initial?: FormData;
-}
-
-export interface FormController {
-  /** koa 中间件 */
-  middleware?: Router.Middleware[];
-
-  /** 表单初始化 */
-  init?(ctx: Koa.BaseContext, init: FormInit): void | Promise<void>;
-
-  /** 覆盖默认表单 get 请求 */
-  get?(ctx: Koa.BaseContext, form: Form): void | Promise<void>;
-
-  /** 表单提交时调用 */
-  post?(ctx: Koa.BaseContext, form: Form): void | Promise<void>;
-
-  /** 表单验证失败时调用 */
-  fail?(ctx: Koa.BaseContext, form: Form): void | Promise<void>;
-}
+import { FormController, FormData, FormInit, RouterPath } from './types';
 
 async function formInit(controller: FormController, ctx: Koa.BaseContext, data?: FormData) {
   const init: FormInit = {
