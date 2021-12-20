@@ -99,9 +99,10 @@ export class Input {
   }
 
   /**
-   * 组件验证，如果验证不通过需要抛出异常，使用 this.fail('code')
+   * 数据验证清理，如果验证不通过需要抛出异常，使用 this.fail('code')
    */
-  postValidate(data: any) {
+  clean(data: any) {
+    return data;
   }
 
   /**

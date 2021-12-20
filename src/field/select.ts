@@ -70,10 +70,10 @@ export class Select extends Input {
     };
   }
 
-  postValidate(data: any) {
+  clean(data: any) {
     this.assertEmpty();
     if (this[SELECT_CHOICES].findIndex(i => i.value === data) > -1) {
-      return;
+      return data;
     }
     this.fail('select.choice-invalid', { data });
   }
@@ -108,7 +108,7 @@ export class Multiple extends Select {
     });
   }
 
-  postValidate(data: any) {
+  clean(data: any) {
     this.assertEmpty();
     data = Array.isArray(data) ? data : [data];
     if (this[MULTIPLE_MAX] && data.length > this[MULTIPLE_MAX]) {
@@ -122,6 +122,7 @@ export class Multiple extends Select {
         this.fail('select.choice-invalid', { data: i });
       }
     }
+    return data;
   }
 }
 

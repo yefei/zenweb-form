@@ -52,10 +52,10 @@ export class Form {
       this[FIELDS][name] = opt;
       if (data) {
         try {
-          const [ as, value ] = typecasts.typeCastAs(data[name], opt, name);
+          let [ as, value ] = typecasts.typeCastAs(data[name], opt, name);
           if (value !== undefined) {
             if (option instanceof Input) {
-              option.postValidate(value);
+              value = option.clean(value);
             }
             this[DATA][as] = value;
           }
