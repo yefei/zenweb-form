@@ -4,6 +4,7 @@
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
   "scripts": {
+    "prepublishOnly": "tsc",
     "dev": "cd example && DEBUG=* ts-node --project ../tsconfig.json app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
