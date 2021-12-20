@@ -1,8 +1,14 @@
+import { castType, castTypeFunc, validates } from 'typecasts';
+import { FormField } from '../types';
+
 const OPTIONS = Symbol('Input#options');
 const NAME = Symbol('Input#name');
 
 export class InputFail extends Error {
-  constructor(code, params) {
+  code: string;
+  params: any[];
+
+  constructor(code: string, params?: any) {
     super(code);
     this.name = 'InputFail';
     this.code = code;
@@ -11,7 +17,10 @@ export class InputFail extends Error {
 }
 
 export class Input {
-  constructor(label) {
+  [OPTIONS]: FormField;
+  [NAME]: string;
+
+  constructor(label: string) {
     this[OPTIONS] = {
       label,
     };
@@ -25,32 +34,50 @@ export class Input {
     return this[NAME] || this.constructor.name;
   }
 
-  name(name) {
+  /**
+   * 控件名称
+   */
+  name(name: string) {
     this[NAME] = name;
     return this;
   }
 
-  type(type) {
+  /**
+   * 输入值类型
+   */
+  type(type: castType | castTypeFunc) {
     this[OPTIONS].type = type;
     return this;
   }
 
-  help(help) {
+  /**
+   * 帮助信息
+   */
+  help(help: string) {
     this[OPTIONS].help = help;
     return this;
   }
 
-  required(is) {
+  /**
+   * 必填项
+   */
+  required(is: boolean | string = true) {
     this[OPTIONS].required = is;
     return this;
   }
 
-  default(value) {
+  /**
+   * 默认值
+   */
+  default(value: any) {
     this[OPTIONS].default = value;
     return this;
   }
 
-  validate(validate) {
+  /**
+   * 数据验证
+   */
+  validate(validate: validates) {
     this[OPTIONS].validate = validate;
     return this;
   }
@@ -73,17 +100,14 @@ export class Input {
 
   /**
    * 组件验证，如果验证不通过需要抛出异常，使用 this.fail('code')
-   * @param {*} data 
    */
-  postValidate(data) {
+  postValidate(data: any) {
   }
 
   /**
    * 验证失败
-   * @param {string} code 
-   * @param {*} [params]
    */
-  fail(code, params) {
+  fail(code: string, params?: any) {
     throw new InputFail(code, params);
   }
 }

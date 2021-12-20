@@ -1,10 +1,10 @@
-import moment from 'moment';
-import { Input } from './input.js';
+import * as moment from 'moment';
+import { Input } from './input';
 
 const FORMAT = Symbol('Date#format');
 
-function datetimeFormatFunction(fmt) {
-  return function datetimeFormat(data) {
+function datetimeFormatFunction(fmt: string) {
+  return function datetimeFormat(data: moment.MomentInput) {
     const m = moment(data, fmt);
     if (m.isValid()) {
       return m.format(fmt);
@@ -13,7 +13,12 @@ function datetimeFormatFunction(fmt) {
 }
 
 export class Datetime extends Input {
-  format(fmt) {
+  [FORMAT]: string;
+
+  /**
+   * 输入日期格式
+   */
+  format(fmt: string) {
     this[FORMAT] = fmt;
     return this;
   }
@@ -30,14 +35,26 @@ export class Datetime extends Input {
   }
 }
 
+export function datetime(label: string) {
+  return new Datetime(label);
+}
+
 export class Date extends Datetime {
   get _format() {
     return this[FORMAT] || 'YYYY-MM-DD';
   }
 }
 
+export function date(label: string) {
+  return new Date(label);
+}
+
 export class Time extends Datetime {
   get _format() {
     return this[FORMAT] || 'HH:mm:ss';
   }
+}
+
+export function time(label: string) {
+  return new Time(label);
 }

@@ -2,38 +2,75 @@ import { Input } from './input.js';
 
 const SELECT_CHOICES = Symbol('Select#choices');
 
-export class Select extends Input {
+interface ChoiceType {
   /**
-   * @param {{value: any, label: string}[]} choices
+   * 显示名
    */
-  choices(choices) {
+  label: number | string;
+
+  /**
+   * 值
+   */
+  value: number | string;
+}
+
+export class Select extends Input {
+  [SELECT_CHOICES]: ChoiceType[];
+
+  /**
+   * 设置选择项
+   */
+  choices(choices: ChoiceType[]) {
     this[SELECT_CHOICES] = choices;
     return this;
   }
 
-  choicesMap(choices, valueKey, labelKey) {
+  /**
+   * 设置选择项，使用指定的 value 和 label
+   */
+  choicesMap(choices: any[], valueKey: string, labelKey: string) {
     return this.choices(choices.map(i => ({value: i[valueKey], label: i[labelKey]})));
   }
 
+  /**
+   * 是否没有设置选择项
+   */
   isEmpty() {
     return !this[SELECT_CHOICES] || this[SELECT_CHOICES].length === 0;
   }
 
+  /**
+   * 检查选择项是否已经设置
+   */
   assertEmpty() {
     if (this.isEmpty()) {
       this.fail('select.options.empty');
     }
   }
 
+  /**
+   * 判断选择项值类型
+   */
+  protected _guessType(v: any): 'number' | 'bool' | 'string' {
+    switch (typeof v) {
+      case 'bigint':
+      case 'number':
+        return 'number';
+      case 'boolean':
+        return 'bool';
+    }
+    return 'string';
+  }
+
   attr() {
     // 如果没有指定类型则自动判断第一个选项的值类型
-    !this.isEmpty() && !this.options.type && this.type(typeof this[SELECT_CHOICES][0].value);
+    !this.isEmpty() && !this.options.type && this.type(this._guessType(this[SELECT_CHOICES][0].value));
     return {
       choices: this[SELECT_CHOICES],
     };
   }
 
-  postValidate(data) {
+  postValidate(data: any) {
     this.assertEmpty();
     if (this[SELECT_CHOICES].findIndex(i => i.value === data) > -1) {
       return;
@@ -42,33 +79,44 @@ export class Select extends Input {
   }
 }
 
+export function select(label: string) {
+  return new Select(label);
+}
+
 export class Radio extends Select {}
+
+export function radio(label: string) {
+  return new Radio(label);
+}
 
 const MULTIPLE_MAX = Symbol('Multiple#max');
 const MULTIPLE_MIN = Symbol('Multiple#min');
 
 export class Multiple extends Select {
+  [MULTIPLE_MAX]: number;
+  [MULTIPLE_MIN]: number;
+
   /** 最多可以选择数量 */
-  max(v) {
+  max(v: number) {
     this[MULTIPLE_MAX] = v;
     return this;
   }
 
   /** 最少选择数量 */
-  min(v) {
+  min(v: number) {
     this[MULTIPLE_MIN] = v;
     return this;
   }
 
   attr() {
-    !this.isEmpty() && !this.options.type && this.type((typeof this[SELECT_CHOICES][0].value) + '[]');
+    !this.isEmpty() && !this.options.type && this.type(`${this._guessType(this[SELECT_CHOICES][0].value)}[]`);
     return Object.assign(super.attr(), {
       max: this[MULTIPLE_MAX],
       min: this[MULTIPLE_MIN],
     });
   }
 
-  postValidate(data) {
+  postValidate(data: any) {
     this.assertEmpty();
     data = Array.isArray(data) ? data : [data];
     if (this[MULTIPLE_MAX] && data.length > this[MULTIPLE_MAX]) {
@@ -85,4 +133,12 @@ export class Multiple extends Select {
   }
 }
 
+export function multiple(label: string) {
+  return new Multiple(label);
+}
+
 export class Checkbox extends Multiple {}
+
+export function checkbox(label: string) {
+  return new Checkbox(label);
+}

@@ -1,5 +1,8 @@
-import typecasts from 'typecasts';
+import { MessageCodeResolver } from '@zenweb/messagecode';
+import * as typecasts from 'typecasts';
 import { Input, InputFail } from './field/input.js';
+import { FormInit } from './router.js';
+import { Fields, FormData, FormField, Layout } from './types.js';
 
 const FIELDS = Symbol('zenweb-form#fields');
 const DATA = Symbol('zenweb-form#data');
@@ -7,7 +10,7 @@ const ERRORS = Symbol('zenweb-form#errors');
 const INITIAL = Symbol('zenweb-form#initial');
 const LAYOUT = Symbol('zenweb-form#layout');
 
-function layoutExists(layout, name) {
+function layoutExists(layout: Layout[], name: string): boolean {
   for (const i of layout) {
     if (i === name) return true;
     if (Array.isArray(i)) return layoutExists(i, name);
@@ -16,23 +19,26 @@ function layoutExists(layout, name) {
 }
 
 class NonMessageCodeResolver {
-  format(code, params) {
+  format(code: string, params?: any) {
     return code;
   }
 }
 
 export class Form {
-  constructor(defaultOption) {
-    this[CORE] = core;
-    this[FIELDS] = {};
-    this[DATA] = {};
-    this[ERRORS] = {};
+  private [FIELDS]: Fields = {};
+  private [DATA]: FormData = {};
+  private [ERRORS]: { [field: string]: any } = {};
+  private [INITIAL]: FormData;
+  private [LAYOUT]: Layout[];
+  private _defaultOption: FormField;
+
+  constructor(defaultOption?: FormField) {
     this._defaultOption = defaultOption || {
       required: true,
     };
   }
 
-  init(init, data) {
+  init(init: FormInit, data: FormData) {
     this[INITIAL] = init.initial;
     this[LAYOUT] = init.layout || [];
     for (const [ name, option ] of Object.entries(init.fields)) {
@@ -77,12 +83,12 @@ export class Form {
     return this[ERRORS];
   }
 
-  errorMessages(messageCodeResolver) {
+  errorMessages(messageCodeResolver?: MessageCodeResolver | NonMessageCodeResolver) {
     messageCodeResolver = messageCodeResolver || new NonMessageCodeResolver();
-    const messages = {};
+    const messages: { [field: string]: string } = {};
     Object.entries(this.errors).map(([field, e]) => {
       if (e instanceof typecasts.RequiredError) {
-        messages[field] = messageCodeResolver.format(`form.required-error.${field}`);
+        messages[field] = messageCodeResolver.format(`form.required-error.${field}`, {});
       }
       else if (e instanceof typecasts.ValidateError) {
         let code = e.validate;

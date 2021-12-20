@@ -4,12 +4,21 @@ const ACTION = Symbol('Upload#action');
 const LIMIT = Symbol('Upload#limit');
 
 export class Upload extends Input {
-  action(url) {
+  [ACTION]: string;
+  [LIMIT]: number;
+
+  /**
+   * 上传地址
+   */
+  action(url: string) {
     this[ACTION] = url;
     return this;
   }
 
-  limit(limit) {
+  /**
+   * 上传数量限制
+   */
+  limit(limit: number) {
     this[LIMIT] = limit;
     return this;
   }
@@ -21,4 +30,8 @@ export class Upload extends Input {
       limit: this[LIMIT] || 1,
     };
   }
+}
+
+export function upload(label: string) {
+  return new Upload(label);
 }

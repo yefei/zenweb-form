@@ -2,14 +2,9 @@
   "name": "@zenweb/form",
   "version": "2.0.0",
   "description": "Zenweb Form module",
-  "type": "module",
-  "exports": "./index.js",
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "typings": "index.d.ts",
+  "exports": "./dist/index.js",
   "scripts": {
-    "dev": "cd example && DEBUG=* node app",
+    "dev": "cd example && DEBUG=* ts-node --project ../tsconfig.json app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
@@ -33,24 +28,24 @@
     "url": "https://github.com/yefei/zenweb-form/issues"
   },
   "files": [
-    "lib",
-    "index.js",
-    "index.d.ts",
+    "dist",
     "message-codes.json"
   ],
   "devDependencies": {
     "@koa/router": "^10.1.1",
+    "@types/koa": "^2.13.4",
+    "@types/koa__router": "^8.0.11",
     "@zenweb/api": "^2.0.0",
     "@zenweb/body": "^1.1.0",
     "@zenweb/core": "^2.0.1",
     "@zenweb/cors": "^2.0.0",
-    "@zenweb/messagecode": "^1.0.0",
+    "@zenweb/messagecode": "^1.0.1",
     "@zenweb/router": "^2.1.0",
     "eslint": "^7.16.0",
-    "koa": "^2.13.1"
+    "koa": "^2.13.4"
   },
   "dependencies": {
     "moment": "^2.29.1",
-    "typecasts": "^1.9.0"
+    "typecasts": "^1.9.1"
   }
 }

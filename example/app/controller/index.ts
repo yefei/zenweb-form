@@ -1,5 +1,5 @@
 import { Router } from '@zenweb/router';
-import { formRouter, fields } from '@zenweb/form';
+import { formRouter, fields } from '../../../src/index';
 export const router = new Router();
 
 router.post('/upload', ctx => {
@@ -41,6 +41,6 @@ formRouter(router, '/form', {
     };
   },
   post(ctx, form) {
-    ctx.success(form.data);
+    ctx.body = form.data;
   },
 });
