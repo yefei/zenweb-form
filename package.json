@@ -5,8 +5,8 @@
   "exports": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "dev": "cd example && DEBUG=* ts-node --project ../tsconfig.json app",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "rm -fr dist && tsc",
+    "dev": "cd example && DEBUG=* NODE_ENV=development ts-node app"
   },
   "author": {
     "name": "YeFei",
@@ -36,17 +36,15 @@
     "@koa/router": "^10.1.1",
     "@types/koa": "^2.13.4",
     "@types/koa__router": "^8.0.11",
-    "@zenweb/api": "^2.0.0",
-    "@zenweb/body": "^1.1.0",
-    "@zenweb/core": "^2.0.1",
-    "@zenweb/cors": "^2.0.0",
-    "@zenweb/messagecode": "^1.0.1",
-    "@zenweb/router": "^2.1.0",
-    "eslint": "^7.16.0",
-    "koa": "^2.13.4"
+    "@zenweb/api": "^2.1.1",
+    "@zenweb/body": "^2.0.2",
+    "@zenweb/core": "^2.1.2",
+    "@zenweb/cors": "^2.1.0",
+    "@zenweb/messagecode": "^2.1.1",
+    "@zenweb/router": "^2.2.0"
   },
   "dependencies": {
     "moment": "^2.29.1",
-    "typecasts": "^1.9.1"
+    "typecasts": "^1.9.2"
   }
 }

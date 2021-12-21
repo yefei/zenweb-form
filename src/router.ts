@@ -3,7 +3,7 @@ import * as Router from '@koa/router';
 import { Form } from './form';
 import { FormController, FormData, FormInit, RouterPath } from './types';
 
-async function formInit(controller: FormController, ctx: Koa.BaseContext, data?: FormData) {
+async function formInit(controller: FormController, ctx: Koa.Context, data?: FormData) {
   const init: FormInit = {
     fields: {},
   };

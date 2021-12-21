@@ -35,14 +35,14 @@ export interface FormController {
   middleware?: Router.Middleware[];
 
   /** 表单初始化 */
-  init?(ctx: Koa.BaseContext, init: FormInit): void | Promise<void>;
+  init?(ctx: Koa.Context, init: FormInit): void | Promise<void>;
 
   /** 覆盖默认表单 get 请求 */
-  get?(ctx: Koa.BaseContext, form: Form): void | Promise<void>;
+  get?(ctx: Koa.Context, form: Form): void | Promise<void>;
 
   /** 表单提交时调用 */
-  post?(ctx: Koa.BaseContext, form: Form): void | Promise<void>;
+  post?(ctx: Koa.Context, form: Form): void | Promise<void>;
 
   /** 表单验证失败时调用 */
-  fail?(ctx: Koa.BaseContext, form: Form): void | Promise<void>;
+  fail?(ctx: Koa.Context, form: Form): void | Promise<void>;
 }

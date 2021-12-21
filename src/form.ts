@@ -1,7 +1,7 @@
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import * as typecasts from 'typecasts';
-import { Input, InputFail } from './field/input.js';
-import { Fields, FormData, FieldOption, Layout, FormInit } from './types.js';
+import { Input, InputFail } from './field/input';
+import { Fields, FormData, FieldOption, Layout, FormInit } from './types';
 
 const FIELDS = Symbol('zenweb-form#fields');
 const DATA = Symbol('zenweb-form#data');
