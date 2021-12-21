@@ -46,3 +46,5 @@ export interface FormController {
   /** 表单验证失败时调用 */
   fail?(ctx: Koa.Context, form: Form): void | Promise<void>;
 }
+
+export interface FormOption {}
