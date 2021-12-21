@@ -1,11 +1,11 @@
 {
   "name": "@zenweb/form",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "prepublishOnly": "rm -fr dist && tsc",
+    "prepublishOnly": "tsc --build --clean && tsc",
     "dev": "cd example && cross-env DEBUG=* NODE_ENV=development ts-node app"
   },
   "author": {
