@@ -2,6 +2,7 @@ import { Core } from '@zenweb/core';
 import { setup } from '../src/index';
 
 const app = new Core();
+app.setup('@zenweb/log');
 app.setup('@zenweb/router');
 app.setup('@zenweb/body');
 app.setup('@zenweb/cors', { origin: '*' });

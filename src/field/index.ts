@@ -1,8 +1,8 @@
-import { Input, simple } from './input.js';
-import * as select from './select.js';
-import * as datetime from './datetime.js';
-import * as upload from './upload.js';
-import * as text from './text.js';
+import { Input, simple } from './input';
+import * as select from './select';
+import * as datetime from './datetime';
+import * as upload from './upload';
+import * as text from './text';
 import { castType } from 'typecasts';
 
 /**

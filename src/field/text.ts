@@ -1,4 +1,4 @@
-import { Input, simple } from './input.js';
+import { Input, simple } from './input';
 
 const ROWS = Symbol('Textarea#rows');
 

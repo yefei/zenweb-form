@@ -1,4 +1,4 @@
-import { Input, simple } from './input.js';
+import { Input, simple } from './input';
 
 const SELECT_CHOICES = Symbol('Select#choices');
 

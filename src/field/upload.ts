@@ -1,4 +1,4 @@
-import { Input, simple } from './input.js';
+import { Input, simple } from './input';
 
 const ACTION = Symbol('Upload#action');
 const LIMIT = Symbol('Upload#limit');
