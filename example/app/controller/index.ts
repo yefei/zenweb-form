@@ -41,6 +41,6 @@ formRouter(router, '/form', {
     };
   },
   post(ctx, form) {
-    ctx.body = form.data;
+    ctx.success(form.data);
   },
 });

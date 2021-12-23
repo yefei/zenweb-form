@@ -31,7 +31,11 @@ export function formRouter(router: Router, path: RouterPath, controller: FormCon
   });
 
   router.post(path, ...controller.middleware || [], async ctx => {
-    const form = await formInit(controller, ctx, ctx.request.body);
+    let data = ctx.request.body;
+    if (ctx.request.bodyType === 'text') {
+      data = {};
+    }
+    const form = await formInit(controller, ctx, data);
     if (form.valid) {
       return controller.post(ctx, form);
     }

@@ -1,9 +1,9 @@
 {
   "name": "@zenweb/form",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "tsc --build --clean && tsc",
     "dev": "cd example && cross-env DEBUG=* NODE_ENV=development ts-node app"
@@ -33,17 +33,15 @@
     "message-codes.json"
   ],
   "devDependencies": {
-    "@koa/router": "^10.1.1",
-    "@types/koa": "^2.13.4",
-    "@types/koa__router": "^8.0.11",
-    "@zenweb/api": "^2.1.1",
-    "@zenweb/body": "^2.2.2",
-    "@zenweb/core": "^2.1.2",
-    "@zenweb/cors": "^2.1.0",
-    "@zenweb/log": "^2.2.0",
-    "@zenweb/messagecode": "^2.1.4",
-    "@zenweb/router": "^2.2.0",
-    "cross-env": "^7.0.3"
+    "@zenweb/api": "^2.3.2",
+    "@zenweb/body": "^2.3.0",
+    "@zenweb/core": "^2.3.2",
+    "@zenweb/cors": "^2.3.0",
+    "@zenweb/log": "^2.3.0",
+    "@zenweb/messagecode": "^2.3.0",
+    "@zenweb/router": "^2.3.0",
+    "cross-env": "^7.0.3",
+    "zenweb": "^2.3.1"
   },
   "dependencies": {
     "moment": "^2.29.1",

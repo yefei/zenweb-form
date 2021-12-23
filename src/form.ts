@@ -52,7 +52,7 @@ export class Form {
       if (data) {
         try {
           // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
-          const _inputData = name in data ? data[name] : (`${name}[]` in data ? data[`${name}[]`] : undefined)
+          const _inputData = name in data ? data[name] : (`${name}[]` in data ? data[`${name}[]`] : undefined);
           let [ as, value ] = typecasts.typeCastAs(_inputData, opt, name);
           if (value !== undefined) {
             if (option instanceof Input) {

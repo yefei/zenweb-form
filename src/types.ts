@@ -1,5 +1,4 @@
 import * as Koa from 'koa';
-import * as Router from '@koa/router';
 import { castTypeOption } from 'typecasts';
 import { Input } from './field/input';
 import { Form } from './form';
@@ -32,7 +31,7 @@ export interface FormInit {
 
 export interface FormController {
   /** koa 中间件 */
-  middleware?: Router.Middleware[];
+  middleware?: Koa.Middleware[];
 
   /** 表单初始化 */
   init?(ctx: Koa.Context, init: FormInit): void | Promise<void>;
@@ -46,5 +45,3 @@ export interface FormController {
   /** 表单验证失败时调用 */
   fail?(ctx: Koa.Context, form: Form): void | Promise<void>;
 }
-
-export interface FormOption {}
