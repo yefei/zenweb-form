@@ -1,6 +1,6 @@
 import '@zenweb/body';
 import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Router } from '@zenweb/router';
 import { Form } from './form';
 import { FormController, FormData, FormInit, RouterPath } from './types';
 
