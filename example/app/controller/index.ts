@@ -19,7 +19,7 @@ formRouter(router, '/form', {
       datetime: fields.datetime('日期时间'),
       upload: fields.upload('上传').action('http://' + ctx.host + '/upload'),
       gender: fields.radio('性别').choices([
-        {value: 1, label: '男'},
+        '男',
         {value: 2, label: '女'},
       ]),
       shengxiao: fields.select('生肖').type('int').choices([

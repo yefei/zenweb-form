@@ -15,13 +15,19 @@ interface ChoiceType {
 }
 
 export class Select extends Input {
-  [SELECT_CHOICES]: ChoiceType[];
+  [SELECT_CHOICES]: ChoiceType[] = [];
 
   /**
    * 设置选择项
    */
-  choices(choices: ChoiceType[]) {
-    this[SELECT_CHOICES] = choices;
+  choices(choices: (string | number | ChoiceType)[]) {
+    for (const c of choices) {
+      if (typeof c === 'object') {
+        this[SELECT_CHOICES].push(c);
+      } else {
+        this[SELECT_CHOICES].push({ label: c, value: c });
+      }
+    }
     return this;
   }
 
