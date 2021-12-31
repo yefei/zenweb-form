@@ -117,7 +117,7 @@ export class Multiple extends Select {
   clean(data: any) {
     this.assertEmpty();
     data = Array.isArray(data) ? data : [data];
-    if (this[MULTIPLE_MAX] && data.length > this[MULTIPLE_MAX]) {
+    if (this[MULTIPLE_MAX] && data.length > Math.min(this[MULTIPLE_MAX], this[SELECT_CHOICES].length)) {
       this.fail('select.choice-max', { max: this[MULTIPLE_MAX] });
     }
     if (this[MULTIPLE_MIN] && data.length < this[MULTIPLE_MIN]) {
