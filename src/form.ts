@@ -3,12 +3,6 @@ import * as typecasts from 'typecasts';
 import { Input, InputFail } from './field/input';
 import { Fields, FormData, FieldOption, Layout, FormInit } from './types';
 
-const FIELDS = Symbol('zenweb-form#fields');
-const DATA = Symbol('zenweb-form#data');
-const ERRORS = Symbol('zenweb-form#errors');
-const INITIAL = Symbol('zenweb-form#initial');
-const LAYOUT = Symbol('zenweb-form#layout');
-
 function layoutExists(layout: Layout[], name: string): boolean {
   for (const i of layout) {
     if (i === name) return true;
@@ -24,11 +18,11 @@ class NonMessageCodeResolver {
 }
 
 export class Form {
-  private [FIELDS]: Fields = {};
-  private [DATA]: FormData = {};
-  private [ERRORS]: { [field: string]: any } = {};
-  private [INITIAL]: FormData;
-  private [LAYOUT]: Layout[];
+  private _fields: Fields = {};
+  private _data: FormData = {};
+  private _errors: { [field: string]: any } = {};
+  private _initial: FormData;
+  private _layout: Layout[];
   private _defaultOption: FieldOption;
 
   constructor(defaultOption?: FieldOption) {
@@ -38,17 +32,17 @@ export class Form {
   }
 
   init(init: FormInit, data: FormData) {
-    this[INITIAL] = init.initial;
-    this[LAYOUT] = init.layout || [];
+    this._initial = init.initial;
+    this._layout = init.layout || [];
     for (const [ name, option ] of Object.entries(init.fields)) {
-      if (!layoutExists(this[LAYOUT], name)) {
-        this[LAYOUT].push(name);
+      if (!layoutExists(this._layout, name)) {
+        this._layout.push(name);
       }
       const opt = Object.assign({}, this._defaultOption, option instanceof Input ? option.build() : option);
       if (init.initial && init.initial[name] !== undefined) {
         opt.default = init.initial[name];
       }
-      this[FIELDS][name] = opt;
+      this._fields[name] = opt;
       if (data) {
         try {
           // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
@@ -58,10 +52,10 @@ export class Form {
             if (option instanceof Input) {
               value = option.clean(value);
             }
-            this[DATA][as] = value;
+            this._data[as] = value;
           }
         } catch (e) {
-          this[ERRORS][name] = e;
+          this._errors[name] = e;
         }
       }
     }
@@ -69,19 +63,19 @@ export class Form {
   }
 
   get fields() {
-    return this[FIELDS];
+    return this._fields;
   }
 
   get initial() {
-    return this[INITIAL];
+    return this._initial;
   }
 
   get valid() {
-    return Object.keys(this[ERRORS]).length === 0;
+    return Object.keys(this._errors).length === 0;
   }
 
   get errors() {
-    return this[ERRORS];
+    return this._errors;
   }
 
   errorMessages(messageCodeResolver?: MessageCodeResolver | NonMessageCodeResolver) {
@@ -107,10 +101,10 @@ export class Form {
   }
 
   get data() {
-    return this[DATA];
+    return this._data;
   }
 
   get layout() {
-    return this[LAYOUT];
+    return this._layout;
   }
 }

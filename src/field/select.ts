@@ -1,7 +1,5 @@
 import { Input, simple } from './input';
 
-const SELECT_CHOICES = Symbol('Select#choices');
-
 interface ChoiceType {
   /**
    * 显示名
@@ -15,7 +13,7 @@ interface ChoiceType {
 }
 
 export class Select extends Input {
-  [SELECT_CHOICES]: ChoiceType[] = [];
+  protected _choices: ChoiceType[] = [];
 
   /**
    * 设置选择项
@@ -23,9 +21,9 @@ export class Select extends Input {
   choices(choices: (string | number | ChoiceType)[]) {
     for (const c of choices) {
       if (typeof c === 'object') {
-        this[SELECT_CHOICES].push(c);
+        this._choices.push(c);
       } else {
-        this[SELECT_CHOICES].push({ label: c, value: c });
+        this._choices.push({ label: c, value: c });
       }
     }
     return this;
@@ -42,7 +40,7 @@ export class Select extends Input {
    * 是否没有设置选择项
    */
   isEmpty() {
-    return !this[SELECT_CHOICES] || this[SELECT_CHOICES].length === 0;
+    return this._choices.length === 0;
   }
 
   /**
@@ -70,15 +68,15 @@ export class Select extends Input {
 
   attr() {
     // 如果没有指定类型则自动判断第一个选项的值类型
-    !this.isEmpty() && !this.options.type && this.type(this._guessType(this[SELECT_CHOICES][0].value));
+    !this.isEmpty() && !this._option.type && this.type(this._guessType(this._choices[0].value));
     return {
-      choices: this[SELECT_CHOICES],
+      choices: this._choices,
     };
   }
 
   clean(data: any) {
     this.assertEmpty();
-    if (this[SELECT_CHOICES].findIndex(i => i.value === data) > -1) {
+    if (this._choices.findIndex(i => i.value === data) > -1) {
       return data;
     }
     this.fail('select.choice-invalid', { data });
@@ -87,45 +85,42 @@ export class Select extends Input {
 
 export class Radio extends Select {}
 
-const MULTIPLE_MAX = Symbol('Multiple#max');
-const MULTIPLE_MIN = Symbol('Multiple#min');
-
 export class Multiple extends Select {
-  [MULTIPLE_MAX]: number;
-  [MULTIPLE_MIN]: number;
+  protected _max: number;
+  protected _min: number;
 
   /** 最多可以选择数量 */
   max(v: number) {
-    this[MULTIPLE_MAX] = v;
+    this._max = v;
     return this;
   }
 
   /** 最少选择数量 */
   min(v: number) {
-    this[MULTIPLE_MIN] = v;
+    this._min = v;
     return this;
   }
 
   attr() {
-    !this.isEmpty() && !this.options.type && this.type(`${this._guessType(this[SELECT_CHOICES][0].value)}[]`);
+    !this.isEmpty() && !this._option.type && this.type(`${this._guessType(this._choices[0].value)}[]`);
     return Object.assign(super.attr(), {
-      max: this[MULTIPLE_MAX],
-      min: this[MULTIPLE_MIN],
+      max: this._max,
+      min: this._min,
     });
   }
 
   clean(data: any) {
     this.assertEmpty();
     data = Array.isArray(data) ? data : [data];
-    const max = Math.min(this[MULTIPLE_MAX] || Number.MAX_VALUE, this[SELECT_CHOICES].length);
+    const max = Math.min(this._max || Number.MAX_VALUE, this._choices.length);
     if (data.length > max) {
       this.fail('select.choice-max', { max });
     }
-    if (this[MULTIPLE_MIN] && data.length < this[MULTIPLE_MIN]) {
-      this.fail('select.choice-min', { min: this[MULTIPLE_MIN] });
+    if (this._min && data.length < this._min) {
+      this.fail('select.choice-min', { min: this._min });
     }
     for (const i of data) {
-      if (this[SELECT_CHOICES].findIndex(c => c.value === i) === -1) {
+      if (this._choices.findIndex(c => c.value === i) === -1) {
         this.fail('select.choice-invalid', { data: i });
       }
     }

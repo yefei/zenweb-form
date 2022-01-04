@@ -1,8 +1,6 @@
 import * as moment from 'moment';
 import { Input, simple } from './input';
 
-const FORMAT = Symbol('Date#format');
-
 function datetimeFormatFunction(fmt: string) {
   return function datetimeFormat(data: moment.MomentInput) {
     const m = moment(data, fmt);
@@ -13,26 +11,26 @@ function datetimeFormatFunction(fmt: string) {
 }
 
 export class Datetime extends Input {
-  [FORMAT]: string = 'YYYY-MM-DD HH:mm:ss';
+  protected _format: string = 'YYYY-MM-DD HH:mm:ss';
 
   /**
    * 输入日期格式
    */
   format(fmt: string) {
-    this[FORMAT] = fmt;
+    this._format = fmt;
     return this;
   }
 
   override attr() {
-    this.type(datetimeFormatFunction(this[FORMAT]));
+    this.type(datetimeFormatFunction(this._format));
     return {
-      format: this[FORMAT],
+      format: this._format,
     };
   }
 }
 
 export class Date extends Datetime {
-  [FORMAT] = 'YYYY-MM-DD';
+  protected _format: string = 'YYYY-MM-DD';
 }
 
 export class DateRange extends Date {
@@ -58,14 +56,14 @@ export class DateRange extends Date {
   override attr() {
     this.type('trim[]');
     return {
-      format: this[FORMAT],
+      format: this._format,
       start: this._start,
       end: this._end,
     };
   }
 
   override clean(data: [string, string]) {
-    const formatFunc = datetimeFormatFunction(this[FORMAT]);
+    const formatFunc = datetimeFormatFunction(this._format);
     const startDate = formatFunc(data[0]);
     if (!startDate) {
       this.fail('daterange.start.error');
@@ -85,7 +83,7 @@ export class DateRange extends Date {
 }
 
 export class Time extends Datetime {
-  [FORMAT] = 'HH:mm:ss';
+  protected _format: string = 'HH:mm:ss';
 }
 
 export const datetime = simple(Datetime);

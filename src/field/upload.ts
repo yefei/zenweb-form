@@ -1,17 +1,14 @@
 import { Input, simple } from './input';
 
-const ACTION = Symbol('Upload#action');
-const LIMIT = Symbol('Upload#limit');
-
 export class Upload extends Input {
-  [ACTION]: string;
-  [LIMIT]: number;
+  protected _action: string;
+  protected _limit: number;
 
   /**
    * 上传地址
    */
   action(url: string) {
-    this[ACTION] = url;
+    this._action = url;
     return this;
   }
 
@@ -19,15 +16,15 @@ export class Upload extends Input {
    * 上传数量限制
    */
   limit(limit: number) {
-    this[LIMIT] = limit;
+    this._limit = limit;
     return this;
   }
 
   attr() {
     this.type('trim[]');
     return {
-      action: this[ACTION],
-      limit: this[LIMIT] || 1,
+      action: this._action,
+      limit: this._limit || 1,
     };
   }
 }

@@ -1,9 +1,6 @@
 import { castType, castTypeFunc, validates } from 'typecasts';
 import { FieldOption } from '../types';
 
-const OPTION = Symbol('Input#options');
-const NAME = Symbol('Input#name');
-
 export class InputFail extends Error {
   code: string;
   params: any[];
@@ -17,28 +14,20 @@ export class InputFail extends Error {
 }
 
 export class Input {
-  [OPTION]: FieldOption;
-  [NAME]: string;
+  protected _option: FieldOption;
+  protected _name: string = this.constructor.name;
 
   constructor(label: string) {
-    this[OPTION] = {
+    this._option = {
       label,
     };
-  }
-
-  get options() {
-    return this[OPTION];
-  }
-
-  get _name() {
-    return this[NAME] || this.constructor.name;
   }
 
   /**
    * 控件名称
    */
   name(name: string) {
-    this[NAME] = name;
+    this._name = name;
     return this;
   }
 
@@ -46,7 +35,7 @@ export class Input {
    * 输入值类型
    */
   type(type: castType | castTypeFunc) {
-    this[OPTION].type = type;
+    this._option.type = type;
     return this;
   }
 
@@ -54,7 +43,7 @@ export class Input {
    * 帮助信息
    */
   help(help: string) {
-    this[OPTION].help = help;
+    this._option.help = help;
     return this;
   }
 
@@ -62,7 +51,7 @@ export class Input {
    * 必填项
    */
   required(is: boolean | string = true) {
-    this[OPTION].required = is;
+    this._option.required = is;
     return this;
   }
 
@@ -70,7 +59,7 @@ export class Input {
    * 默认值
    */
   default(value: any) {
-    this[OPTION].default = value;
+    this._option.default = value;
     return this;
   }
 
@@ -78,7 +67,7 @@ export class Input {
    * 数据验证
    */
   validate(validate: validates) {
-    this[OPTION].validate = validate;
+    this._option.validate = validate;
     return this;
   }
 
@@ -89,7 +78,7 @@ export class Input {
     const attr = this.attr();
     return Object.assign({
       name: this._name,
-    }, this[OPTION], attr);
+    }, this._option, attr);
   }
 
   /**

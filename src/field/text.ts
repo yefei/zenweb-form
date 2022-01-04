@@ -1,7 +1,5 @@
 import { Input, simple } from './input';
 
-const ROWS = Symbol('Textarea#rows');
-
 export class Text extends Input {
   /**
    * 限制字符串长度
@@ -15,7 +13,7 @@ export class Text extends Input {
 }
 
 export class Textarea extends Text {
-  [ROWS]: { min: number, max: number };
+  protected _rows: { min: number, max: number };
   
   /**
    * 文本输入域尺寸，注意：并不是限制文本输入长度
@@ -24,13 +22,13 @@ export class Textarea extends Text {
    * @returns 
    */
   rows(min: number, max: number) {
-    this[ROWS] = { min, max };
+    this._rows = { min, max };
     return this;
   }
 
   attr() {
     return {
-      rows: this[ROWS] || 'auto',
+      rows: this._rows || 'auto',
     };
   }
 }

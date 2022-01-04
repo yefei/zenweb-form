@@ -3,6 +3,7 @@ import * as select from './select';
 import * as datetime from './datetime';
 import * as upload from './upload';
 import * as text from './text';
+import * as cascader from './cascader';
 import { castType } from 'typecasts';
 
 /**
@@ -26,4 +27,5 @@ export const fields = {
   ...datetime,
   ...upload,
   ...text,
+  ...cascader,
 };
