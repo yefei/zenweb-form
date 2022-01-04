@@ -12,10 +12,10 @@ interface ChoiceType {
   value: number | string;
 
   /**
-   * 是否可选择
+   * 不可选择项
    * @default false
    */
-  selectable?: boolean;
+  unselectable?: boolean;
 
   /**
    * 父项值
@@ -94,7 +94,7 @@ export class Cascader extends Input {
       this.fail('select.choice-min', { min: this._min });
     }
     for (const i of data) {
-      if (this._choices.findIndex(c => c.value === i) === -1) {
+      if (this._choices.filter(i => !i.unselectable).findIndex(c => c.value === i) === -1) {
         this.fail('select.choice-invalid', { data: i });
       }
     }
