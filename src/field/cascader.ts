@@ -7,9 +7,9 @@ interface ChoiceType {
   label: number | string;
 
   /**
-   * 值
+   * 值，如果不指定则无法选择
    */
-  value: number | string;
+  value?: number | string;
 
   /**
    * 父项值
