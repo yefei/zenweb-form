@@ -7,9 +7,15 @@ interface ChoiceType {
   label: number | string;
 
   /**
-   * 值，如果不指定则无法选择
+   * 值
    */
-  value?: number | string;
+  value: number | string;
+
+  /**
+   * 是否可选择
+   * @default false
+   */
+  selectable?: boolean;
 
   /**
    * 父项值
