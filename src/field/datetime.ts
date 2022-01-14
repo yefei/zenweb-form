@@ -3,7 +3,7 @@ import { Input, simple } from './input';
 
 function datetimeFormatFunction(fmt: string) {
   return function datetimeFormat(data: moment.MomentInput) {
-    const m = moment(data, fmt);
+    const m = moment(data);
     if (m.isValid()) {
       return m.format(fmt);
     }
