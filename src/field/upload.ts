@@ -21,7 +21,8 @@ export class Upload extends Input {
   }
 
   attr() {
-    this.type('trim[]');
+    this.type('trim');
+    this._option.splitter = ',';
     return {
       action: this._action,
       limit: this._limit || 1,

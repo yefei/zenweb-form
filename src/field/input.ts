@@ -1,4 +1,4 @@
-import { castType, castTypeFunc, validates } from 'typecasts';
+import { TypeKeys, ValidateOption } from 'typecasts';
 import { FieldOption } from '../types';
 
 export class InputFail extends Error {
@@ -19,6 +19,7 @@ export class Input {
 
   constructor(label: string) {
     this._option = {
+      type: 'string',
       label,
     };
   }
@@ -34,7 +35,7 @@ export class Input {
   /**
    * 输入值类型
    */
-  type(type: castType | castTypeFunc) {
+  type(type: TypeKeys) {
     this._option.type = type;
     return this;
   }
@@ -66,7 +67,7 @@ export class Input {
   /**
    * 数据验证
    */
-  validate(validate: validates) {
+  validate(validate: ValidateOption) {
     this._option.validate = validate;
     return this;
   }
@@ -90,7 +91,7 @@ export class Input {
   /**
    * 数据验证清理，如果验证不通过需要抛出异常，使用 this.fail('code')
    */
-  clean(data: any) {
+  clean(data: any): any {
     return data;
   }
 

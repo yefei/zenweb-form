@@ -102,7 +102,8 @@ export class Multiple extends Select {
   }
 
   attr() {
-    !this.isEmpty() && !this._option.type && this.type(`${this._guessType(this._choices[0].value)}[]`);
+    !this.isEmpty() && !this._option.type && this.type(`${this._guessType(this._choices[0].value)}`);
+    this._option.splitter = ',';
     return Object.assign(super.attr(), {
       max: this._max,
       min: this._min,

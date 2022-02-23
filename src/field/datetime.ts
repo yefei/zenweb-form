@@ -1,13 +1,11 @@
 import * as moment from 'moment';
 import { Input, simple } from './input';
 
-function datetimeFormatFunction(fmt: string) {
-  return function datetimeFormat(data: moment.MomentInput) {
-    const m = moment(data);
-    if (m.isValid()) {
-      return m.format(fmt);
-    }
-  };
+function datetimeFormat(fmt: string, data: moment.MomentInput) {
+  const m = moment(data);
+  if (m.isValid()) {
+    return m.format(fmt);
+  }
 }
 
 export class Datetime extends Input {
@@ -21,11 +19,19 @@ export class Datetime extends Input {
     return this;
   }
 
-  override attr() {
-    this.type(datetimeFormatFunction(this._format));
+  attr() {
+    this.type('trim');
     return {
       format: this._format,
     };
+  }
+
+  clean(data: any) {
+    const val = datetimeFormat(this._format, data);
+    if (val === undefined) {
+      this.fail('datetime.format-error', { data });
+    }
+    return val;
   }
 }
 
@@ -53,8 +59,9 @@ export class DateRange extends Date {
     return this;
   }
 
-  override attr() {
-    this.type('trim[]');
+  attr() {
+    this.type('trim');
+    this._option.splitter = ',';
     return {
       format: this._format,
       start: this._start,
@@ -62,13 +69,12 @@ export class DateRange extends Date {
     };
   }
 
-  override clean(data: [string, string]) {
-    const formatFunc = datetimeFormatFunction(this._format);
-    const startDate = formatFunc(data[0]);
+  clean(data: [string, string]) {
+    const startDate = datetimeFormat(this._format, data[0]);
     if (!startDate) {
       this.fail('daterange.start.error');
     }
-    const endDate = formatFunc(data[1]);
+    const endDate = datetimeFormat(this._format, data[1]);
     if (!endDate) {
       this.fail('daterange.end.error');
     }
@@ -78,7 +84,7 @@ export class DateRange extends Date {
     if (this._end && moment(endDate).isAfter(this._end)) {
       this.fail('daterange.end.out');
     }
-    return [startDate, endDate];
+    return [startDate, endDate] as any;
   }
 }
 

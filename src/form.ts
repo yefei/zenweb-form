@@ -1,5 +1,5 @@
 import { MessageCodeResolver } from '@zenweb/messagecode';
-import * as typecasts from 'typecasts';
+import { RequiredError, typeCast, ValidateError } from 'typecasts';
 import { Input, InputFail } from './field/input';
 import { Fields, FormData, FieldOption, Layout, FormInit } from './types';
 
@@ -27,6 +27,7 @@ export class Form {
 
   constructor(defaultOption?: FieldOption) {
     this._defaultOption = defaultOption || {
+      type: 'origin',
       required: true,
     };
   }
@@ -47,12 +48,12 @@ export class Form {
         try {
           // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
           const _inputData = name in data ? data[name] : (`${name}[]` in data ? data[`${name}[]`] : undefined);
-          let [ as, value ] = typecasts.typeCastAs(_inputData, opt, name);
+          let value = typeCast(_inputData, opt, name);
           if (value !== undefined) {
             if (option instanceof Input) {
               value = option.clean(value);
             }
-            this._data[as] = value;
+            this._data[name] = value;
           }
         } catch (e) {
           this._errors[name] = e;
@@ -82,10 +83,10 @@ export class Form {
     messageCodeResolver = messageCodeResolver || new NonMessageCodeResolver();
     const messages: { [field: string]: string } = {};
     Object.entries(this.errors).map(([field, e]) => {
-      if (e instanceof typecasts.RequiredError) {
+      if (e instanceof RequiredError) {
         messages[field] = messageCodeResolver.format(`form.required-error.${field}`, {});
       }
-      else if (e instanceof typecasts.ValidateError) {
+      else if (e instanceof ValidateError) {
         let code = e.validate;
         if (e.validate === 'cast') code += `.${typeof e.target === 'function' ? e.target.name || '-' : e.target}`;
         messages[field] = messageCodeResolver.format(`form.validate-error.${code}.${field}`, e);

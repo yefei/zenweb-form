@@ -1,5 +1,5 @@
 import * as Koa from 'koa';
-import { castTypeOption } from 'typecasts';
+import { CastOption } from 'typecasts';
 import { Input } from './field/input';
 import { Form } from './form';
 
@@ -8,7 +8,7 @@ export type Fields = { [name: string]: FieldType };
 export type FormData = { [name: string]: any };
 export type Layout = string | Layout[];
 
-export interface FieldOption extends castTypeOption {
+export interface FieldOption extends CastOption {
   /** 显示标签 */
   label?: string;
 
