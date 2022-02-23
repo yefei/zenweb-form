@@ -27,7 +27,7 @@ export class Form {
 
   constructor(defaultOption?: FieldOption) {
     this._defaultOption = defaultOption || {
-      type: 'origin',
+      type: 'any',
       required: true,
     };
   }
