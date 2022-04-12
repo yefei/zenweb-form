@@ -30,6 +30,8 @@ export class FormController {
   /** 表单字段初始值 */
   initial?: FormData;
 
+  form: Form;
+
   constructor(ctx: Koa.Context) {
     this.ctx = ctx;
   }
@@ -41,13 +43,13 @@ export class FormController {
   init?(): void | Promise<void>;
 
   /** 覆盖默认表单 get 请求 */
-  get?(form: Form): void | Promise<void>;
+  get?(): void | Promise<void>;
 
   /** 表单提交时调用 */
-  post?(form: Form): void | Promise<void>;
+  post?(): void | Promise<void>;
 
   /** 表单验证失败时调用 */
-  fail?(form: Form): void | Promise<void>;
+  fail?(): void | Promise<void>;
 }
 
 export interface FormControllerClass<C extends FormController> {

@@ -12,12 +12,12 @@ export function formRouter<C extends FormController>(router: Router, path: Route
     if (controller.init) {
       await controller.init();
     }
-    const form = new Form();
-    form.init(controller, null);
+    controller.form = new Form();
+    controller.form.init(controller, null);
     if (controller.get) {
-      return controller.get(form);
+      return controller.get();
     }
-    const out = { fields: form.fields, layout: form.layout };
+    const out = { fields: controller.form.fields, layout: controller.form.layout };
     if (ctx.success) {
       return ctx.success(out);
     }
@@ -33,15 +33,15 @@ export function formRouter<C extends FormController>(router: Router, path: Route
     if (controller.init) {
       await controller.init();
     }
-    const form = new Form();
-    form.init(controller, data);
-    if (form.valid) {
-      return controller.post(form);
+    controller.form = new Form();
+    controller.form.init(controller, data);
+    if (controller.form.valid) {
+      return controller.post();
     }
     if (controller.fail) {
-      return controller.fail(form);
+      return controller.fail();
     }
-    const out = { errors: form.errorMessages(ctx.messageCodeResolver) };
+    const out = { errors: controller.form.errorMessages(ctx.messageCodeResolver) };
     if (ctx.fail) {
       return ctx.fail({ message: 'form valid error', data: out });
     }
