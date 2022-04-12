@@ -19,6 +19,11 @@ export interface FieldOption extends CastOption {
 export type RouterPath = string | RegExp | (string | RegExp)[];
 
 export class FormController {
+  /**
+   * 防止书写bug，middleware 只能是 class 静态成员
+   */
+  middleware: never;
+
   readonly ctx: Koa.Context;
 
   /** 表单字段 */
