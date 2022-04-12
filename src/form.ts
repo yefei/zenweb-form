@@ -17,7 +17,7 @@ class NonMessageCodeResolver {
   }
 }
 
-export class Form<C extends FormController> {
+export class Form {
   private _fields: Fields = {};
   private _data: FormData = {};
   private _errors: { [field: string]: any } = {};
@@ -32,7 +32,7 @@ export class Form<C extends FormController> {
     };
   }
 
-  init(init: C, data: FormData) {
+  init(init: FormController, data: FormData) {
     this._initial = init.initial;
     this._layout = init.layout || [];
     for (const [ name, option ] of Object.entries(init.fields)) {

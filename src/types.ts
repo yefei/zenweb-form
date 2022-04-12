@@ -41,13 +41,13 @@ export class FormController {
   init?(): void | Promise<void>;
 
   /** 覆盖默认表单 get 请求 */
-  get?(form: Form<this>): void | Promise<void>;
+  get?(form: Form): void | Promise<void>;
 
   /** 表单提交时调用 */
-  post?(form: Form<this>): void | Promise<void>;
+  post?(form: Form): void | Promise<void>;
 
   /** 表单验证失败时调用 */
-  fail?(form: Form<this>): void | Promise<void>;
+  fail?(form: Form): void | Promise<void>;
 }
 
 export interface FormControllerClass<C extends FormController> {
