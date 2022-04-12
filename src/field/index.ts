@@ -4,6 +4,7 @@ import * as datetime from './datetime';
 import * as upload from './upload';
 import * as text from './text';
 import * as cascader from './cascader';
+import * as suggest from './suggest';
 import { TypeKeys } from 'typecasts';
 
 /**
@@ -28,4 +29,5 @@ export const fields = {
   ...upload,
   ...text,
   ...cascader,
+  ...suggest,
 };
