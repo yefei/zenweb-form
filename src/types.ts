@@ -18,7 +18,9 @@ export interface FieldOption extends CastOption {
 
 export type RouterPath = string | RegExp | (string | RegExp)[];
 
-export interface FormInit {
+export class FormController {
+  readonly ctx: Koa.Context;
+
   /** 表单字段 */
   fields: Fields;
 
@@ -27,21 +29,30 @@ export interface FormInit {
 
   /** 表单字段初始值 */
   initial?: FormData;
-}
 
-export interface FormController {
-  /** koa 中间件 */
-  middleware?: Koa.Middleware[];
+  constructor(ctx: Koa.Context) {
+    this.ctx = ctx;
+  }
 
-  /** 表单初始化 */
-  init?(ctx: Koa.Context, init: FormInit): void | Promise<void>;
+  /**
+   * 初始化方法
+   * 每次请求都会处理
+   */
+  init?(): void | Promise<void>;
 
   /** 覆盖默认表单 get 请求 */
-  get?(ctx: Koa.Context, form: Form): void | Promise<void>;
+  get?(form: Form<this>): void | Promise<void>;
 
   /** 表单提交时调用 */
-  post?(ctx: Koa.Context, form: Form): void | Promise<void>;
+  post?(form: Form<this>): void | Promise<void>;
 
   /** 表单验证失败时调用 */
-  fail?(ctx: Koa.Context, form: Form): void | Promise<void>;
+  fail?(form: Form<this>): void | Promise<void>;
+}
+
+export interface FormControllerClass<C extends FormController> {
+  new (ctx: Koa.Context): C;
+
+  /** koa 中间件 */
+  middleware?: Koa.Middleware[];
 }

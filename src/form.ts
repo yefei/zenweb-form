@@ -1,7 +1,7 @@
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import { RequiredError, typeCast, ValidateError } from 'typecasts';
 import { Input, InputFail } from './field/input';
-import { Fields, FormData, FieldOption, Layout, FormInit } from './types';
+import { Fields, FormData, FieldOption, Layout, FormController } from './types';
 
 function layoutExists(layout: Layout[], name: string): boolean {
   for (const i of layout) {
@@ -17,7 +17,7 @@ class NonMessageCodeResolver {
   }
 }
 
-export class Form {
+export class Form<C extends FormController> {
   private _fields: Fields = {};
   private _data: FormData = {};
   private _errors: { [field: string]: any } = {};
@@ -32,7 +32,7 @@ export class Form {
     };
   }
 
-  init(init: FormInit, data: FormData) {
+  init(init: C, data: FormData) {
     this._initial = init.initial;
     this._layout = init.layout || [];
     for (const [ name, option ] of Object.entries(init.fields)) {

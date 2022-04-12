@@ -1,27 +1,21 @@
 import '@zenweb/body';
-import * as Koa from 'koa';
 import { Router } from '@zenweb/router';
 import { Form } from './form';
-import { FormController, FormData, FormInit, RouterPath } from './types';
-
-async function formInit(controller: FormController, ctx: Koa.Context, data?: FormData) {
-  const init: FormInit = {
-    fields: {},
-  };
-  await controller.init(ctx, init);
-  const form = new Form();
-  form.init(init, data);
-  return form;
-}
+import { FormController, FormControllerClass, RouterPath } from './types';
 
 /**
  * 表单控制器, 从创建到校验
  */
-export function formRouter(router: Router, path: RouterPath, controller: FormController) {
-  router.get(path, ...controller.middleware || [], async ctx => {
-    const form = await formInit(controller, ctx);
+export function formRouter<C extends FormController>(router: Router, path: RouterPath, controllerClass: FormControllerClass<C>) {
+  router.get(path, ...controllerClass.middleware || [], async ctx => {
+    const controller = new controllerClass(ctx);
+    if (controller.init) {
+      await controller.init();
+    }
+    const form = new Form();
+    form.init(controller, null);
     if (controller.get) {
-      return controller.get(ctx, form);
+      return controller.get(form);
     }
     const out = { fields: form.fields, layout: form.layout };
     if (ctx.success) {
@@ -30,17 +24,22 @@ export function formRouter(router: Router, path: RouterPath, controller: FormCon
     ctx.body = out;
   });
 
-  router.post(path, ...controller.middleware || [], async ctx => {
+  router.post(path, ...controllerClass.middleware || [], async ctx => {
     let data = ctx.request.body;
     if (ctx.request.bodyType === 'text') {
       data = {};
     }
-    const form = await formInit(controller, ctx, data);
+    const controller = new controllerClass(ctx);
+    if (controller.init) {
+      await controller.init();
+    }
+    const form = new Form();
+    form.init(controller, data);
     if (form.valid) {
-      return controller.post(ctx, form);
+      return controller.post(form);
     }
     if (controller.fail) {
-      return controller.fail(ctx, form);
+      return controller.fail(form);
     }
     const out = { errors: form.errorMessages(ctx.messageCodeResolver) };
     if (ctx.fail) {
