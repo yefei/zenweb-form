@@ -5,6 +5,7 @@ export class Suggest extends Input {
 
   fetchUrl(url: string) {
     this._fetchUrl = url;
+    return this;
   }
 
   attr() {
