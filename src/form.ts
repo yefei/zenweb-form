@@ -79,9 +79,9 @@ export abstract class Form<D extends FormData = any> {
    */
   set data(data: Partial<D>) {
     this._data = data;
-    for (const [ name, value ] of Object.entries(data)) {
-      if (name in this._filedsResult) {
-        this._filedsResult[name].default = value;
+    for (const name of Object.keys(this._filedsResult)) {
+      if (data[name] !== undefined) {
+        this._filedsResult[name].default = data[name];
       }
     }
   }
