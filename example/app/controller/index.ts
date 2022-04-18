@@ -17,6 +17,7 @@ export class IndexController {
 
   @mapping({ path: '/form' })
   formGet() {
+    this.form.data = { name: '默认名字' };
     this.ctx.success(this.form.result);
   }
 

@@ -36,15 +36,7 @@ export abstract class Form<D extends FormData = any> {
    */
   layout: Layout[] = [];
 
-  /**
-   * 表单字段初始值
-   */
-  initial: Partial<D>;
-
-  /**
-   * 表单提交结果
-   */
-  data: D = {} as D;
+  private _data: any = {};
 
   /**
    * 表单校验错误信息
@@ -70,12 +62,28 @@ export abstract class Form<D extends FormData = any> {
         this.layout.push(name);
       }
       const opt = Object.assign({}, this.defaultOption, option instanceof Input ? option.build() : option);
-      if (this.initial && this.initial[name] !== undefined) {
-        opt.default = this.initial[name];
-      }
       this._filedsResult[name] = opt;
     }
     return this;
+  }
+
+  /**
+   * 取得表单提交结果
+   */
+  get data(): D {
+    return this._data;
+  }
+
+  /**
+   * 设置表单提交结果或初始值
+   */
+  set data(data: Partial<D>) {
+    this._data = data;
+    for (const [ name, value ] of Object.entries(data)) {
+      if (name in this._filedsResult) {
+        this._filedsResult[name].default = value;
+      }
+    }
   }
 
   /**
@@ -104,7 +112,7 @@ export abstract class Form<D extends FormData = any> {
           if (option instanceof Input) {
             value = option.clean(value);
           }
-          (<any>this.data)[name] = value;
+          this._data[name] = value;
         }
       } catch (e) {
         this.errors[name] = e;
