@@ -1,6 +1,6 @@
 {
   "name": "@zenweb/form",
-  "version": "2.9.4",
+  "version": "3.0.0",
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@zenweb/cors": "^2.3.0",
     "cross-env": "^7.0.3",
-    "zenweb": "^2.8.3"
+    "zenweb": "^3.0.3"
   },
   "dependencies": {
     "moment": "^2.29.1",

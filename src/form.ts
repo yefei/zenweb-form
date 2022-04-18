@@ -1,7 +1,8 @@
+import { inject, init, Context } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import { RequiredError, typeCast, ValidateError } from 'typecasts';
 import { Input, InputFail } from './field/input';
-import { Fields, FormData, FieldOption, Layout, FormController } from './types';
+import { Fields, FormData, FieldOption, Layout } from './types';
 
 function layoutExists(layout: Layout[], name: string): boolean {
   for (const i of layout) {
@@ -17,70 +18,119 @@ class NonMessageCodeResolver {
   }
 }
 
-export class Form {
-  private _fields: Fields = {};
-  private _data: FormData = {};
-  private _errors: { [field: string]: any } = {};
-  private _initial: FormData;
-  private _layout: Layout[];
-  private _defaultOption: FieldOption;
+export abstract class Form<D extends FormData = any> {
+  @inject
+  protected messageCodeResolver: MessageCodeResolver;
 
-  constructor(defaultOption?: FieldOption) {
-    this._defaultOption = defaultOption || {
-      type: 'any',
-      required: true,
-    };
-  }
+  @inject
+  protected ctx: Context;
 
-  init(init: FormController, data: FormData) {
-    this._initial = init.initial;
-    this._layout = init.layout || [];
-    for (const [ name, option ] of Object.entries(init.fields)) {
-      if (!layoutExists(this._layout, name)) {
-        this._layout.push(name);
+  /**
+   * 定义表单字段
+   */
+  abstract fields(): Fields | Promise<Fields>;
+  private _fields: Fields;
+
+  /**
+   * 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾
+   */
+  layout: Layout[] = [];
+
+  /**
+   * 表单字段初始值
+   */
+  initial: Partial<D>;
+
+  /**
+   * 表单提交结果
+   */
+  data: D = {} as D;
+
+  /**
+   * 表单校验错误信息
+   */
+  errors: { [field: string]: any } = {};
+
+  /**
+   * 表单字段默认配置
+   */
+  defaultOption: FieldOption = {
+    type: 'any',
+    required: true,
+  };
+
+  private _filedsResult: { [name:string]: FieldOption } = {};
+  private _valid = false;
+
+  @init
+  async init() {
+    this._fields = await this.fields();
+    for (const [ name, option ] of Object.entries(this._fields)) {
+      if (!layoutExists(this.layout, name)) {
+        this.layout.push(name);
       }
-      const opt = Object.assign({}, this._defaultOption, option instanceof Input ? option.build() : option);
-      if (init.initial && init.initial[name] !== undefined) {
-        opt.default = init.initial[name];
+      const opt = Object.assign({}, this.defaultOption, option instanceof Input ? option.build() : option);
+      if (this.initial && this.initial[name] !== undefined) {
+        opt.default = this.initial[name];
       }
-      this._fields[name] = opt;
-      if (data) {
-        try {
-          // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
-          const _inputData = name in data ? data[name] : (`${name}[]` in data ? data[`${name}[]`] : undefined);
-          let value = typeCast(_inputData, opt, name);
-          if (value !== undefined) {
-            if (option instanceof Input) {
-              value = option.clean(value);
-            }
-            this._data[name] = value;
-          }
-        } catch (e) {
-          this._errors[name] = e;
-        }
-      }
+      this._filedsResult[name] = opt;
     }
     return this;
   }
 
-  get fields() {
-    return this._fields;
+  /**
+   * 输出表单给前端
+   */
+  get result() {
+    if (this._valid) {
+      return { errors: this.errorMessages() };
+    }
+    return { fields: this._filedsResult, layout: this.layout };
   }
 
-  get initial() {
-    return this._initial;
+  /**
+   * 验证输入数据
+   * @param input 输入数据
+   * @returns 是否有错误
+   */
+  validate(input: D) {
+    this._valid = true;
+    for (const [ name, option ] of Object.entries(this._fields)) {
+      try {
+        // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
+        const _inputData = name in input ? input[name] : (`${name}[]` in input ? input[`${name}[]`] : undefined);
+        let value = typeCast(_inputData, this._filedsResult[name], name);
+        if (value !== undefined) {
+          if (option instanceof Input) {
+            value = option.clean(value);
+          }
+          (<any>this.data)[name] = value;
+        }
+      } catch (e) {
+        this.errors[name] = e;
+      }
+    }
+    return Object.keys(this.errors).length === 0;
   }
 
-  get valid() {
-    return Object.keys(this._errors).length === 0;
+  /**
+   * 校验数据如果出错直接调用 ctx.fail 或抛出异常
+   * @param input 输入数据
+   */
+  assert(input: D) {
+    if (!this.validate(input)) {
+      if (this.ctx.fail) {
+        this.ctx.fail({ message: 'form valid error', data: this.result });
+      }
+      throw new Error('form valid error');
+    }
   }
 
-  get errors() {
-    return this._errors;
-  }
-
-  errorMessages(messageCodeResolver?: MessageCodeResolver | NonMessageCodeResolver) {
-    messageCodeResolver = messageCodeResolver || new NonMessageCodeResolver();
+  /**
+   * 错误消息
+   */
+  errorMessages() {
+    const messageCodeResolver = this.messageCodeResolver || new NonMessageCodeResolver();
     const messages: { [field: string]: string } = {};
     Object.entries(this.errors).map(([field, e]) => {
       if (e instanceof RequiredError) {
@@ -99,13 +149,5 @@ export class Form {
       }
     });
     return messages;
-  }
-
-  get data() {
-    return this._data;
-  }
-
-  get layout() {
-    return this._layout;
   }
 }

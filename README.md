@@ -3,31 +3,38 @@
 [ZenWeb](https://www.npmjs.com/package/zenweb)
 
 ```js
-import { Router } from '@zenweb/router';
-import { formRouter, fields, FormController } from '@zenweb/form';
-export const router = new Router();
+import { inject, Context, mapping } from 'zenweb';
+import { Form, fields } from '@zenweb/form';
 
-formRouter(router, '/form', class extends FormController {
-  fields = {
-    name: {
-      label: '姓名',
-      validate: {
-        minLength: 2,
-        maxLength: 10,
-      }
-    },
-    age: {
-      label: '年龄',
-      type: 'int',
-      validate: {
-        gt: 17,
-        lt: 100,
-      }
+class UserForm extends Form {
+  fields() {
+    return {
+      name: fields.trim('姓名').validate({ minLength: 2, maxLength: 10 }),
+      age: fields.int('年龄').help('年龄18-50').validate({ gte: 17, lte: 100 }),
+      gender: fields.radio('性别').choices([
+        '男',
+        {value: 2, label: '女'},
+      ]),
     }
   }
+}
 
-  post() {
-    this.ctx.body = this.form.data;
+export class UserController {
+  @inject
+  ctx: Context
+
+  @inject
+  form: UserForm;
+
+  @mapping({ path: '/form' })
+  formGet() {
+    this.ctx.success(this.form.result);
   }
-});
+
+  @mapping({ path: '/form', method: 'POST' })
+  formPost() {
+    this.form.assert(this.ctx.request.body);
+    this.ctx.success(this.form.data);
+  }
+}
 ```

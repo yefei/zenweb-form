@@ -1,6 +1,5 @@
 import { SetupFunction } from '@zenweb/core';
 export { Form } from './form';
-export { formRouter } from './router';
 export { fields } from './field/index';
 export * from './types';
 
