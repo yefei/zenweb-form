@@ -97,6 +97,13 @@ export abstract class Form<D extends FormData = any> {
   }
 
   /**
+   * 是否无任何错误
+   */
+  get noErrors() {
+    return Object.keys(this.errors).length === 0;
+  }
+
+  /**
    * 验证输入数据
    * @param input 输入数据
    * @returns 是否有错误
@@ -118,7 +125,7 @@ export abstract class Form<D extends FormData = any> {
         this.errors[name] = e;
       }
     }
-    return Object.keys(this.errors).length === 0;
+    return this.noErrors;
   }
 
   /**
