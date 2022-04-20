@@ -1,6 +1,6 @@
 {
   "name": "@zenweb/form",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
