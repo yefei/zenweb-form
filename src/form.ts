@@ -91,7 +91,7 @@ export abstract class Form<D extends FormData = any> {
    */
   get result() {
     if (this._valid) {
-      return { errors: this.errorMessages() };
+      return { errors: this.errorMessages };
     }
     return { fields: this._filedsResult, layout: this.layout };
   }
@@ -144,7 +144,7 @@ export abstract class Form<D extends FormData = any> {
   /**
    * 错误消息
    */
-  errorMessages() {
+  get errorMessages() {
     const messageCodeResolver = this.messageCodeResolver || new NonMessageCodeResolver();
     const messages: { [field: string]: string } = {};
     Object.entries(this.errors).map(([field, e]) => {
