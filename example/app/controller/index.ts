@@ -26,4 +26,18 @@ export class IndexController {
     this.form.assert(this.ctx.request.body);
     this.ctx.success(this.form.data);
   }
+
+  /**
+   * 合并处理
+   */
+  @mapping({ method: ['GET', 'POST'] })
+  merge(ctx: Context, form: ExampleForm) {
+    if (ctx.method === 'GET') {
+      form.data = { name: '默认名字' };
+    } else {
+      form.assert(ctx.request.body);
+      ctx.success(form.data);
+    }
+    ctx.success(form.result);
+  }
 }
