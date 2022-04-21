@@ -94,10 +94,10 @@ export abstract class Form<D extends FormData = any> {
   }
 
   /**
-   * 是否无任何错误
+   * 是否有校验错误
    */
-  get noErrors() {
-    return Object.keys(this.errors).length === 0;
+  get hasErrors() {
+    return Object.keys(this.errors).length > 0;
   }
 
   /**
@@ -122,7 +122,7 @@ export abstract class Form<D extends FormData = any> {
         this.errors[name] = e;
       }
     }
-    return this.noErrors;
+    return !this.hasErrors;
   }
 
   /**
