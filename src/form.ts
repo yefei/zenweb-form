@@ -90,9 +90,6 @@ export abstract class Form<D extends FormData = any> {
    * 输出表单给前端
    */
   get result() {
-    if (this._valid) {
-      return { errors: this.errorMessages };
-    }
     return { fields: this._filedsResult, layout: this.layout };
   }
 
@@ -135,7 +132,7 @@ export abstract class Form<D extends FormData = any> {
   assert(input: D) {
     if (!this.validate(input)) {
       if (this.ctx.fail) {
-        this.ctx.fail({ message: 'form valid error', data: this.result });
+        this.ctx.fail({ message: 'form valid error', data: { errors: this.errorMessages } });
       }
       throw new Error('form valid error');
     }

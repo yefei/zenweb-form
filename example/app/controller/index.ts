@@ -36,7 +36,7 @@ export class IndexController {
       form.data = { name: '默认名字' };
     } else {
       form.assert(ctx.request.body);
-      ctx.success(form.data);
+      return ctx.success(form.data);
     }
     ctx.success(form.result);
   }
