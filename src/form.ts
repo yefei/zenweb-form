@@ -78,10 +78,10 @@ export abstract class Form<D extends FormData = any> {
    * 设置表单提交结果或初始值
    */
   set data(data: Partial<D>) {
-    this._data = data;
+    this._data = data || {};
     for (const name of Object.keys(this._filedsResult)) {
-      if (data[name] !== undefined) {
-        this._filedsResult[name].default = data[name];
+      if (this._data[name] !== undefined) {
+        this._filedsResult[name].default = this._data[name];
       }
     }
   }
