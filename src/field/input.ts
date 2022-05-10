@@ -14,12 +14,11 @@ export class InputFail extends Error {
 }
 
 export class Input {
-  protected _option: FieldOption;
+  protected _option: Partial<FieldOption>;
   protected _name: string = this.constructor.name;
 
   constructor(label: string) {
     this._option = {
-      type: 'string',
       label,
     };
   }
