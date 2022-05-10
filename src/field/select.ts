@@ -1,3 +1,4 @@
+import { guessType } from '../utils';
 import { Input, simple } from './input';
 
 interface ChoiceType {
@@ -52,23 +53,9 @@ export class Select extends Input {
     }
   }
 
-  /**
-   * 判断选择项值类型
-   */
-  protected _guessType(v: any): 'number' | 'bool' | 'string' {
-    switch (typeof v) {
-      case 'bigint':
-      case 'number':
-        return 'number';
-      case 'boolean':
-        return 'bool';
-    }
-    return 'string';
-  }
-
   attrs() {
     // 如果没有指定类型则自动判断第一个选项的值类型
-    !this.isEmpty() && !this._option.type && this.type(this._guessType(this._choices[0].value));
+    !this.isEmpty() && !this._option.type && this.type(guessType(this._choices[0].value));
     return {
       choices: this._choices,
     };
@@ -102,7 +89,7 @@ export class Multiple extends Select {
   }
 
   attrs() {
-    !this.isEmpty() && !this._option.type && this.type(`${this._guessType(this._choices[0].value)}[]`);
+    !this.isEmpty() && !this._option.type && this.type(`${guessType(this._choices[0].value)}[]`);
     return Object.assign(super.attrs(), {
       max: this._max,
       min: this._min,

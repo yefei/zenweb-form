@@ -1,3 +1,4 @@
+import { guessType } from '../utils';
 import { Input, simple } from './input';
 
 interface ChoiceType {
@@ -78,7 +79,15 @@ export class Cascader extends Input {
     return this.choices(choices.map(i => ({value: i[valueKey], label: i[labelKey], parent: i[parentKey]})));
   }
 
+  /**
+   * 是否没有设置选择项
+   */
+  isEmpty() {
+    return this._choices.length === 0;
+  }
+
   attrs() {
+    !this.isEmpty() && !this._option.type && this.type(`${guessType(this._choices[0].value)}[]`);
     return {
       choices: this._choices,
     };
