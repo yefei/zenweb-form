@@ -19,7 +19,7 @@ export class Datetime extends Input {
     return this;
   }
 
-  attr() {
+  attrs() {
     this.type('trim');
     return {
       format: this._format,
@@ -59,7 +59,7 @@ export class DateRange extends Date {
     return this;
   }
 
-  attr() {
+  attrs() {
     this.type('trim');
     this._option.splitter = ',';
     return {

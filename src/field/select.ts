@@ -66,7 +66,7 @@ export class Select extends Input {
     return 'string';
   }
 
-  attr() {
+  attrs() {
     // 如果没有指定类型则自动判断第一个选项的值类型
     !this.isEmpty() && !this._option.type && this.type(this._guessType(this._choices[0].value));
     return {
@@ -101,9 +101,9 @@ export class Multiple extends Select {
     return this;
   }
 
-  attr() {
+  attrs() {
     !this.isEmpty() && !this._option.type && this.type(`${this._guessType(this._choices[0].value)}[]`);
-    return Object.assign(super.attr(), {
+    return Object.assign(super.attrs(), {
       max: this._max,
       min: this._min,
     });

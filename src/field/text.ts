@@ -26,7 +26,7 @@ export class Textarea extends Text {
     return this;
   }
 
-  attr() {
+  attrs() {
     return {
       rows: this._rows || 'auto',
     };

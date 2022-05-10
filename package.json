@@ -35,10 +35,10 @@
   "devDependencies": {
     "@zenweb/cors": "^2.3.0",
     "cross-env": "^7.0.3",
-    "zenweb": "^3.0.3"
+    "zenweb": "^3.0.8"
   },
   "dependencies": {
     "moment": "^2.29.1",
-    "typecasts": "^2.3.0"
+    "typecasts": "^2.3.2"
   }
 }

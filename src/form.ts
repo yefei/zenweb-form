@@ -110,7 +110,11 @@ export abstract class Form<D extends FormData = any> {
     for (const [ name, option ] of Object.entries(this._fields)) {
       try {
         // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
-        const _inputData = name in input ? input[name] : (`${name}[]` in input ? input[`${name}[]`] : undefined);
+        let _inputData;
+        if (input && typeof input === 'object') {
+          if (name in input) _inputData = input[name];
+          else if (`${name}[]` in input) _inputData = input[`${name}[]`];
+        }
         let value = typeCast(_inputData, this._filedsResult[name], name);
         if (value !== undefined) {
           if (option instanceof Input) {

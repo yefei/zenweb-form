@@ -78,7 +78,7 @@ export class Cascader extends Input {
     return this.choices(choices.map(i => ({value: i[valueKey], label: i[labelKey], parent: i[parentKey]})));
   }
 
-  attr() {
+  attrs() {
     return {
       choices: this._choices,
     };

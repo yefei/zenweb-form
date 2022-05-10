@@ -76,7 +76,7 @@ export class Input {
    * 构建表单项整体参数
    */
   build() {
-    const attr = this.attr();
+    const attr = this.attrs();
     return Object.assign({
       name: this._name,
     }, this._option, attr);
@@ -85,7 +85,7 @@ export class Input {
   /**
    * 构建表单组件参数
    */
-  attr() {
+  attrs() {
   }
 
   /**

@@ -20,7 +20,7 @@ export class Upload extends Input {
     return this;
   }
 
-  attr() {
+  attrs() {
     this.type('trim[]');
     return {
       action: this._action,
