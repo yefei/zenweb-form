@@ -47,7 +47,7 @@ export abstract class Form<D extends FormData = any> {
    * 表单字段默认配置
    */
   defaultOption: FieldOption = {
-    type: 'any',
+    type: 'string',
     required: true,
   };
 
