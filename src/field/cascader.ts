@@ -103,7 +103,7 @@ export class Cascader extends Input {
       this.fail('select.choice-min', { min: this._min });
     }
     for (const i of data) {
-      if (this._choices.filter(i => !i.unselectable).findIndex(c => c.value === i) === -1) {
+      if (this._choices.filter(i => !i.unselectable).findIndex(c => c.value == i) === -1) {
         this.fail('select.choice-invalid', { data: i });
       }
     }

@@ -63,7 +63,7 @@ export class Select extends Input {
 
   clean(data: any) {
     this.assertEmpty();
-    if (this._choices.findIndex(i => i.value === data) > -1) {
+    if (this._choices.findIndex(i => i.value == data) > -1) {
       return data;
     }
     this.fail('select.choice-invalid', { data });
@@ -107,7 +107,7 @@ export class Multiple extends Select {
       this.fail('select.choice-min', { min: this._min });
     }
     for (const i of data) {
-      if (this._choices.findIndex(c => c.value === i) === -1) {
+      if (this._choices.findIndex(c => c.value == i) === -1) {
         this.fail('select.choice-invalid', { data: i });
       }
     }
