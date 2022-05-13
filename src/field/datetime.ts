@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import { Input, simple } from './input';
 
 function datetimeFormat(fmt: string, data: moment.MomentInput) {
-  const m = moment(data);
+  const m = moment(data, fmt);
   if (m.isValid()) {
     return m.format(fmt);
   }
@@ -29,7 +29,7 @@ export class Datetime extends Input {
   clean(data: any) {
     const val = datetimeFormat(this._format, data);
     if (val === undefined) {
-      this.fail('datetime.format-error', { data });
+      this.fail('datetime.format-error', { data, format: this._format });
     }
     return val;
   }
