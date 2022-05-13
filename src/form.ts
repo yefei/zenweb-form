@@ -108,6 +108,8 @@ export abstract class Form<D extends FormData = any> {
   validate(input: D) {
     this._valid = true;
     for (const [ name, option ] of Object.entries(this._fields)) {
+      // 忽略只读字段
+      if (this._filedsResult[name].readonly) continue;
       try {
         // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
         let _inputData;

@@ -12,4 +12,7 @@ export interface FieldOption extends CastOption {
 
   /** 帮助信息 */
   help?: string;
+
+  /** 只读字段，不可修改值 */
+  readonly?: boolean;
 }

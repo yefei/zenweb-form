@@ -72,6 +72,14 @@ export class Input {
   }
 
   /**
+   * 只读，即使提交也不会更新
+   */
+  readonly(is = true) {
+    this._option.readonly = is;
+    return this;
+  }
+
+  /**
    * 构建表单项整体参数
    */
   build() {
@@ -97,7 +105,7 @@ export class Input {
   /**
    * 验证失败
    */
-  fail(code: string, params?: any) {
+  protected fail(code: string, params?: any) {
     throw new InputFail(code, params);
   }
 }
