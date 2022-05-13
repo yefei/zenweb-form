@@ -18,7 +18,7 @@ export class ExampleForm extends Form {
         {value: 1, label: '🐭'},
         {value: 2, label: '🐂'},
         {value: 3, label: '🐯'},
-        {value: 4, label: '🐰'},
+        {value: 4, label: '🐰', disabled: true},
       ]),
       interest: fields.multiple('感兴趣的').choices([
         {value: 1, label: '钓鱼'},

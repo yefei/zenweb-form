@@ -11,6 +11,11 @@ interface ChoiceType {
    * 值
    */
   value: number | string;
+
+  /**
+   * 禁止选择
+   */
+  disabled?: boolean;
 }
 
 export class Select extends Input {
@@ -63,7 +68,11 @@ export class Select extends Input {
 
   clean(data: any) {
     this.assertEmpty();
-    if (this._choices.findIndex(i => i.value == data) > -1) {
+    const item = this._choices.find(i => i.value == data);
+    if (item) {
+      if (item.disabled) {
+        this.fail('select.choice-disabled', { data, label: item.label });
+      }
       return data;
     }
     this.fail('select.choice-invalid', { data });
@@ -107,7 +116,12 @@ export class Multiple extends Select {
       this.fail('select.choice-min', { min: this._min });
     }
     for (const i of data) {
-      if (this._choices.findIndex(c => c.value == i) === -1) {
+      const item = this._choices.find(c => c.value == i);
+      if (item) {
+        if (item.disabled) {
+          this.fail('select.choice-disabled', { data: i, label: item.label });
+        }
+      } else {
         this.fail('select.choice-invalid', { data: i });
       }
     }

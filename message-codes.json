@@ -31,6 +31,7 @@
   "form.input-fail.datetime.format-error.time": "时间格式错误，正确格式 {format}",
   "form.input-fail.select.options.empty": "没有可选择项",
   "form.input-fail.select.choice-invalid": "请选择一个有效值",
+  "form.input-fail.select.choice-disabled": "不可选择已禁用项: {label}",
   "form.input-fail.select.choice-max": "选择不能超过 {max} 个",
   "form.input-fail.select.choice-min": "选择不能少于 {min} 个"
 }
