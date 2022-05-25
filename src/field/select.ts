@@ -1,7 +1,7 @@
 import { guessType } from '../utils';
 import { Input, simple } from './input';
 
-interface ChoiceType {
+export interface ChoiceType {
   /**
    * 显示名
    */
