@@ -18,15 +18,19 @@ export interface ChoiceType {
   disabled?: boolean;
 }
 
+export type ChoiceEntries = [value: number | string, label: number | string, disabled?: boolean ][];
+
 export class Select extends Input {
   protected _choices: ChoiceType[] = [];
 
   /**
    * 设置选择项
    */
-  choices(choices: (string | number | ChoiceType)[]) {
+  choices(choices: (string | number | ChoiceType | ChoiceEntries)[]) {
     for (const c of choices) {
-      if (typeof c === 'object') {
+      if (Array.isArray(c)) {
+        this._choices.push({ value: <any> c[0], label: <any> c[1], disabled: <any> c[2] });
+      } else if (typeof c === 'object') {
         this._choices.push(c);
       } else {
         this._choices.push({ label: c, value: c });
