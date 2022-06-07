@@ -46,7 +46,7 @@ export class Select extends Input {
   /**
    * 使用 ts 的 enum 类型作为选择项
    */
-  choicesEnum<T extends Record<Extract<keyof T, string>, string>>(enumObj: T) {
+  choicesEnum<T extends Record<Extract<keyof T, string>, number | string>>(enumObj: T) {
     return this.choices($enum(enumObj).map((value, label) => ({ value, label })));
   }
 
