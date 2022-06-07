@@ -1,3 +1,4 @@
+import { $enum } from 'ts-enum-util';
 import { guessType } from '../utils';
 import { Input, simple } from './input';
 
@@ -18,19 +19,15 @@ export interface ChoiceType {
   disabled?: boolean;
 }
 
-export type ChoiceEntries = [label: number | string, value: number | string, disabled?: boolean ][];
-
 export class Select extends Input {
   protected _choices: ChoiceType[] = [];
 
   /**
    * 设置选择项
    */
-  choices(choices: (string | number | ChoiceType | ChoiceEntries)[]) {
+  choices(choices: (string | number | ChoiceType)[]) {
     for (const c of choices) {
-      if (Array.isArray(c)) {
-        this._choices.push({ label: <any> c[0], value: <any> c[1], disabled: <any> c[2] });
-      } else if (typeof c === 'object') {
+      if (typeof c === 'object') {
         this._choices.push(c);
       } else {
         this._choices.push({ label: c, value: c });
@@ -44,6 +41,13 @@ export class Select extends Input {
    */
   choicesMap(choices: any[], valueKey: string, labelKey: string) {
     return this.choices(choices.map(i => ({value: i[valueKey], label: i[labelKey]})));
+  }
+
+  /**
+   * 使用 ts 的 enum 类型作为选择项
+   */
+  choicesEnum<T extends Record<Extract<keyof T, string>, string>>(enumObj: T) {
+    return this.choices($enum(enumObj).map((value, label) => ({ value, label })));
   }
 
   /**

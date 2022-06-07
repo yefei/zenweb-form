@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "moment": "^2.29.1",
+    "ts-enum-util": "^4.0.2",
     "typecasts": "^2.3.2"
   }
 }
