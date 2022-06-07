@@ -18,7 +18,7 @@ export interface ChoiceType {
   disabled?: boolean;
 }
 
-export type ChoiceEntries = [value: number | string, label: number | string, disabled?: boolean ][];
+export type ChoiceEntries = [label: number | string, value: number | string, disabled?: boolean ][];
 
 export class Select extends Input {
   protected _choices: ChoiceType[] = [];
@@ -29,7 +29,7 @@ export class Select extends Input {
   choices(choices: (string | number | ChoiceType | ChoiceEntries)[]) {
     for (const c of choices) {
       if (Array.isArray(c)) {
-        this._choices.push({ value: <any> c[0], label: <any> c[1], disabled: <any> c[2] });
+        this._choices.push({ label: <any> c[0], value: <any> c[1], disabled: <any> c[2] });
       } else if (typeof c === 'object') {
         this._choices.push(c);
       } else {
