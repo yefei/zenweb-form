@@ -6,10 +6,10 @@ export class ExampleForm extends Form {
       name: fields.trim('姓名').validate({ minLength: 2, maxLength: 4 }),
       desc: fields.textarea('自我描述').length(3, 1000).rows(3, 10).help('自我描述不要超过1000字，最少3个字'),
       age: fields.int('年龄').help('年龄18-50').validate({ gte: 18, lte: 50 }),
-      date: fields.date('日期').readonly(),
+      date: fields.date('日期').readonly().required(false),
       time: fields.time('时间'),
       datetime: fields.datetime('日期时间'),
-      upload: fields.upload('上传').action('http://' + this.ctx.host + '/upload'),
+      upload: fields.upload('上传').action('http://' + this.ctx.host + '/upload').limit(3),
       gender: fields.radio('性别').choices([
         '男',
         {value: 2, label: '女'},

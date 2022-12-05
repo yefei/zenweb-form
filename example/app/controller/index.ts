@@ -8,7 +8,7 @@ export class IndexController {
   @mapping({ method: 'POST' })
   upload() {
     this.ctx.success({
-      url: 'test'
+      url: (<any>this.ctx.request.files.file).originalFilename,
     });
   }
 

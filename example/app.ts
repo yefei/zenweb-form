@@ -9,6 +9,9 @@ const app = create({
     success(ctx, data: any) {
       return { code: 200, data };
     },
+  },
+  body: {
+    multipart: true,
   }
 });
 app.setup(cros({ origin: '*' }));
