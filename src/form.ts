@@ -52,7 +52,6 @@ export abstract class Form<D extends FormData = any> {
   };
 
   private _filedsResult: { [name:string]: FieldOption } = {};
-  private _valid = false;
 
   @init
   async init() {
@@ -105,8 +104,7 @@ export abstract class Form<D extends FormData = any> {
    * @param input 输入数据
    * @returns 是否有错误
    */
-  validate(input: D) {
-    this._valid = true;
+  async validate(input: D) {
     for (const [ name, option ] of Object.entries(this._fields)) {
       // 忽略只读字段
       if (this._filedsResult[name].readonly) continue;
@@ -120,7 +118,13 @@ export abstract class Form<D extends FormData = any> {
         let value = typeCast(_inputData, this._filedsResult[name], name);
         if (value !== undefined) {
           if (option instanceof Input) {
-            value = option.clean(value);
+            value = await option.clean(value);
+          }
+          // 表单对象方法校验，来自 Django
+          // 查找对象方法组合为 clean_{fieldname}() 的函数
+          const cleanField = (<any>this)[`clean_${name}`] as (data: any) => any;
+          if (cleanField && typeof cleanField === 'function') {
+            value = await cleanField.call(this, value);
           }
           this._data[name] = value;
         }
@@ -135,13 +139,20 @@ export abstract class Form<D extends FormData = any> {
    * 校验数据如果出错直接调用 ctx.fail 或抛出异常
    * @param input 输入数据
    */
-  assert(input: D) {
-    if (!this.validate(input)) {
-      if (this.ctx.fail) {
-        this.ctx.fail({ message: 'form valid error', data: { errors: this.errorMessages } });
-      }
-      throw new Error('form valid error');
+  async assert(input: D) {
+    if (!await this.validate(input)) {
+      this.fail('form valid error', { errors: this.errorMessages });
     }
+  }
+
+  /**
+   * 表单抛异常
+   */
+  fail(message: string, data?: any) {
+    if (this.ctx.fail) {
+      this.ctx.fail({ message, data });
+    }
+    throw new Error(message);
   }
 
   /**

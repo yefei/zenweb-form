@@ -9,7 +9,7 @@ export class ExampleForm extends Form {
       date: fields.date('日期').readonly().required(false),
       time: fields.time('时间'),
       datetime: fields.datetime('日期时间'),
-      upload: fields.upload('上传').action('http://' + this.ctx.host + '/upload').limit(3),
+      upload: fields.upload('上传').action('http://' + this.ctx.host + '/upload').limit(3).required(false),
       gender: fields.radio('性别').choices([
         '男',
         {value: 2, label: '女'},
@@ -31,5 +31,14 @@ export class ExampleForm extends Form {
       ]).min(1).max(1),
       a: fields.trim('可选填').default('a').required(false),
     }
+  }
+
+  // 表单后置校验字段数据
+  clean_name(data: string) {
+    // 自定义校验规则
+    if (data.startsWith('王')) {
+      this.fail('禁止老王注册'); // 如果不满足条件则使用 this.fail 或者直接抛出异常都可以
+    }
+    return data; // 最后必须要返回处理好的数据
   }
 }
