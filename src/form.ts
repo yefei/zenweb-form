@@ -1,4 +1,5 @@
-import { inject, init, Context } from '@zenweb/inject';
+import { Context } from '@zenweb/core';
+import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import { RequiredError, typeCast, ValidateError } from 'typecasts';
 import { Input, InputFail } from './field/input';

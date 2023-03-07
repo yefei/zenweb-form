@@ -5,7 +5,8 @@
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "prepublishOnly": "rm -fr dist && tsc",
+    "build": "rimraf dist && tsc",
+    "prepublishOnly": "npm run build",
     "dev": "cd example && cross-env DEBUG=* NODE_ENV=development ts-node app"
   },
   "author": {
@@ -35,11 +36,14 @@
   "devDependencies": {
     "@zenweb/cors": "^2.3.0",
     "cross-env": "^7.0.3",
-    "zenweb": "^3.0.8"
+    "rimraf": "^4.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "zenweb": "^3.6.4"
   },
   "dependencies": {
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "ts-enum-util": "^4.0.2",
-    "typecasts": "^2.3.2"
+    "typecasts": "^2.6.0"
   }
 }
