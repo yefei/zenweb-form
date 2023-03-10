@@ -90,8 +90,8 @@ export class Select extends Input {
 export class Radio extends Select {}
 
 export class Multiple extends Select {
-  protected _max: number;
-  protected _min: number;
+  protected _max?: number;
+  protected _min?: number;
 
   /** 最多可以选择数量 */
   max(v: number) {

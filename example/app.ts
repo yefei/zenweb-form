@@ -1,5 +1,6 @@
 import { create } from 'zenweb';
 import cros from '@zenweb/cors';
+import upload from '@zenweb/upload';
 import form from '../src/index';
 
 const app = create({
@@ -10,10 +11,8 @@ const app = create({
       return { code: 200, data };
     },
   },
-  body: {
-    multipart: true,
-  }
 });
+app.setup(upload())
 app.setup(cros({ origin: '*' }));
 app.setup(form());
 app.start();

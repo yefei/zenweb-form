@@ -40,8 +40,8 @@ export class Date extends Datetime {
 }
 
 export class DateRange extends Date {
-  private _start: string;
-  private _end: string;
+  private _start?: string;
+  private _end?: string;
 
   /**
    * 设置开始日期，如果不设置则不限制

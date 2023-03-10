@@ -1,41 +1,36 @@
-import { Context, inject, mapping } from 'zenweb';
+import { UploadHelper } from '@zenweb/upload';
+import { Context, Body, mapping } from 'zenweb';
 import { ExampleForm } from '../form/example';
 
 export class IndexController {
-  @inject
-  ctx: Context
-
   @mapping({ method: 'POST' })
-  upload() {
-    this.ctx.success({
-      url: (<any>this.ctx.request.files.file).originalFilename,
-    });
+  upload(upload: UploadHelper) {
+    return {
+      url: upload.file('file')?.originalFilename,
+    };
   }
 
-  @inject
-  form: ExampleForm;
-
   @mapping({ path: '/form' })
-  formGet() {
-    this.form.data = { name: '默认名字' };
-    this.ctx.success(this.form.result);
+  formGet(form: ExampleForm) {
+    form.data = { name: '默认名字' };
+    return form.result;
   }
 
   @mapping({ path: '/form', method: 'POST' })
-  async formPost() {
-    await this.form.assert(this.ctx.request.body);
-    this.ctx.success(this.form.data);
+  async formPost(form: ExampleForm, body: Body) {
+    await form.assert(body.data);
+    return form.data;
   }
 
   /**
    * 合并处理
    */
   @mapping({ method: ['GET', 'POST'] })
-  async merge(ctx: Context, form: ExampleForm) {
+  async merge(ctx: Context, form: ExampleForm, body: Body) {
     if (ctx.method === 'GET') {
       form.data = { name: '默认名字' };
     } else {
-      await form.assert(ctx.request.body);
+      await form.assert(body.data);
       return ctx.success(form.data);
     }
     ctx.success(form.result);

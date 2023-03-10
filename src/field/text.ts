@@ -13,7 +13,7 @@ export class Text extends Input {
 }
 
 export class Textarea extends Text {
-  protected _rows: { min: number, max: number };
+  protected _rows?: { min: number, max: number };
   
   /**
    * 文本输入域尺寸，注意：并不是限制文本输入长度

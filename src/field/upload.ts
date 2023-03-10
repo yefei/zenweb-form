@@ -1,8 +1,8 @@
 import { Input, simple } from './input';
 
 export class Upload extends Input {
-  protected _action: string;
-  protected _limit: number;
+  protected _action?: string;
+  protected _limit?: number;
 
   /**
    * 上传地址

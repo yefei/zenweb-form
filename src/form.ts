@@ -1,3 +1,4 @@
+/// <reference types="@zenweb/result" />
 import { Context } from '@zenweb/core';
 import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
@@ -19,18 +20,15 @@ class NonMessageCodeResolver {
   }
 }
 
-export abstract class Form<D extends FormData = any> {
-  @inject
-  protected messageCodeResolver: MessageCodeResolver;
-
-  @inject
-  protected ctx: Context;
+export abstract class Form<D extends FormData = FormData> {
+  @inject protected messageCodeResolver!: MessageCodeResolver;
+  @inject protected ctx!: Context;
 
   /**
    * 定义表单字段
    */
   abstract fields(): Fields | Promise<Fields>;
-  private _fields: Fields;
+  private _fields!: Fields;
 
   /**
    * 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾
@@ -105,7 +103,7 @@ export abstract class Form<D extends FormData = any> {
    * @param input 输入数据
    * @returns 是否有错误
    */
-  async validate(input: D) {
+  async validate(input?: D) {
     for (const [ name, option ] of Object.entries(this._fields)) {
       // 忽略只读字段
       if (this._filedsResult[name].readonly) continue;
@@ -140,7 +138,7 @@ export abstract class Form<D extends FormData = any> {
    * 校验数据如果出错直接调用 ctx.fail 或抛出异常
    * @param input 输入数据
    */
-  async assert(input: D) {
+  async assert(input?: D) {
     if (!await this.validate(input)) {
       this.fail('form valid error', { errors: this.errorMessages });
     }

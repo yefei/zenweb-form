@@ -26,8 +26,8 @@ export interface ChoiceType {
 
 export class Cascader extends Input {
   private _choices: ChoiceType[] = [];
-  private _max: number;
-  private _min: number;
+  private _max?: number;
+  private _min?: number;
 
   /** 最多可以选择数量 */
   max(v: number) {

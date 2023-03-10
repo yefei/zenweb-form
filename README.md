@@ -3,7 +3,7 @@
 [ZenWeb](https://www.npmjs.com/package/zenweb)
 
 ```js
-import { inject, Context, mapping } from 'zenweb';
+import { inject, Context, mapping, Body } from 'zenweb';
 import { Form, fields } from '@zenweb/form';
 
 class UserForm extends Form {
@@ -20,21 +20,23 @@ class UserForm extends Form {
 }
 
 export class UserController {
-  @inject
-  ctx: Context
-
-  @inject
-  form: UserForm;
+  @inject ctx: Context
+  @inject form: UserForm;
 
   @mapping({ path: '/form' })
   formGet() {
-    this.ctx.success(this.form.result);
+    return this.form.result;
   }
 
   @mapping({ path: '/form', method: 'POST' })
-  formPost() {
-    this.form.assert(this.ctx.request.body);
-    this.ctx.success(this.form.data);
+  formPost(body: Body) {
+    this.form.assert(body.data);
+    return this.form.data;
   }
 }
 ```
+
+## Changelog
+
+### 3.7.0
+- 更新到 zenweb@3.11.0

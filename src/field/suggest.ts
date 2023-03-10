@@ -1,7 +1,7 @@
 import { Input, simple } from "./input";
 
 export class Suggest extends Input {
-  private _fetchUrl: string;
+  private _fetchUrl?: string;
 
   fetchUrl(url: string) {
     this._fetchUrl = url;
