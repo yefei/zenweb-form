@@ -75,7 +75,7 @@ export abstract class Form<D extends FormData = FormData> {
   /**
    * 设置表单提交结果或初始值
    */
-  set data(data: Partial<D>) {
+  set data(data: Partial<D> | null | undefined) {
     this._data = data || {};
     for (const name of Object.keys(this._filedsResult)) {
       if (this._data[name] !== undefined) {
