@@ -35,8 +35,3 @@ export class UserController {
   }
 }
 ```
-
-## Changelog
-
-### 3.7.0
-- 更新到 zenweb@3.11.0

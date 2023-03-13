@@ -103,7 +103,7 @@ export abstract class Form<D extends FormData = FormData> {
    * @param input 输入数据
    * @returns 是否有错误
    */
-  async validate(input?: D) {
+  async validate(input?: Partial<D>) {
     for (const [ name, option ] of Object.entries(this._fields)) {
       // 忽略只读字段
       if (this._filedsResult[name].readonly) continue;
@@ -138,7 +138,7 @@ export abstract class Form<D extends FormData = FormData> {
    * 校验数据如果出错直接调用 ctx.fail 或抛出异常
    * @param input 输入数据
    */
-  async assert(input?: D) {
+  async assert(input?: Partial<D>) {
     if (!await this.validate(input)) {
       this.fail('form valid error', { errors: this.errorMessages });
     }
