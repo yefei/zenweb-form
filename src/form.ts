@@ -114,7 +114,8 @@ export abstract class Form<D extends FormData = FormData> {
           if (name in input) _inputData = input[name];
           else if (`${name}[]` in input) _inputData = input[`${name}[]`];
         }
-        let value = typeCast(_inputData, this._filedsResult[name], name);
+        this._filedsResult[name].field = name;
+        let value: unknown = typeCast(_inputData, this._filedsResult[name]);
         if (value !== undefined) {
           if (option instanceof Input) {
             value = await option.clean(value);
@@ -159,7 +160,7 @@ export abstract class Form<D extends FormData = FormData> {
    */
   get errorMessages() {
     const messageCodeResolver = this.messageCodeResolver || new NonMessageCodeResolver();
-    const messages: { [field: string]: string } = {};
+    const messages: { [field: string]: string | number } = {};
     Object.entries(this.errors).map(([field, e]) => {
       if (e instanceof RequiredError) {
         messages[field] = messageCodeResolver.format(`form.required-error.${field}`, {});

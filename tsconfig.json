@@ -1,20 +1,7 @@
 {
+  "extends": "zenweb/tsconfig-module",
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "target": "ES2019",
-    "lib": [
-      "ES2019"
-    ],
-    "module": "commonjs",
-    "strict": true,
-    "declaration": true,
-    "outDir": "./dist"
+    "outDir": "dist"
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "include": [ "src/**/*" ]
 }

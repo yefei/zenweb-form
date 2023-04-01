@@ -15,4 +15,7 @@ export interface FieldOption extends CastOption {
 
   /** 只读字段，不可修改值 */
   readonly?: boolean;
+
+  /** 必填项 */
+  required?: boolean | string;
 }

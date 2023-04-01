@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.7.3] - 2023-4-1
+- 适配: typecasts@3.0.0
+
 ## [3.7.2] - 2023-3-13
 - Form.data 可以设置 null | undefined
 
