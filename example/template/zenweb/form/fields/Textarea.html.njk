@@ -1,2 +1,5 @@
 <label for="form_{{item}}">{{field.label}}</label>
-<textarea id="form_{{item}}" placeholder="{{field.placeholder}}">{{field.default}}</textarea>
+<textarea id="form_{{item}}"
+  {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif %}
+  {%- if field.rows %} rows="{{field.rows.min}}"{% endif -%}
+>{{field.default}}</textarea>

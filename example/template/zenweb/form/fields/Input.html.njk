@@ -1,2 +1,5 @@
 <label for="form_{{item}}">{{field.label}}</label>
-<input type="text" value="{{field.default}}" id="form_{{item}}" placeholder="{{field.placeholder}}" />
+<input type="text" id="form_{{item}}"
+  {%- if field.default %} value="{{field.default}}"{% endif %}
+  {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif -%}
+/>
