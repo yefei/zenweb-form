@@ -1,9 +1,11 @@
 import { create } from 'zenweb';
 import cros from '@zenweb/cors';
 import upload from '@zenweb/upload';
+import template from '@zenweb/template';
+import nunjucks from '@zenweb/template-nunjucks';
 import form from '../src/index';
 
-const app = create({
+create({
   result: {
     failCode: 500,
     failStatus: 200,
@@ -13,8 +15,16 @@ const app = create({
       },
     },
   },
-});
-app.setup(upload())
-app.setup(cros({ origin: '*' }));
-app.setup(form());
-app.start();
+})
+.setup(upload())
+.setup(cros({ origin: '*' }))
+.setup(form())
+.setup(template({
+  templateAffix: '.njk',
+  engine: nunjucks({
+    nunjucksConfig: {
+      noCache: true,
+    }
+  }),
+}))
+.start();

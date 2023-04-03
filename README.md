@@ -1,6 +1,34 @@
-# ZenWeb Form module
+# form - 表单构建与数据验证
 
 [ZenWeb](https://www.npmjs.com/package/zenweb)
+
+服务端表单构建与数据验证系统
+
+功能特色:
+- 服务器端控制
+- 数据验证
+- 前后分离设计
+- 多种前端渲染支持
+- 快速构建产品
+
+## 安装
+
+### 服务端
+
+```bash
+yarn add @zenweb/form
+```
+
+### 配置
+
+```ts
+import { create } from 'zenweb';
+import modForm from '@zenweb/form';
+
+create()
+.setup(modForm())
+.start();
+```
 
 ```js
 import { inject, Context, mapping, Body } from 'zenweb';
@@ -20,18 +48,15 @@ class UserForm extends Form {
 }
 
 export class UserController {
-  @inject ctx: Context
-  @inject form: UserForm;
-
   @mapping({ path: '/form' })
-  formGet() {
-    return this.form.result;
+  formGet(form: UserForm) {
+    return form.result;
   }
 
   @mapping({ path: '/form', method: 'POST' })
-  formPost(body: Body) {
-    this.form.assert(body.data);
-    return this.form.data;
+  formPost(form: UserForm, data: ObjectBody) {
+    await form.assert(data);
+    return form.data;
   }
 }
 ```

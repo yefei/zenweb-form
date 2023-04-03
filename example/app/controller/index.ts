@@ -10,8 +10,8 @@ export class IndexController {
     };
   }
 
-  @mapping({ path: '/form' })
-  formGet(form: ExampleForm) {
+  @mapping()
+  form(form: ExampleForm) {
     form.data = { name: '默认名字' };
     return form.result;
   }
@@ -27,12 +27,22 @@ export class IndexController {
    */
   @mapping({ method: ['GET', 'POST'] })
   async merge(ctx: Context, form: ExampleForm, body: ObjectBody) {
-    if (ctx.method === 'GET') {
-      form.data = { name: '默认名字' };
-    } else {
+    form.data = { name: '默认名字' };
+    if (ctx.method === 'POST') {
       await form.assert(body);
-      return ctx.success(form.data);
+      return form.data;
     }
-    ctx.success(form.result);
+    return form.result;
+  }
+
+  @mapping({ method: ['GET', 'POST'] })
+  async html(ctx: Context, form: ExampleForm, body: ObjectBody) {
+    ctx.template('zenweb/form/layout.html.njk');
+    form.data = { name: '默认名字' };
+    if (ctx.method === 'POST') {
+      await form.assert(body);
+      return form.data;
+    }
+    return form.result;
   }
 }

@@ -1,0 +1,32 @@
+<style>
+.zenform-item {
+  margin-bottom: 10px;
+}
+.zenform-item-field {
+  display: flex;
+  flex-direction: column;
+}
+.zenform-item-error {
+  font-size: 80%;
+  color: #F56C6C;
+}
+.zenform-item-help {
+  font-size: 80%;
+  color: #909399;
+}
+</style>
+
+{% for item in layout -%}
+  {%- set field = fields[item] -%}
+  <div class="zenform-item">
+    <div class="zenform-item-field">
+      {% include "./fields/" + field.name + ".html.njk" -%}
+    </div>
+    {%- if errors and errors[item] %}
+      <div class="zenform-item-error">{{errors[item]}}</div>
+    {% endif -%}
+    {%- if field.help %}
+      <div class="zenform-item-help">{{field.help}}</div>
+    {% endif -%}
+  </div>
+{% endfor %}
