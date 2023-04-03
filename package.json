@@ -25,6 +25,7 @@
   "homepage": "https://zenweb.node.ltd",
   "files": [
     "dist",
+    "template",
     "message-codes.json"
   ],
   "devDependencies": {

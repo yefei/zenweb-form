@@ -3,7 +3,7 @@ import cros from '@zenweb/cors';
 import upload from '@zenweb/upload';
 import template from '@zenweb/template';
 import nunjucks from '@zenweb/template-nunjucks';
-import form from '../src/index';
+import form, { formTemplate } from '../src/index';
 
 create({
   result: {
@@ -22,6 +22,10 @@ create({
 .setup(template({
   templateAffix: '.njk',
   engine: nunjucks({
+    path: [
+      './template',
+      formTemplate,
+    ],
     nunjucksConfig: {
       noCache: true,
     }
