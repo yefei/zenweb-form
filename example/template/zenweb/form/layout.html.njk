@@ -1,6 +1,7 @@
+{% macro formStyle() %}
 <style>
 .zenform-item {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .zenform-item-field {
   display: flex;
@@ -8,17 +9,19 @@
 }
 .zenform-item-error {
   font-size: 80%;
-  color: #F56C6C;
+  color: #ff0000;
 }
 .zenform-item-help {
   font-size: 80%;
   color: #909399;
 }
 </style>
+{% endmacro %}
 
-{% macro formRender(form) %}
+{% macro formRender(form, input) %}
   {% for item in form.layout -%}
     {%- set field = form.fields[item] -%}
+    {%- set value = input[item]|default(field.default) -%}
     <div class="zenform-item">
       <div class="zenform-item-field">
         {% include "./fields/" + field.name + ".html.njk" -%}

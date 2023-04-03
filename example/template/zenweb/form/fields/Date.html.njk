@@ -1,5 +1,5 @@
 <label for="form_{{item}}">{{field.label}}</label>
-<input type="date" id="form_{{item}}"
-  {%- if field.default %} value="{{field.default}}"{% endif %}
+<input type="date" id="form_{{item}}" name="{{item}}"
+  {%- if value %} value="{{value}}"{% endif %}
   {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif -%}
 />

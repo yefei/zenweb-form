@@ -1,6 +1,8 @@
 <label for="form_{{item}}">{{field.label}}</label>
 <select name="{{item}}" id="form_{{item}}">
   {% for r in field.choices -%}
-    <option value="{{r.value}}">{{r.label}}</option>
+    <option value="{{r.value}}"
+      {%- if value and r.value == value %} selected{% endif -%}
+    >{{r.label}}</option>
   {% endfor -%}
 </select>

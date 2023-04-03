@@ -1,7 +1,1 @@
-<div>
-  <input type="checkbox" id="form_{{item}}"
-    {%- if field.default %} value="{{field.default}}"{% endif %}
-    {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif -%}
-  />
-  <label for="form_{{item}}">{{field.label}}</label>
-</div>
+{% include "./Multiple.html.njk" %}

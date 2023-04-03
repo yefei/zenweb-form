@@ -36,13 +36,13 @@ export class IndexController {
   }
 
   @mapping({ method: ['GET', 'POST'] })
-  async html(ctx: Context, form: ExampleForm, body: ObjectBody) {
+  async html(ctx: Context, form: ExampleForm, input: ObjectBody) {
     ctx.template('form.html.njk');
     form.data = { name: '默认名字' };
     if (ctx.method === 'POST') {
-      await form.validate(body);
+      await form.validate(input);
       ctx.state.ok = true;
     }
-    return { form: form.result };
+    return { form: form.result, input };
   }
 }

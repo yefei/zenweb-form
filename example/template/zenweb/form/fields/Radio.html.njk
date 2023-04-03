@@ -2,7 +2,7 @@
 <div>
   {% for r in field.choices -%}
     <input type="radio" name="{{item}}" id="form_{{item}}_{{loop.index}}" value="{{r.value}}"
-      {%- if r.value == field.default %}} checked {% endif -%}
+      {%- if value and r.value == value %} checked {% endif -%}
     />
     <label for="form_{{item}}_{{loop.index}}">{{r.label}}</label>
   {% endfor -%}

@@ -118,6 +118,9 @@ export abstract class Form<D extends FormData = FormData> {
           if (name in input) _inputData = input[name];
           else if (`${name}[]` in input) _inputData = input[`${name}[]`];
         }
+        if (this._filedsResult[name].required && _inputData === undefined) {
+          throw new RequiredError(name);
+        }
         this._filedsResult[name].field = name;
         let value: unknown = typeCast(_inputData, this._filedsResult[name]);
         if (value !== undefined) {

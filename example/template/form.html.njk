@@ -1,6 +1,8 @@
-{% from "zenweb/form/layout.html.njk" import formRender %}
+{% from "zenweb/form/layout.html.njk" import formRender, formStyle %}
 
-<form method="POST" action="">
-  {{ formRender(form) }}
+{{formStyle()}}
+
+<form method="POST" action="" style="max-width:500px;margin: 10px auto;">
+  {{ formRender(form, input) }}
   <button type="submit">提交</button>
 </form>
