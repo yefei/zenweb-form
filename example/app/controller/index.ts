@@ -39,10 +39,10 @@ export class IndexController {
   async html(ctx: Context, form: ExampleForm, input: ObjectBody) {
     ctx.template('form.html.njk');
     form.data = { name: '默认名字' };
+    let ok = false;
     if (ctx.method === 'POST') {
-      await form.validate(input);
-      ctx.state.ok = true;
+      ok = await form.validate(input);
     }
-    return { form: form.result, input };
+    return { form: form.result, input, ok };
   }
 }
