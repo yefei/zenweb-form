@@ -88,7 +88,11 @@ export abstract class Form<D extends FormData = FormData> {
    * 输出表单给前端
    */
   get result() {
-    return { fields: this._filedsResult, layout: this.layout };
+    return {
+      fields: this._filedsResult,
+      layout: this.layout,
+      errors: this.hasErrors ? this.errorMessages : undefined,
+    };
   }
 
   /**

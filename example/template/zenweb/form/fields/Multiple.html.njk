@@ -1,0 +1,9 @@
+<label for="form_{{item}}">{{field.label}}</label>
+<div>
+  {% for r in field.choices -%}
+    <input type="checkbox" name="{{item}}" id="form_{{item}}_{{loop.index}}" value="{{r.value}}"
+      {%- if r.value == field.default %}} checked {% endif -%}
+    />
+    <label for="form_{{item}}_{{loop.index}}">{{r.label}}</label>
+  {% endfor -%}
+</div>

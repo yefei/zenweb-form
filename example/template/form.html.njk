@@ -1,0 +1,6 @@
+{% from "zenweb/form/layout.html.njk" import formRender %}
+
+<form method="POST" action="">
+  {{ formRender(form) }}
+  <button type="submit">提交</button>
+</form>

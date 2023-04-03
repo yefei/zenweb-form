@@ -1,0 +1,6 @@
+<label for="form_{{item}}">{{field.label}}</label>
+<select name="{{item}}" id="form_{{item}}">
+  {% for r in field.choices -%}
+    <option value="{{r.value}}">{{r.label}}</option>
+  {% endfor -%}
+</select>

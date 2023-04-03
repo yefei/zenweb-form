@@ -16,17 +16,19 @@
 }
 </style>
 
-{% for item in layout -%}
-  {%- set field = fields[item] -%}
-  <div class="zenform-item">
-    <div class="zenform-item-field">
-      {% include "./fields/" + field.name + ".html.njk" -%}
+{% macro formRender(form) %}
+  {% for item in form.layout -%}
+    {%- set field = form.fields[item] -%}
+    <div class="zenform-item">
+      <div class="zenform-item-field">
+        {% include "./fields/" + field.name + ".html.njk" -%}
+      </div>
+      {%- if form.errors and form.errors[item] %}
+        <div class="zenform-item-error">{{form.errors[item]}}</div>
+      {% endif -%}
+      {%- if field.help %}
+        <div class="zenform-item-help">{{field.help}}</div>
+      {% endif -%}
     </div>
-    {%- if errors and errors[item] %}
-      <div class="zenform-item-error">{{errors[item]}}</div>
-    {% endif -%}
-    {%- if field.help %}
-      <div class="zenform-item-help">{{field.help}}</div>
-    {% endif -%}
-  </div>
-{% endfor %}
+  {% endfor %}
+{% endmacro %}

@@ -1,0 +1,5 @@
+<label for="form_{{item}}">{{field.label}}</label>
+<input type="file" id="form_{{item}}"
+  {%- if field.default %} value="{{field.default}}"{% endif %}
+  {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif -%}
+/>

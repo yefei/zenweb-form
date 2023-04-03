@@ -37,12 +37,12 @@ export class IndexController {
 
   @mapping({ method: ['GET', 'POST'] })
   async html(ctx: Context, form: ExampleForm, body: ObjectBody) {
-    ctx.template('zenweb/form/layout.html.njk');
+    ctx.template('form.html.njk');
     form.data = { name: '默认名字' };
     if (ctx.method === 'POST') {
-      await form.assert(body);
-      return form.data;
+      await form.validate(body);
+      ctx.state.ok = true;
     }
-    return form.result;
+    return { form: form.result };
   }
 }
