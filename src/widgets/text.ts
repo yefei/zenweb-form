@@ -1,15 +1,6 @@
-import { Input, simple } from './input';
+import { Widget, simple } from './widget';
 
-export class Text extends Input {
-  /**
-   * 限制字符串长度
-   * @param minLength 最小长度，默认 0
-   * @param maxLength 最大长度，默认不限制
-   */
-  length(minLength: number = 0, maxLength?: number) {
-    this.validate({ minLength, maxLength });
-    return this;
-  }
+export class Text extends Widget {
 }
 
 export class Textarea extends Text {

@@ -91,7 +91,7 @@ create()
 `template/form.html.njk`
 
 ```nunjucks
-{% from "zenweb/form/macro.html.njk" import formRender, formStyle %}
+{% from "zenweb/form/macro.html.njk" import formFields, formStyle %}
 
 {{formStyle()}}
 
@@ -101,7 +101,7 @@ create()
   {% endif %}
 
   <form method="POST" action="">
-    {{ formRender(form, input) }}
+    {{ formFields(form, input) }}
     <button type="submit">提交</button>
   </form>
 </div>

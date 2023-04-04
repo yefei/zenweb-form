@@ -2,4 +2,5 @@
 <input type="time" id="form_{{item}}" name="{{item}}"
   {%- if value %} value="{{value}}"{% endif %}
   {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif -%}
+  {%- if field.readonly %} readonly{% endif -%}
 />

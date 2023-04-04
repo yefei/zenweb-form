@@ -2,4 +2,5 @@
 <textarea id="form_{{item}}" name="{{item}}"
   {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif %}
   {%- if field.rows %} rows="{{field.rows.min}}"{% endif -%}
+  {%- if field.readonly %} readonly{% endif -%}
 >{{value}}</textarea>

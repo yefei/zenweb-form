@@ -1,5 +1,11 @@
 <label for="form_{{item}}">{{field.label}}</label>
-<input type="file" id="form_{{item}}" name="{{item}}"
-  {%- if value %} value="{{value}}"{% endif %}
-  {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif -%}
+<input id="form_{{item}}" name="{{item}}"
+  {%- if value %} type="hidden" value="{{value}}"
+  {% else %} type="file"{% endif -%}
 />
+{% if value %}
+  <div id="form_{{item}}_uploaded">
+    <button type="button">重新上传</button>
+    已上传文件: {{value}}
+  </div>
+{% endif %}

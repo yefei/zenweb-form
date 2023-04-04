@@ -1,6 +1,5 @@
 import { $enum } from 'ts-enum-util';
-import { guessType } from '../utils';
-import { Input, simple } from './input';
+import { Widget, simple } from './widget';
 
 export interface ChoiceType {
   /**
@@ -19,7 +18,7 @@ export interface ChoiceType {
   disabled?: boolean;
 }
 
-export class Select extends Input {
+export class Select extends Widget {
   protected _choices: ChoiceType[] = [];
 
   /**
@@ -67,8 +66,6 @@ export class Select extends Input {
   }
 
   attrs() {
-    // 如果没有指定类型则自动判断第一个选项的值类型
-    !this.isEmpty() && !this._option.type && this.type(guessType(this._choices[0].value));
     return {
       choices: this._choices,
     };
@@ -106,7 +103,6 @@ export class Multiple extends Select {
   }
 
   attrs() {
-    !this.isEmpty() && !this._option.type && this.type(`${guessType(this._choices[0].value)}[]`);
     return Object.assign(super.attrs(), {
       max: this._max,
       min: this._min,

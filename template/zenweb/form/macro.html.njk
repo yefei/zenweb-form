@@ -18,13 +18,17 @@
 </style>
 {% endmacro %}
 
-{% macro formRender(form, input) %}
+{% macro formScript() %}
+  
+{% endmacro %}
+
+{% macro formFields(form, input) %}
   {% for item in form.layout -%}
     {%- set field = form.fields[item] -%}
     {%- set value = input[item]|default(field.default) -%}
     <div class="zenform-item">
       <div class="zenform-item-field">
-        {% include "./fields/" + field.name + ".html.njk" -%}
+        {% include "./fields/" + field.type + ".html.njk" -%}
       </div>
       {%- if form.errors and form.errors[item] %}
         <div class="zenform-item-error">{{form.errors[item]}}</div>

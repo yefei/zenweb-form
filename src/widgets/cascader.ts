@@ -1,5 +1,4 @@
-import { guessType } from '../utils';
-import { Input, simple } from './input';
+import { Widget, simple } from './widget';
 
 export interface ChoiceType {
   /**
@@ -24,7 +23,7 @@ export interface ChoiceType {
   parent?: number | string;
 }
 
-export class Cascader extends Input {
+export class Cascader extends Widget {
   private _choices: ChoiceType[] = [];
   private _max?: number;
   private _min?: number;
@@ -87,7 +86,6 @@ export class Cascader extends Input {
   }
 
   attrs() {
-    !this.isEmpty() && !this._option.type && this.type(`${guessType(this._choices[0].value)}[]`);
     return {
       choices: this._choices,
     };

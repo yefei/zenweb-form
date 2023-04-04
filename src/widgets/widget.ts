@@ -1,42 +1,26 @@
 import { TypeKeys, ValidateOption } from 'typecasts';
-import { FieldOption } from '../types';
+import { WidgetOption } from '../types';
 
-export class InputFail extends Error {
+export class WidgetFail extends Error {
   code: string;
   params: any[];
 
   constructor(code: string, params?: any) {
     super(code);
-    this.name = 'InputFail';
+    this.name = 'WidgetFail';
     this.code = code;
     this.params = params;
   }
 }
 
-export class Input {
-  protected _option: Partial<FieldOption>;
-  protected _name: string = this.constructor.name;
+export class Widget {
+  protected _option: WidgetOption;
+  protected _type: string = this.constructor.name;
 
   constructor(label: string) {
     this._option = {
       label,
     };
-  }
-
-  /**
-   * 控件名称
-   */
-  name(name: string) {
-    this._name = name;
-    return this;
-  }
-
-  /**
-   * 输入值类型
-   */
-  type(type: TypeKeys) {
-    this._option.type = type;
-    return this;
   }
 
   /**
@@ -48,26 +32,10 @@ export class Input {
   }
 
   /**
-   * 必填项
+   * 提示信息
    */
-  required(is: boolean | string = true) {
-    this._option.required = is;
-    return this;
-  }
-
-  /**
-   * 默认值
-   */
-  default(value: any) {
-    this._option.default = value;
-    return this;
-  }
-
-  /**
-   * 数据验证
-   */
-  validate(validate: ValidateOption) {
-    this._option.validate = validate;
+  placeholder(text: string) {
+    this._option.placeholder = text;
     return this;
   }
 
@@ -85,7 +53,7 @@ export class Input {
   build() {
     const attr = this.attrs();
     return Object.assign({
-      name: this._name,
+      type: this._type,
     }, this._option, attr);
   }
 
@@ -106,7 +74,7 @@ export class Input {
    * 验证失败
    */
   protected fail(code: string, params?: any) {
-    throw new InputFail(code, params);
+    throw new WidgetFail(code, params);
   }
 }
 

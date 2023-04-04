@@ -32,7 +32,7 @@
     "@zenweb/cors": "^2.4.0",
     "@zenweb/template": "^3.2.0",
     "@zenweb/template-nunjucks": "^3.0.0",
-    "@zenweb/upload": "^3.1.0",
+    "@zenweb/upload": "^3.2.2",
     "cross-env": "^7.0.3",
     "rimraf": "^4.3.1",
     "ts-node": "^10.9.1",

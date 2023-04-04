@@ -1,10 +1,8 @@
-/// <reference types="@zenweb/result" />
-import { Context } from '@zenweb/core';
 import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
-import { RequiredError, typeCast, ValidateError } from 'typecasts';
-import { Input, InputFail } from './field/input';
-import { Fields, FormData, FieldOption, Layout } from './types';
+import { GetPickReturnType, RequiredError, typeCast, TypeKeys, ValidateError } from 'typecasts';
+import { WidgetFail, Widget } from './widgets/widget';
+import { Fields, FormFieldCleans, Layout, WidgetResult } from './types';
 
 function layoutExists(layout: Layout[], name: string): boolean {
   for (const i of layout) {
@@ -20,47 +18,35 @@ class NonMessageCodeResolver {
   }
 }
 
-export abstract class Form<D extends FormData = FormData> {
-  @inject protected messageCodeResolver!: MessageCodeResolver;
-  @inject protected ctx!: Context;
+export abstract class Form<O extends Fields> {
+  @inject messageCodeResolver!: MessageCodeResolver;
 
   /**
    * 定义表单字段
    */
-  abstract fields(): Fields | Promise<Fields>;
-  private _fields!: Fields;
+  abstract fields: O;
 
   /**
    * 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾
    */
   layout: Layout[] = [];
 
-  private _data: any = {};
+  /**
+   * 表单数据
+   */
+  _data: any = {};
 
   /**
    * 表单校验错误信息
    */
   errors: { [field: string]: any } = {};
 
-  /**
-   * 表单字段默认配置
-   */
-  defaultOption: FieldOption = {
-    type: 'string',
-    required: true,
-  };
-
-  private _filedsResult: { [name:string]: FieldOption } = {};
-
   @init
   async init() {
-    this._fields = await this.fields();
-    for (const [ name, option ] of Object.entries(this._fields)) {
+    for (const name of Object.keys(this.fields)) {
       if (!layoutExists(this.layout, name)) {
         this.layout.push(name);
       }
-      const opt = Object.assign({}, this.defaultOption, option instanceof Input ? option.build() : option);
-      this._filedsResult[name] = opt;
     }
     return this;
   }
@@ -68,20 +54,37 @@ export abstract class Form<D extends FormData = FormData> {
   /**
    * 取得表单提交结果
    */
-  get data(): D {
+  get data(): { [K in keyof O]: GetPickReturnType<O, K> } {
     return this._data;
   }
 
   /**
    * 设置表单提交结果或初始值
    */
-  set data(data: Partial<D> | null | undefined) {
-    this._data = data || {};
-    for (const name of Object.keys(this._filedsResult)) {
-      if (this._data[name] !== undefined) {
-        this._filedsResult[name].default = this._data[name];
+  set data(data: Partial<{ [K in keyof O]: GetPickReturnType<O, K> }> | null | undefined) {
+    Object.assign(this._data, data);
+  }
+
+  _getWidgetResults(fields: O, parent?: string) {
+    const out: { [name: string]: WidgetResult } = {};
+    for (let [name, opt] of Object.entries(fields)) {
+      if (parent) {
+        name = `${parent}.${name}`;
+      }
+      if (opt.type.includes('object') && opt.pick) {
+        out[name] = this._getWidgetResults(<O> opt.pick, name);
+      } else {
+        out[name] = Object.assign({
+          type: 'text',
+          required: opt.type.startsWith('!'),
+          valueType: opt.type,
+          default: opt.default,
+          validate: opt.validate,
+        } as WidgetResult,
+        opt.widget instanceof Widget ? opt.widget.build() : opt.widget);
       }
     }
+    return out;
   }
 
   /**
@@ -89,7 +92,7 @@ export abstract class Form<D extends FormData = FormData> {
    */
   get result() {
     return {
-      fields: this._filedsResult,
+      fields: this._getWidgetResults(this.fields),
       layout: this.layout,
       errors: this.hasErrors ? this.errorMessages : undefined,
     };
@@ -107,10 +110,11 @@ export abstract class Form<D extends FormData = FormData> {
    * @param input 输入数据
    * @returns 是否有错误
    */
-  async validate(input?: Partial<D>) {
-    for (const [ name, option ] of Object.entries(this._fields)) {
+  async validate(input: any) {
+    for (const [ name, option ] of Object.entries(this.fields)) {
+      const _opt = option.widget || {};
       // 忽略只读字段
-      if (this._filedsResult[name].readonly) continue;
+      if (_opt.readonly) continue;
       try {
         // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
         let _inputData;
@@ -118,14 +122,10 @@ export abstract class Form<D extends FormData = FormData> {
           if (name in input) _inputData = input[name];
           else if (`${name}[]` in input) _inputData = input[`${name}[]`];
         }
-        if (this._filedsResult[name].required && _inputData === undefined) {
-          throw new RequiredError(name);
-        }
-        this._filedsResult[name].field = name;
-        let value: unknown = typeCast(_inputData, this._filedsResult[name]);
+        let value: unknown = typeCast(_inputData, option);
         if (value !== undefined) {
-          if (option instanceof Input) {
-            value = await option.clean(value);
+          if (_opt instanceof Widget) {
+            value = await _opt.clean(value);
           }
           // 表单对象方法校验，来自 Django
           // 查找对象方法组合为 clean_{fieldname}() 的函数
@@ -142,24 +142,8 @@ export abstract class Form<D extends FormData = FormData> {
     return !this.hasErrors;
   }
 
-  /**
-   * 校验数据如果出错直接调用 ctx.fail 或抛出异常
-   * @param input 输入数据
-   */
-  async assert(input?: Partial<D>) {
-    if (!await this.validate(input)) {
-      this.fail('form valid error', { errors: this.errorMessages });
-    }
-  }
-
-  /**
-   * 表单抛异常
-   */
-  fail(message: string, data?: any) {
-    if (this.ctx.fail) {
-      this.ctx.fail({ message, data });
-    }
-    throw new Error(message);
+  fail(code: string | number, params?: any) {
+    throw new WidgetFail(code, params);
   }
 
   /**
@@ -177,8 +161,8 @@ export abstract class Form<D extends FormData = FormData> {
         if (e.validate === 'cast') code += `.${typeof e.target === 'function' ? e.target.name || '-' : e.target}`;
         messages[field] = messageCodeResolver.format(`form.validate-error.${code}.${field}`, e);
       }
-      else if (e instanceof InputFail) {
-        messages[field] = messageCodeResolver.format(`form.input-fail.${e.code}.${field}`, e.params);
+      else if (e instanceof WidgetFail) {
+        messages[field] = messageCodeResolver.format(`form.field-fail.${e.code}.${field}`, e.params);
       }
       else {
         messages[field] = e.message;
@@ -187,3 +171,25 @@ export abstract class Form<D extends FormData = FormData> {
     return messages;
   }
 }
+
+/**
+ * 生成表单类
+ * - 需要使用依赖注入取得类实例
+ * @param fields 表单字段
+ */
+export function makeForm<O extends Fields>(fields: O, cleans?: FormFieldCleans<O>) {
+  return class extends Form<O> {
+    fields = fields;
+  };
+}
+
+/*
+const Testform = makeForm({
+  username: {
+    type: 'string',
+  }
+});
+
+const t = new Testform();
+const x = t.data;
+*/

@@ -1,6 +1,6 @@
-import { Input, simple } from "./input";
+import { Widget, simple } from "./widget";
 
-export class Suggest extends Input {
+export class Suggest extends Widget {
   private _fetchUrl?: string;
 
   fetchUrl(url: string) {

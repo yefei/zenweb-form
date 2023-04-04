@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { Input, simple } from './input';
+import { Widget, simple } from './widget';
 
 function datetimeFormat(fmt: string, data: moment.MomentInput) {
   const m = moment(data, fmt);
@@ -8,7 +8,7 @@ function datetimeFormat(fmt: string, data: moment.MomentInput) {
   }
 }
 
-export class Datetime extends Input {
+export class Datetime extends Widget {
   protected _format: string = 'YYYY-MM-DD HH:mm:ss';
 
   /**
@@ -20,7 +20,6 @@ export class Datetime extends Input {
   }
 
   attrs() {
-    this.type('trim');
     return {
       format: this._format,
     };
@@ -60,8 +59,6 @@ export class DateRange extends Date {
   }
 
   attrs() {
-    this.type('trim');
-    this._option.splitter = ',';
     return {
       format: this._format,
       start: this._start,
