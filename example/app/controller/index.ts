@@ -18,7 +18,7 @@ export class IndexController {
 
   @mapping({ path: '/form', method: 'POST' })
   async formPost(form: ExampleForm, input: ObjectBody) {
-    await form.assert(input);
+    // await form.assert(input);
     return form.data;
   }
 
@@ -29,7 +29,7 @@ export class IndexController {
   async merge(ctx: Context, form: ExampleForm, input: ObjectBody) {
     form.data = { name: '默认名字' };
     if (ctx.method === 'POST') {
-      await form.assert(input);
+      // await form.assert(input);
       return form.data;
     }
     return form.result;

@@ -1,12 +1,11 @@
-import { TypeKeys, ValidateOption } from 'typecasts';
 import { WidgetOption } from '../types';
 
 export class WidgetFail extends Error {
-  code: string;
+  code: string | number;
   params: any[];
 
-  constructor(code: string, params?: any) {
-    super(code);
+  constructor(code: string | number, params?: any) {
+    super(`WidgetFail: ${code}`);
     this.name = 'WidgetFail';
     this.code = code;
     this.params = params;

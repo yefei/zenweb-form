@@ -2,8 +2,8 @@ import { CastOption, GetPickReturnType, TypeKeys, ValidateOption } from 'typecas
 import { Form } from './form';
 import { Widget } from './widgets/widget';
 
-export type Fields = { [name: string]: FieldOption };
-export type Layout = string | Layout[];
+export type FormFields = { [name: string]: FieldOption };
+export type FormLayout = string | FormLayout[];
 
 /**
  * 表单控件选项
@@ -72,7 +72,7 @@ export interface FieldOption extends CastOption {
 /**
  * 表单字段项数据清理
  */
-export type FormFieldCleans<O extends Fields> = {
+export type FormFieldCleans<O extends FormFields> = {
   [K in keyof O]?: (this: Form<O>, data: GetPickReturnType<O, K>)
     => GetPickReturnType<O, K> | Promise<GetPickReturnType<O, K>>;
 };
