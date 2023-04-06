@@ -16,7 +16,9 @@ create({
     },
   },
 })
-.setup(upload())
+.setup(upload({
+  multiples: true,
+}))
 .setup(cros({ origin: '*' }))
 .setup(form())
 .setup(template({

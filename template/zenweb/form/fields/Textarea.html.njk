@@ -1,4 +1,4 @@
-<label for="form_{{item}}">{{field.label}}</label>
+{% include './label.inc.html.njk' %}
 <textarea id="form_{{item}}" name="{{item}}"
   {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif %}
   {%- if field.rows %} rows="{{field.rows.min}}"{% endif -%}

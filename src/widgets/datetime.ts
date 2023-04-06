@@ -19,7 +19,7 @@ export class Datetime extends Widget {
     return this;
   }
 
-  attrs() {
+  extra() {
     return {
       format: this._format,
     };
@@ -28,7 +28,7 @@ export class Datetime extends Widget {
   clean(data: any) {
     const val = datetimeFormat(this._format, data);
     if (val === undefined) {
-      this.fail('datetime.format-error', { data, format: this._format });
+      this.fail('form.datetime.format-error', { data, format: this._format });
     }
     return val;
   }
@@ -58,7 +58,7 @@ export class DateRange extends Date {
     return this;
   }
 
-  attrs() {
+  extra() {
     return {
       format: this._format,
       start: this._start,
@@ -69,17 +69,17 @@ export class DateRange extends Date {
   clean(data: [string, string]) {
     const startDate = datetimeFormat(this._format, data[0]);
     if (!startDate) {
-      this.fail('daterange.start.error');
+      this.fail('form.daterange.start.error');
     }
     const endDate = datetimeFormat(this._format, data[1]);
     if (!endDate) {
-      this.fail('daterange.end.error');
+      this.fail('form.daterange.end.error');
     }
     if (this._start && moment(startDate).isBefore(this._start)) {
-      this.fail('daterange.start.out');
+      this.fail('form.daterange.start.out');
     }
     if (this._end && moment(endDate).isAfter(this._end)) {
-      this.fail('daterange.end.out');
+      this.fail('form.daterange.end.out');
     }
     return [startDate, endDate] as any;
   }

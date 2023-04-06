@@ -1,13 +1,13 @@
-import { makeForm, widgets } from "../../../src";
+import { FormBase, widgets } from "../../../src";
 
-export class ExampleForm extends makeForm({
-  name: {
+export class ExampleForm extends FormBase({
+  username: {
     type: '!string',
     validate: {
       minLength: 2,
-      maxLength: 4,
+      maxLength: 12,
     },
-    widget: widgets.text('姓名'),
+    widget: widgets.text('用户名'),
   },
   desc: {
     type: '!string',
@@ -26,27 +26,27 @@ export class ExampleForm extends makeForm({
     widget: widgets.text('年龄').help('年龄18-50'),
   },
   date: {
-    type: '!date',
-    widget: widgets.date('日期').readonly(),
+    type: '!trim2',
+    widget: widgets.date('日期'),
   },
   time: {
-    type: '!date',
+    type: '!trim2',
     widget: widgets.time('时间'),
   },
   datetime: {
-    type: '!date',
+    type: '!string',
     widget: widgets.datetime('日期时间'),
   },
   upload: {
     type: 'trim[]',
-    widget: widgets.upload('本地上传').local(),
+    widget: widgets.localUpload('本地上传'),
   },
   remote: {
     type: 'trim[]',
-    widget: widgets.upload('远程上传').remote('/upload').maxFiles(3),
+    widget: widgets.remoteUpload('远程上传').to('/upload').maxFiles(3),
   },
   gender: {
-    type: '!date',
+    type: '!string',
     widget: widgets.radio('性别').choices([
       '男',
       {value: 2, label: '女'},
@@ -62,7 +62,7 @@ export class ExampleForm extends makeForm({
     ]),
   },
   interest: {
-    type: '!int',
+    type: '!int[]',
     widget: widgets.multiple('感兴趣的').choices([
       {value: 1, label: '钓鱼'},
       {value: 2, label: '编程'},
@@ -78,20 +78,15 @@ export class ExampleForm extends makeForm({
   },
   a: {
     type: 'string',
-    default: 'a',
-    widget: widgets.text('可选填'),
+    default: '给你看看',
+    widget: widgets.text('只读字段').readonly(),
   },
-}, {
+}) {
   // 表单后置校验字段数据
-  name(data: string) {
-    // 自定义校验规则
-    if (data.startsWith('王')) {
-      this.fail('禁止老王注册'); // 如果不满足条件则使用 this.fail 或者直接抛出异常都可以
+  clean_username(data: string) {
+    if (data.includes('admin')) {
+      this.fail('like-admin');
     }
-    return data; // 最后必须要返回处理好的数据
+    return data; // 返回数据
   }
-}) {}
-
-const a = new ExampleForm();
-
-const d = a.data;
+}

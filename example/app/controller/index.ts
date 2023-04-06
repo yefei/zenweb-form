@@ -6,13 +6,13 @@ export class IndexController {
   @mapping({ method: 'POST' })
   upload(upload: UploadHelper) {
     return {
-      url: upload.file('file')?.originalFilename,
+      url: upload.file('remote')?.originalFilename,
     };
   }
 
   @mapping()
   form(form: ExampleForm) {
-    form.data = { name: '默认名字' };
+    form.data = { username: '默认名字' };
     return form.result;
   }
 
@@ -27,7 +27,7 @@ export class IndexController {
    */
   @mapping({ method: ['GET', 'POST'] })
   async merge(ctx: Context, form: ExampleForm, input: ObjectBody) {
-    form.data = { name: '默认名字' };
+    form.data = { username: '默认名字' };
     if (ctx.method === 'POST') {
       // await form.assert(input);
       return form.data;
@@ -38,7 +38,7 @@ export class IndexController {
   @mapping({ method: ['GET', 'POST'] })
   async html(ctx: Context, form: ExampleForm, upload: Upload) {
     ctx.template('form.html.njk');
-    form.data = { name: '默认名字' };
+    form.data = { username: '默认名字' };
     let ok = false;
     const input = upload.fields;
     if (ctx.method === 'POST') {
@@ -52,6 +52,7 @@ export class IndexController {
       }
       ok = await form.validate(input);
       if (ok) {
+        console.log( form.data );
         // some code
       }
     }

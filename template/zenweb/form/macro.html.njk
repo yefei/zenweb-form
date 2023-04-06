@@ -18,8 +18,44 @@
 </style>
 {% endmacro %}
 
-{% macro formScript() %}
-  
+{% macro formScript(allow_external=true) %}
+  {% if allow_external %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  {% endif %}
+  <script>
+    (function($) {
+      // upload
+      $('.form-upload-delete').click(function (){
+        const name = $(this).data('name');
+        $('#form_' + name + '_uploaded').hide();
+        $('#form_' + name).attr('type', 'file').attr('value', '');
+      });
+      // remote upload
+      $('.form-upload-remote').change(function(e) {
+        if (this.files.length === 0) return;
+        const name = $(this).attr('name');
+        const to = $(this).data('to');
+        const upform = new FormData();
+        for (const f of this.files) {
+          upform.append(name, f);
+        }
+        $.ajax({
+          url: to,
+          type: 'post',
+          data: upform,
+          contentType: false,
+          responseType: 'json',
+          processData: false,
+          success: function(response) {
+            const url = response.data.url;
+            $('#form_' + name + '_uploaded').show();
+            $('#form_' + name).attr('type', 'hidden').attr('value', url);
+            $('#form_' + name + '_uploaded_value').text(url);
+          }
+        });
+      });
+    })(jQuery);
+  </script>
 {% endmacro %}
 
 {% macro formFields(form, input) %}

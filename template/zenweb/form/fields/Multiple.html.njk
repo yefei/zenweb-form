@@ -1,4 +1,4 @@
-<label for="form_{{item}}">{{field.label}}</label>
+{% include './label.inc.html.njk' %}
 <div>
   {% for r in field.choices -%}
     <input type="checkbox" name="{{item}}" id="form_{{item}}_{{loop.index}}" value="{{r.value}}"

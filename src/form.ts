@@ -2,7 +2,7 @@ import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import { GetPickReturnType, RequiredError, typeCast, ValidateError } from 'typecasts';
 import { WidgetFail, Widget } from './widgets/widget';
-import { FormFieldCleans, FormFields, FormLayout, WidgetResult } from './types';
+import { FormFields, FormLayout, WidgetOption, WidgetResult } from './types';
 
 function layoutExists(layout: FormLayout[], name: string): boolean {
   for (const i of layout) {
@@ -19,11 +19,6 @@ export abstract class Form<O extends FormFields> {
    * 已定义表单字段
    */
   fields!: O;
-
-  /**
-   * 表单字段数据清理
-   */
-  cleans?: FormFieldCleans<O>;
 
   /**
    * 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾
@@ -74,13 +69,13 @@ export abstract class Form<O extends FormFields> {
         out[name] = this._getWidgetResults(<O> opt.pick, name);
       } else {
         out[name] = Object.assign({
-          type: 'text',
+          type: 'Text',
           required: opt.type.startsWith('!'),
           valueType: opt.type,
           default: opt.default,
           validate: opt.validate,
         } as WidgetResult,
-        opt.widget instanceof Widget ? opt.widget.build() : opt.widget);
+        opt.widget instanceof Widget ? opt.widget.output() : opt.widget);
       }
     }
     return out;
@@ -111,7 +106,7 @@ export abstract class Form<O extends FormFields> {
    */
   async validate(input: any) {
     for (const [ name, option ] of Object.entries(this.fields)) {
-      const _opt = option.widget || {};
+      const _opt: WidgetOption = (option.widget instanceof Widget ? option.widget.option : option.widget) || {};
       // 忽略只读字段
       if (_opt.readonly) continue;
       try {
@@ -121,14 +116,17 @@ export abstract class Form<O extends FormFields> {
           if (name in input) _inputData = input[name];
           else if (`${name}[]` in input) _inputData = input[`${name}[]`];
         }
+        option.field = name;
         let value: any = typeCast(_inputData, option);
         if (value !== undefined) {
           if (_opt instanceof Widget) {
             value = await _opt.clean(value);
           }
-          const clean = this.cleans && this.cleans[name];
-          if (clean) {
-            value = await clean.call(this, value);
+          // 字段数据清理
+          // 查找对象方法组合为 clean_{fieldname}() 的函数
+          const cleanField = (<any>this)[`clean_${name}`] as (data: any) => any;
+          if (cleanField && typeof cleanField === 'function') {
+            value = await cleanField.call(this, value);
           }
           this._data[name] = value;
         }
@@ -150,15 +148,15 @@ export abstract class Form<O extends FormFields> {
     const messages: { [field: string]: string | number } = {};
     Object.entries(this.errors).map(([field, e]) => {
       if (e instanceof RequiredError) {
-        messages[field] = this.messageCodeResolver.format(`form.required-error.${field}`, {});
+        messages[field] = this.messageCodeResolver.format(`form.required.${field}`, {});
       }
       else if (e instanceof ValidateError) {
         let code = e.validate;
         if (e.validate === 'cast') code += `.${typeof e.target === 'function' ? e.target.name || '-' : e.target}`;
-        messages[field] = this.messageCodeResolver.format(`form.validate-error.${code}.${field}`, e);
+        messages[field] = this.messageCodeResolver.format(`form.validate.${code}.${field}`, e);
       }
       else if (e instanceof WidgetFail) {
-        messages[field] = this.messageCodeResolver.format(`form.field-fail.${e.code}.${field}`, e.params);
+        messages[field] = this.messageCodeResolver.format(`${e.code}.${field}`, e.params);
       }
       else {
         messages[field] = e.message;
@@ -168,10 +166,14 @@ export abstract class Form<O extends FormFields> {
   }
 }
 
-
-export function makeForm<O extends FormFields>(fields: O, cleans?: FormFieldCleans<O>): { new (): Form<O> } {
+/**
+ * 生成表单基类
+ * @param fields 表单字段定义
+ * @param cleans 字段数据清理方法
+ * @returns 表单基类，需要使用类继承
+ */
+export function FormBase<O extends FormFields>(fields: O): { new (): Form<O> } {
   return class extends Form<O> {
     fields = fields;
-    cleans = cleans;
   }
 }

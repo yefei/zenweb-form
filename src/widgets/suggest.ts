@@ -8,7 +8,7 @@ export class Suggest extends Widget {
     return this;
   }
 
-  attrs() {
+  extra() {
     return {
       fetchUrl: this._fetchUrl,
     };

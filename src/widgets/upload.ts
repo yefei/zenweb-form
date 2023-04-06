@@ -57,7 +57,7 @@ class UploadBase extends Widget {
     return this;
   }
 
-  attrs() {
+  extra() {
     return {
       minFiles: this._minFiles,
       maxFiles: this._maxFiles,
@@ -90,30 +90,12 @@ export class RemoteUpload extends UploadBase {
     return this;
   }
 
-  attrs() {
-    return Object.assign({
+  extra() {
+    return Object.assign(super.extra(), {
       to: this._to,
-    }, super.attrs());
+    });
   }
 }
 
-export class Upload {
-  constructor(private label: string) {
-  }
-
-  /**
-   * 本地上传
-   */
-  local() {
-    return new LocalUpload(this.label);
-  }
-
-  /**
-   * 远程上传
-   */
-  remote(url: string) {
-    return new RemoteUpload(this.label).to(url);
-  }
-}
-
-export const upload = simple(Upload);
+export const localUpload = simple(LocalUpload);
+export const remoteUpload = simple(RemoteUpload);

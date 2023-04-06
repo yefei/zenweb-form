@@ -1,5 +1,4 @@
-import { CastOption, GetPickReturnType, TypeKeys, ValidateOption } from 'typecasts';
-import { Form } from './form';
+import { CastOption, TypeKeys, ValidateOption } from 'typecasts';
 import { Widget } from './widgets/widget';
 
 export type FormFields = { [name: string]: FieldOption };
@@ -68,11 +67,3 @@ export interface FieldOption extends CastOption {
    */
   widget?: Widget | WidgetOption;
 }
-
-/**
- * 表单字段项数据清理
- */
-export type FormFieldCleans<O extends FormFields> = {
-  [K in keyof O]?: (this: Form<O>, data: GetPickReturnType<O, K>)
-    => GetPickReturnType<O, K> | Promise<GetPickReturnType<O, K>>;
-};

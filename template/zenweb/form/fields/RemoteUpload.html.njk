@@ -1,0 +1,10 @@
+{% include './label.inc.html.njk' %}
+<input id="form_{{item}}" name="{{item}}" class="form-upload-remote" data-to="{{field.to}}"
+  {%- if value %} type="hidden" value="{{value}}"
+  {% else %} type="file"{% endif -%}
+/>
+<div id="form_{{item}}_uploaded" class="form-upload-uploaded"
+  {%- if not value %} style="display: none;"{% endif %}>
+  <button type="button" class="form-upload-delete" data-name="{{item}}">删除</button>
+  已上传文件: <span id="form_{{item}}_uploaded_value">{{value}}</span>
+</div>

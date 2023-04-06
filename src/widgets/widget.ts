@@ -12,21 +12,24 @@ export class WidgetFail extends Error {
   }
 }
 
-export class Widget {
-  protected _option: WidgetOption;
-  protected _type: string = this.constructor.name;
+export abstract class Widget {
+  option: WidgetOption = {
+    type: this.constructor.name,
+  };
 
-  constructor(label: string) {
-    this._option = {
-      label,
-    };
+  /**
+   * 显示名
+   */
+  label(label: string) {
+    this.option.label = label;
+    return this;
   }
 
   /**
    * 帮助信息
    */
   help(help: string) {
-    this._option.help = help;
+    this.option.help = help;
     return this;
   }
 
@@ -34,7 +37,7 @@ export class Widget {
    * 提示信息
    */
   placeholder(text: string) {
-    this._option.placeholder = text;
+    this.option.placeholder = text;
     return this;
   }
 
@@ -42,30 +45,29 @@ export class Widget {
    * 只读，即使提交也不会更新
    */
   readonly(is = true) {
-    this._option.readonly = is;
+    this.option.readonly = is;
     return this;
   }
 
   /**
-   * 构建表单项整体参数
+   * 输出参数
    */
-  build() {
-    const attr = this.attrs();
-    return Object.assign({
-      type: this._type,
-    }, this._option, attr);
+  output() {
+    return Object.assign({}, this.option, this.extra());
   }
 
   /**
-   * 构建表单组件参数
+   * 额外输出参数
+   * - 继承类使用
    */
-  attrs() {
+  extra() {
   }
 
   /**
    * 数据验证清理，如果验证不通过需要抛出异常，使用 this.fail('code')
+   * - 继承类使用
    */
-  clean(data: any): any {
+  clean(data: any) {
     return data;
   }
 
@@ -77,6 +79,10 @@ export class Widget {
   }
 }
 
-export function simple<T>(clazz: { new(label: string): T }) {
-  return (label: string): T => new clazz(label);
-} 
+export function simple<W extends Widget>(clazz: { new (): W }) {
+  return (label?: string) => {
+    const w = new clazz();
+    if (label) w.label(label);
+    return w;
+  }
+}

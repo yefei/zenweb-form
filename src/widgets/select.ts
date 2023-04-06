@@ -61,11 +61,11 @@ export class Select extends Widget {
    */
   assertEmpty() {
     if (this.isEmpty()) {
-      this.fail('select.options.empty');
+      this.fail('form.select.options.empty');
     }
   }
 
-  attrs() {
+  extra() {
     return {
       choices: this._choices,
     };
@@ -76,11 +76,11 @@ export class Select extends Widget {
     const item = this._choices.find(i => i.value == data);
     if (item) {
       if (item.disabled) {
-        this.fail('select.choice-disabled', { data, label: item.label });
+        this.fail('form.select.choice-disabled', { data, label: item.label });
       }
       return data;
     }
-    this.fail('select.choice-invalid', { data });
+    this.fail('form.select.choice-invalid', { data });
   }
 }
 
@@ -102,8 +102,8 @@ export class Multiple extends Select {
     return this;
   }
 
-  attrs() {
-    return Object.assign(super.attrs(), {
+  extra() {
+    return Object.assign(super.extra(), {
       max: this._max,
       min: this._min,
     });
@@ -114,19 +114,19 @@ export class Multiple extends Select {
     data = Array.isArray(data) ? data : [data];
     const max = Math.min(this._max || Number.MAX_VALUE, this._choices.length);
     if (data.length > max) {
-      this.fail('select.choice-max', { max });
+      this.fail('form.select.choice-max', { max });
     }
     if (this._min && data.length < this._min) {
-      this.fail('select.choice-min', { min: this._min });
+      this.fail('form.select.choice-min', { min: this._min });
     }
     for (const i of data) {
       const item = this._choices.find(c => c.value == i);
       if (item) {
         if (item.disabled) {
-          this.fail('select.choice-disabled', { data: i, label: item.label });
+          this.fail('form.select.choice-disabled', { data: i, label: item.label });
         }
       } else {
-        this.fail('select.choice-invalid', { data: i });
+        this.fail('form.select.choice-invalid', { data: i });
       }
     }
     return data;

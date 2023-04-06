@@ -85,7 +85,7 @@ export class Cascader extends Widget {
     return this._choices.length === 0;
   }
 
-  attrs() {
+  extra() {
     return {
       choices: this._choices,
     };
@@ -95,14 +95,14 @@ export class Cascader extends Widget {
     data = Array.isArray(data) ? data : [data];
     const max = Math.min(this._max || Number.MAX_VALUE, this._choices.length);
     if (data.length > max) {
-      this.fail('select.choice-max', { max });
+      this.fail('form.select.choice-max', { max });
     }
     if (this._min && data.length < this._min) {
-      this.fail('select.choice-min', { min: this._min });
+      this.fail('form.select.choice-min', { min: this._min });
     }
     for (const i of data) {
       if (this._choices.filter(i => !i.unselectable).findIndex(c => c.value == i) === -1) {
-        this.fail('select.choice-invalid', { data: i });
+        this.fail('form.select.choice-invalid', { data: i });
       }
     }
     return data;

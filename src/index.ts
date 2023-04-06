@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { SetupFunction } from '@zenweb/core';
-export { Form, makeForm } from './form';
-export { widgets } from './widgets';
+export { Form, FormBase } from './form';
+export * from './widgets';
 export * from './types';
 
 /**

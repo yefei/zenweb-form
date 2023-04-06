@@ -1,11 +1,11 @@
-<label for="form_{{item}}">{{field.label}}</label>
+{% include './label.inc.html.njk' %}
 <input id="form_{{item}}" name="{{item}}"
   {%- if value %} type="hidden" value="{{value}}"
   {% else %} type="file"{% endif -%}
 />
 {% if value %}
-  <div id="form_{{item}}_uploaded">
-    <button type="button">重新上传</button>
+  <div id="form_{{item}}_uploaded" class="form-upload-uploaded">
+    <button type="button" class="form-upload-delete" data-name="{{item}}">删除</button>
     已上传文件: {{value}}
   </div>
 {% endif %}

@@ -1,4 +1,4 @@
-<label for="form_{{item}}">{{field.label}}</label>
+{% include './label.inc.html.njk' %}
 <input type="date" id="form_{{item}}" name="{{item}}"
   {%- if value %} value="{{value}}"{% endif %}
   {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif -%}
