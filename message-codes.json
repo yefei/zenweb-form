@@ -1,4 +1,5 @@
 {
+  "form.fail": "表单验证失败",
   "form.required": "必填项",
   "form.validate": "验证错误",
   "form.validate.lt": "必须小于 {target}",

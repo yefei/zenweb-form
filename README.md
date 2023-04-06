@@ -32,20 +32,35 @@ create()
 
 ```js
 import { inject, Context, mapping, Body } from 'zenweb';
-import { Form, fields } from '@zenweb/form';
+import { FormBase, widgets } from '@zenweb/form';
 
-class UserForm extends Form {
-  fields() {
-    return {
-      name: fields.trim('姓名').validate({ minLength: 2, maxLength: 10 }),
-      age: fields.int('年龄').help('年龄18-50').validate({ gte: 17, lte: 100 }),
-      gender: fields.radio('性别').choices([
-        '男',
-        {value: 2, label: '女'},
-      ]),
-    }
-  }
-}
+class UserForm extends FormBase({
+  username: {
+    type: '!string',
+    validate: {
+      minLength: 2,
+      maxLength: 12,
+    },
+    widget: widgets.text('用户名'),
+  },
+  age: {
+    type: '!int',
+    validate: {
+      gte: 18,
+      lte: 50,
+    },
+    widget: widgets.text('年龄').help('年龄18-50'),
+  },
+  interest: {
+    type: '!int[]',
+    widget: widgets.multiple('感兴趣的').choices([
+      {value: 1, label: '钓鱼'},
+      {value: 2, label: '编程'},
+      {value: 3, label: '厨艺'},
+      {value: 4, label: '手工'},
+    ]).max(3).min(1),
+  },
+}) {}
 
 export class UserController {
   @mapping({ path: '/form' })
@@ -91,7 +106,7 @@ create()
 `template/form.html.njk`
 
 ```nunjucks
-{% from "zenweb/form/macro.html.njk" import formFields, formStyle %}
+{% from "zenweb/form/macro.html.njk" import formFields, formStyle, formScript %}
 
 {{formStyle()}}
 
@@ -105,6 +120,8 @@ create()
     <button type="submit">提交</button>
   </form>
 </div>
+
+{{formScript()}}
 ```
 
 ```ts

@@ -1,14 +1,13 @@
+import { ResultFail } from '@zenweb/result';
 import { WidgetOption } from '../types';
 
-export class WidgetFail extends Error {
-  code: string | number;
-  params: any[];
-
-  constructor(code: string | number, params?: any) {
-    super(`WidgetFail: ${code}`);
-    this.name = 'WidgetFail';
-    this.code = code;
-    this.params = params;
+export class WidgetFail extends ResultFail {
+  constructor(code: string | number, params?: any, data?: any) {
+    super({
+      code,
+      params,
+      data,
+    });
   }
 }
 

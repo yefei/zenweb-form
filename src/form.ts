@@ -137,6 +137,15 @@ export abstract class Form<O extends FormFields> {
     return !this.hasErrors;
   }
 
+  /**
+   * 检查输入数据，如果有误直接抛出异常
+   */
+  async assert(input: any) {
+    if (!await this.validate(input)) {
+      throw new WidgetFail('form.fail', undefined, this.errorMessages);
+    }
+  }
+
   fail(code: string | number, params?: any) {
     throw new WidgetFail(code, params);
   }
