@@ -1,8 +1,9 @@
-import { inject, init } from '@zenweb/inject';
+import { inject } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import { GetPickReturnType, RequiredError, typeCast, ValidateError } from 'typecasts';
 import { WidgetFail, Widget } from './widgets/widget';
-import { FormFields, FormLayout, WidgetOption, WidgetResult } from './types';
+import { FormFields, FormLayout, PlainFormFields, WidgetResult } from './types';
+import { propertyAt } from './utils';
 
 function layoutExists(layout: FormLayout[], name: string): boolean {
   for (const i of layout) {
@@ -16,14 +17,9 @@ export abstract class Form<O extends FormFields> {
   @inject messageCodeResolver!: MessageCodeResolver;
 
   /**
-   * 已定义表单字段
+   * 初始化完成的字段
    */
-  fields!: O;
-
-  /**
-   * 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾
-   */
-  layout: FormLayout[] = [];
+  fields!: PlainFormFields;
 
   /**
    * 表单数据
@@ -35,15 +31,10 @@ export abstract class Form<O extends FormFields> {
    */
   errors: { [field: string]: any } = {};
 
-  @init
-  async [Symbol()]() {
-    for (const name of Object.keys(this.fields)) {
-      if (!layoutExists(this.layout, name)) {
-        this.layout.push(name);
-      }
-    }
-    return this;
-  }
+  /**
+   * 是否有校验错误
+   */
+  hasErrors: boolean = false;
 
   /**
    * 取得表单提交结果
@@ -59,26 +50,38 @@ export abstract class Form<O extends FormFields> {
     Object.assign(this._data, data);
   }
 
-  _getWidgetResults(fields: O, parent?: string) {
-    const out: { [name: string]: WidgetResult } = {};
-    for (let [name, opt] of Object.entries(fields)) {
-      if (parent) {
-        name = `${parent}.${name}`;
-      }
-      if (opt.type.includes('object') && opt.pick) {
-        out[name] = this._getWidgetResults(<O> opt.pick, name);
-      } else {
-        out[name] = Object.assign({
-          type: 'Text',
-          required: opt.type.startsWith('!'),
-          valueType: opt.type,
-          default: opt.default,
-          validate: opt.validate,
-        } as WidgetResult,
-        opt.widget instanceof Widget ? opt.widget.output() : opt.widget);
+  /**
+   * 输出字段
+   */
+  get widgetResult(): { [name: string]: WidgetResult } {
+    const widgetResult: { [name: string]: WidgetResult } = {};
+    for (const [name, opt] of Object.entries(this.fields)) {
+      widgetResult[name] = {
+        type: 'Text',
+        ...opt.option,
+        required: opt.cast.type.startsWith('!'),
+        valueType: opt.cast.type,
+        default: propertyAt(this._data, name.split('.')) || opt.cast.default,
+        validate: opt.cast.validate,
+      };
+      if (opt.widget) {
+        Object.assign(widgetResult[name], opt.widget instanceof Widget ? opt.widget.output() : opt.widget);
       }
     }
-    return out;
+    return widgetResult;
+  }
+
+  /**
+   * 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾
+   */
+  get layout(): FormLayout[] {
+    const layout: FormLayout[] = [];
+    for (const name of Object.keys(this.fields)) {
+      if (!layoutExists(layout, name)) {
+        layout.push(name);
+      }
+    }
+    return layout;
   }
 
   /**
@@ -86,17 +89,10 @@ export abstract class Form<O extends FormFields> {
    */
   get result() {
     return {
-      fields: this._getWidgetResults(this.fields),
+      fields: this.widgetResult,
       layout: this.layout,
       errors: this.hasErrors ? this.errorMessages : undefined,
     };
-  }
-
-  /**
-   * 是否有校验错误
-   */
-  get hasErrors() {
-    return Object.keys(this.errors).length > 0;
   }
 
   /**
@@ -105,10 +101,9 @@ export abstract class Form<O extends FormFields> {
    * @returns 是否有错误
    */
   async validate(input: any) {
-    for (const [ name, option ] of Object.entries(this.fields)) {
-      const _opt: WidgetOption = (option.widget instanceof Widget ? option.widget.option : option.widget) || {};
+    for (const [ name, opt ] of Object.entries(this.fields)) {
       // 忽略只读字段
-      if (_opt.readonly) continue;
+      if (opt.option.readonly) continue;
       try {
         // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
         let _inputData;
@@ -116,11 +111,10 @@ export abstract class Form<O extends FormFields> {
           if (name in input) _inputData = input[name];
           else if (`${name}[]` in input) _inputData = input[`${name}[]`];
         }
-        option.field = name;
-        let value: any = typeCast(_inputData, option);
+        let value: any = typeCast(_inputData, opt.cast);
         if (value !== undefined) {
-          if (_opt instanceof Widget) {
-            value = await _opt.clean(value);
+          if (opt.widget) {
+            value = await opt.widget.clean(value);
           }
           // 字段数据清理
           // 查找对象方法组合为 clean_{fieldname}() 的函数
@@ -128,11 +122,16 @@ export abstract class Form<O extends FormFields> {
           if (cleanField && typeof cleanField === 'function') {
             value = await cleanField.call(this, value);
           }
-          this._data[name] = value;
+          // this._data[name] = value;
+          propertyAt(this._data, name.split('.'), value);
         }
       } catch (e) {
         this.errors[name] = e;
+        this.hasErrors = true;
       }
+    }
+    if (!this.hasErrors && 'clean' in this && typeof this.clean === 'function') {
+      await this.clean();
     }
     return !this.hasErrors;
   }
@@ -182,7 +181,42 @@ export abstract class Form<O extends FormFields> {
  * @returns 表单基类，需要使用类继承
  */
 export function FormBase<O extends FormFields>(fields: O): { new (): Form<O> } {
+
+  const plainFields: PlainFormFields = {};
+
+  function eachFields(fields: O, parent?: string) {
+    for (let [name, opt] of Object.entries(fields)) {
+      if (parent) {
+        name = `${parent}.${name}`;
+      }
+      if (typeof opt === 'string') {
+        plainFields[name] = {
+          cast: { type: opt, field: name },
+          option: {},
+        };
+      }
+      else if (opt.pick && opt.type.includes('object')) {
+        eachFields(<O> opt.pick, name);
+        continue;
+      }
+      else {
+        opt = Object.assign({ field: name }, opt); // pure CastOption
+        const widget = opt.widget || {};
+        delete opt.widget;
+        plainFields[name] = {
+          cast: opt,
+          option: widget instanceof Widget ? widget.output() : widget,
+        };
+        if (widget instanceof Widget) {
+          plainFields[name].widget = widget;
+        }
+      }
+    }
+  }
+
+  eachFields(fields);
+
   return class extends Form<O> {
-    fields = fields;
+    fields = plainFields;
   }
 }

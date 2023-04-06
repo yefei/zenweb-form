@@ -1,3 +1,4 @@
+import { Context, inject } from "zenweb";
 import { FormBase, widgets } from "../../../src";
 
 export class ExampleForm extends FormBase({
@@ -11,6 +12,7 @@ export class ExampleForm extends FormBase({
   },
   desc: {
     type: '!string',
+    default: 'descdefault',
     validate: {
       minLength: 3,
       maxLength: 1000,
@@ -81,12 +83,26 @@ export class ExampleForm extends FormBase({
     default: '给你看看',
     widget: widgets.text('只读字段').readonly(),
   },
+  obj: {
+    type: 'object',
+    pick: {
+      title: '!trim',
+      comment: '!trim',
+    },
+  }
 }) {
+  @inject ctx!: Context;
+
   // 表单后置校验字段数据
   clean_username(data: string) {
     if (data.includes('admin')) {
       this.fail('like-admin');
     }
     return data; // 返回数据
+  }
+
+  // 整体清理
+  clean() {
+    console.log('clean!');
   }
 }

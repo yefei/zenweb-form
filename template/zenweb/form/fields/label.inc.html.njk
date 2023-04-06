@@ -1,1 +1,1 @@
-<label for="form_{{item}}">{{field.label}}{% if field.required %}<i>*</i>{% endif %}</label>
+<label for="form_{{item}}">{{field.label|default(item)}}{% if field.required %}<i>*</i>{% endif %}</label>

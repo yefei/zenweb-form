@@ -1,7 +1,26 @@
-import { CastOption, TypeKeys, ValidateOption } from 'typecasts';
+import { CastOption, ObjectKeys, TypeKeys, ValidateOption } from 'typecasts';
 import { Widget } from './widgets/widget';
 
-export type FormFields = { [name: string]: FieldOption };
+/**
+ * 定义字段
+ */
+export type FormFields = { [name: string]: FieldOption | TypeKeys };
+
+/**
+ * 初始化完成的字段
+ * - 对象嵌套类型初始化成一维平面
+ */
+export type PlainFormFields = {
+  [name: string]: {
+    cast: CastOption,
+    option: WidgetOption,
+    widget?: Widget,
+  }
+};
+
+/**
+ * 表单布局信息
+ */
 export type FormLayout = string | FormLayout[];
 
 /**
@@ -42,7 +61,7 @@ export interface WidgetResult extends WidgetOption {
   /**
    * 值类型
    */
-  valueType?: TypeKeys;
+  valueType?: TypeKeys | ObjectKeys;
 
   /**
    * 默认值
