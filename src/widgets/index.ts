@@ -7,6 +7,7 @@ import * as upload from './upload';
 import * as text from './text';
 import * as cascader from './cascader';
 import * as suggest from './suggest';
+import * as other from './other';
 
 export const widgets = {
   ...select,
@@ -15,4 +16,5 @@ export const widgets = {
   ...text,
   ...cascader,
   ...suggest,
+  ...other,
 };

@@ -30,6 +30,7 @@
   "form.datetime.format-error.datetime": "日期时间格式错误，正确格式 {format}",
   "form.datetime.format-error.date": "日期格式错误，正确格式 {format}",
   "form.datetime.format-error.time": "时间格式错误，正确格式 {format}",
+  "form.onebox.not-eq": "请勾选",
   "form.select.options.empty": "没有可选择项",
   "form.select.choice-invalid": "请选择一个有效值",
   "form.select.choice-disabled": "不可选择已禁用项: {label}",

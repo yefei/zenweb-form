@@ -1,16 +1,18 @@
 import { $enum } from 'ts-enum-util';
 import { Widget, simple } from './widget';
 
+export type ChoiceValueType = number | string;
+
 export interface ChoiceType {
   /**
    * 显示名
    */
-  label: number | string;
+  label: string;
 
   /**
    * 值
    */
-  value: number | string;
+  value: ChoiceValueType;
 
   /**
    * 禁止选择
@@ -24,12 +26,12 @@ export class Select extends Widget {
   /**
    * 设置选择项
    */
-  choices(choices: (string | number | ChoiceType)[]) {
+  choices(choices: (ChoiceValueType | ChoiceType)[]) {
     for (const c of choices) {
       if (typeof c === 'object') {
         this._choices.push(c);
       } else {
-        this._choices.push({ label: c, value: c });
+        this._choices.push({ label: String(c), value: c });
       }
     }
     return this;
@@ -45,7 +47,7 @@ export class Select extends Widget {
   /**
    * 使用 ts 的 enum 类型作为选择项
    */
-  choicesEnum<T extends Record<Extract<keyof T, string>, number | string>>(enumObj: T) {
+  choicesEnum<T extends Record<Extract<keyof T, string>, ChoiceValueType>>(enumObj: T) {
     return this.choices($enum(enumObj).map((value, label) => ({ value, label })));
   }
 

@@ -5,6 +5,8 @@ import { WidgetFail, Widget } from './widgets/widget';
 import { FormFields, FormLayout, PlainFormFields, WidgetResult } from './types';
 import { propertyAt } from './utils';
 
+const objectSpliter = '$';
+
 function layoutExists(layout: FormLayout[], name: string): boolean {
   for (const i of layout) {
     if (i === name) return true;
@@ -71,7 +73,7 @@ export abstract class Form<O extends FormFields> {
         ...opt.option,
         required: opt.cast.type.startsWith('!'),
         valueType: opt.cast.type,
-        default: propertyAt(this._data, name.split('.')) || opt.cast.default,
+        default: propertyAt(this._data, name.split(objectSpliter)) || opt.cast.default,
         validate: opt.cast.validate,
       };
       if (opt.widget) {
@@ -133,7 +135,7 @@ export abstract class Form<O extends FormFields> {
             value = await cleanField.call(this, value);
           }
           // this._data[name] = value;
-          propertyAt(this._data, name.split('.'), value);
+          propertyAt(this._data, name.split(objectSpliter), value);
         }
       } catch (e) {
         this.errors[name] = e;
@@ -151,7 +153,9 @@ export abstract class Form<O extends FormFields> {
    */
   async assert(input: any) {
     if (!await this.validate(input)) {
-      throw new WidgetFail('form.fail', undefined, this.errorMessages);
+      throw new WidgetFail('form.fail', undefined, {
+        errors: this.errorMessages,
+      });
     }
   }
 
@@ -200,7 +204,7 @@ export function FormBase<O extends FormFields>(fields: O): { new (): Form<O> } {
   function eachFields(fields: O, parent?: string) {
     for (let [name, opt] of Object.entries(fields)) {
       if (parent) {
-        name = `${parent}.${name}`;
+        name = `${parent}${objectSpliter}${name}`;
       }
       if (typeof opt === 'string') {
         plainFields[name] = {

@@ -74,9 +74,7 @@ export class ExampleForm extends FormBase({
   },
   agreement: {
     type: '!bool',
-    widget: widgets.checkbox('注册协议').choices([
-      {value: 1, label: '同意并遵守'},
-    ]).min(1).max(1),
+    widget: widgets.onebox('同意并遵守注册协议'),
   },
   a: {
     type: 'string',
