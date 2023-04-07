@@ -13,6 +13,16 @@ function layoutExists(layout: FormLayout[], name: string): boolean {
   return false;
 }
 
+export interface Form<O extends FormFields> {
+  /**
+   * 总体数据验证清理
+   * - 在所有字段验证通过后调用
+   * - 如果验证不通过需要抛出异常可以使用 `this.fail('code')`
+   * - 使用 `this.data` 访问或改变数据
+   */
+  clean?(): void | Promise<void>;
+}
+
 export abstract class Form<O extends FormFields> {
   @inject messageCodeResolver!: MessageCodeResolver;
 
@@ -113,7 +123,7 @@ export abstract class Form<O extends FormFields> {
         }
         let value: any = typeCast(_inputData, opt.cast);
         if (value !== undefined) {
-          if (opt.widget) {
+          if (opt.widget && opt.widget.clean) {
             value = await opt.widget.clean(value);
           }
           // 字段数据清理
@@ -130,7 +140,7 @@ export abstract class Form<O extends FormFields> {
         this.hasErrors = true;
       }
     }
-    if (!this.hasErrors && 'clean' in this && typeof this.clean === 'function') {
+    if (!this.hasErrors && this.clean) {
       await this.clean();
     }
     return !this.hasErrors;
@@ -145,6 +155,9 @@ export abstract class Form<O extends FormFields> {
     }
   }
 
+  /**
+   * 验证失败 - 抛出异常
+   */
   fail(code: string | number, params?: any) {
     throw new WidgetFail(code, params);
   }

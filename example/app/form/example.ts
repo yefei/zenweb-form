@@ -18,7 +18,7 @@ export class ExampleForm extends FormBase({
       maxLength: 1000,
     },
     widget: widgets.textarea('自我描述').rows(3, 10).help('自我描述不要超过1000字，最少3个字'),
-  }, 
+  },
   age: {
     type: '!int',
     validate: {
@@ -28,15 +28,15 @@ export class ExampleForm extends FormBase({
     widget: widgets.text('年龄').help('年龄18-50'),
   },
   date: {
-    type: '!trim2',
+    type: '!trim1',
     widget: widgets.date('日期'),
   },
   time: {
-    type: '!trim2',
+    type: '!trim1',
     widget: widgets.time('时间'),
   },
   datetime: {
-    type: '!string',
+    type: '!trim1',
     widget: widgets.datetime('日期时间'),
   },
   upload: {

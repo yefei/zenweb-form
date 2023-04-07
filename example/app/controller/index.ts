@@ -6,7 +6,7 @@ export class IndexController {
   @mapping({ method: 'POST' })
   upload(upload: UploadHelper) {
     return {
-      url: upload.file('remote')?.originalFilename,
+      value: upload.file('remote')?.originalFilename,
     };
   }
 

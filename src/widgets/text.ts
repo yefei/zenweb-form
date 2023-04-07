@@ -19,7 +19,7 @@ export class Textarea extends Text {
 
   extra() {
     return {
-      rows: this._rows || 'auto',
+      rows: this._rows,
     };
   }
 }

@@ -35,6 +35,7 @@
         if (this.files.length === 0) return;
         const name = $(this).attr('name');
         const to = $(this).data('to');
+        // const maxFiles = parseInt($(this).data('max-files'));
         const upform = new FormData();
         for (const f of this.files) {
           upform.append(name, f);
@@ -46,11 +47,14 @@
           contentType: false,
           responseType: 'json',
           processData: false,
+          error: function(xhr, msg) {
+            alert(msg);
+          },
           success: function(response) {
-            const url = response.data.url;
+            const value = response.data.value;
             $('#form_' + name + '_uploaded').show();
-            $('#form_' + name).attr('type', 'hidden').attr('value', url);
-            $('#form_' + name + '_uploaded_value').text(url);
+            $('#form_' + name).attr('type', 'hidden').attr('value', value);
+            $('#form_' + name + '_uploaded_value').text(value);
           }
         });
       });
@@ -59,15 +63,15 @@
 {% endmacro %}
 
 {% macro formFields(form, input) %}
-  {% for item in form.layout -%}
-    {%- set field = form.fields[item] -%}
-    {%- set value = input[item]|default(field.default) -%}
+  {% for name in form.layout -%}
+    {%- set field = form.fields[name] -%}
+    {%- set value = input[name]|default(field.default) -%}
     <div class="zenform-item">
       <div class="zenform-item-field">
         {% include "./fields/" + field.type + ".html.njk" -%}
       </div>
-      {%- if form.errors and form.errors[item] %}
-        <div class="zenform-item-error">{{form.errors[item]}}</div>
+      {%- if form.errors and form.errors[name] %}
+        <div class="zenform-item-error">{{form.errors[name]}}</div>
       {% endif -%}
       {%- if field.help %}
         <div class="zenform-item-help">{{field.help}}</div>

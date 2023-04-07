@@ -11,6 +11,21 @@ export class WidgetFail extends ResultFail {
   }
 }
 
+export interface Widget {
+  /**
+   * 额外输出参数
+   */
+  extra?(): Record<string, any>;
+
+  /**
+   * 数据验证清理
+   * - 在字段数据验证通过后调用
+   * - 如果验证不通过需要抛出异常可以使用 `this.fail('code')`
+   * - 需要返回清理完成的数据
+   */
+  clean?(data: any): any;
+}
+
 export abstract class Widget {
   option: WidgetOption = {
     type: this.constructor.name,
@@ -52,22 +67,7 @@ export abstract class Widget {
    * 输出参数
    */
   output() {
-    return Object.assign({}, this.option, this.extra());
-  }
-
-  /**
-   * 额外输出参数
-   * - 继承类使用
-   */
-  extra() {
-  }
-
-  /**
-   * 数据验证清理，如果验证不通过需要抛出异常，使用 this.fail('code')
-   * - 继承类使用
-   */
-  clean(data: any) {
-    return data;
+    return Object.assign({}, this.option, this.extra ? this.extra() : undefined);
   }
 
   /**

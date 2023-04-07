@@ -1,5 +1,5 @@
 {% include './label.inc.html.njk' %}
-<textarea id="form_{{item}}" name="{{item}}"
+<textarea id="form_{{name}}" name="{{name}}"
   {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif %}
   {%- if field.rows %} rows="{{field.rows.min}}"{% endif -%}
   {%- if field.readonly %} readonly{% endif -%}

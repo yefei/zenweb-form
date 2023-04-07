@@ -129,7 +129,7 @@ export class DemoController {
   @mapping({ method: ['GET', 'POST'] })
   async html(ctx: Context, form: UserForm, input: ObjectBody) {
     ctx.template('form.html.njk');
-    form.data = { name: 'default value' };
+    form.data = { username: 'default value' };
     let ok = false;
     if (ctx.method === 'POST') {
       ok = await form.validate(input);
