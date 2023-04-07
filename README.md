@@ -60,7 +60,23 @@ class UserForm extends FormBase({
       {value: 4, label: '手工'},
     ]).max(3).min(1),
   },
-}) {}
+}) {
+  // 类支持注入
+  @inject ctx!: Context;
+
+  // 支持字段数据清理
+  clean_username(data: string) {
+    if (data.includes('admin')) {
+      this.fail('like-admin');
+    }
+    return data; // 返回数据
+  }
+
+  // 支持总体数据清理
+  clean() {
+    console.log(this.data);
+  }
+}
 
 export class UserController {
   @mapping({ path: '/form' })
