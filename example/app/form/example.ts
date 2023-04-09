@@ -81,6 +81,20 @@ export class ExampleForm extends FormBase({
     default: '给你看看',
     widget: widgets.text('只读字段').readonly(),
   },
+  daterange: {
+    type: 'string[]',
+    widget: widgets.dateRange('日期范围'),
+  },
+  cas: {
+    type: 'int',
+    widget: widgets.cascader("级连选择").choices([
+      { label: "第一层", value: 1 },
+      { label: "第二层1", value: 2, parent: 1 },
+      { label: "第二层2", value: 3, parent: 1 },
+      { label: "第三层1", value: 4, parent: 2, disabled: true },
+      { label: "第一层2", value: 10 },
+    ])
+  },
   obj: {
     type: 'object',
     pick: {

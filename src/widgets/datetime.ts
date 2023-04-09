@@ -67,6 +67,7 @@ export class DateRange extends Date {
   }
 
   clean(data: [string, string]) {
+    if (!data[0]) return [];
     const startDate = datetimeFormat(this._format, data[0]);
     if (!startDate) {
       this.fail('form.daterange.start.error');

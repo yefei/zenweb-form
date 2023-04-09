@@ -1,0 +1,12 @@
+{% include './label.inc.html.njk' %}
+<div class="zenfrom-layout">
+  <input type="date" id="form_{{name}}_1" name="{{name}}" placeholder="起始日期"
+    {%- if value %} value="{{value[0]}}"{% endif %}
+    {%- if field.readonly %} readonly{% endif -%}
+  />
+  <span class="zenfrom-spliter">-</span>
+  <input type="date" id="form_{{name}}_2" name="{{name}}" placeholder="结束日期"
+    {%- if value %} value="{{value[1]}}"{% endif %}
+    {%- if field.readonly %} readonly{% endif -%}
+  />
+</div>

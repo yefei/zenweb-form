@@ -15,7 +15,7 @@ export interface ChoiceType {
    * 不可选择项
    * @default false
    */
-  unselectable?: boolean;
+  disabled?: boolean;
 
   /**
    * 父项值
@@ -101,7 +101,7 @@ export class Cascader extends Widget {
       this.fail('form.select.choice-min', { min: this._min });
     }
     for (const i of data) {
-      if (this._choices.filter(i => !i.unselectable).findIndex(c => c.value == i) === -1) {
+      if (this._choices.filter(i => !i.disabled).findIndex(c => c.value == i) === -1) {
         this.fail('form.select.choice-invalid', { data: i });
       }
     }

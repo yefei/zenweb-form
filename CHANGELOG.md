@@ -1,5 +1,8 @@
 # Changelog
 
+## [4.2.0] - 2023-4-9
+- html 控件 Cascader, DateRange
+
 ## [4.1.0] - 2023-4-7
 - 新增 onebox 控件
 - 对象字段分割字符换为 $ (. 分割符与 vue 冲突)
