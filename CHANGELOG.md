@@ -1,5 +1,8 @@
 # Changelog
 
+## [4.3.2] - 2023-4-9
+- fix: html 控件值判定问题
+
 ## [4.3.1] - 2023-4-9
 - fix: html 控件 Cascader, Radio, Select value 值判定 bug
 

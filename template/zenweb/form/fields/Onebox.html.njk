@@ -1,7 +1,8 @@
+{%- set __v = '' if value === undefined else value|string -%}
 <label></label>
 <div>
   <input type="checkbox" name="{{name}}" id="form_{{name}}" value="{{field.value}}"
-    {%- if value == field.value|string %} checked{% endif -%}
+    {%- if __v == field.value|string %} checked{% endif -%}
   />
   <label for="form_{{name}}">{{field.label or name}}</label>
 </div>
