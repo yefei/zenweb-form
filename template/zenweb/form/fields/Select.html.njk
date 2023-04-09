@@ -1,5 +1,8 @@
 {% include './label.inc.html.njk' %}
 <select name="{{name}}" id="form_{{name}}">
+  {% if not field.required %}
+    <option></option>
+  {% endif %}
   {% for r in field.choices -%}
     <option value="{{r.value}}"
       {%- if value and r.value == value %} selected{% endif -%}
