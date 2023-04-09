@@ -1,5 +1,8 @@
 # Changelog
 
+## [4.3.1] - 2023-4-9
+- fix: html 控件 Cascader, Radio, Select value 值判定 bug
+
 ## [4.3.0] - 2023-4-9
 - html 控件 Cascader, Radio, Select 如果不是必填项则增加一项空选项
 

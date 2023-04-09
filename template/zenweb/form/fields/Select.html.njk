@@ -5,7 +5,7 @@
   {% endif %}
   {% for r in field.choices -%}
     <option value="{{r.value}}"
-      {%- if value and r.value == value %} selected{% endif -%}
+      {%- if r.value == value %} selected{% endif -%}
       {%- if r.disabled %} disabled{% endif -%}
     >{{r.label}}</option>
   {% endfor -%}

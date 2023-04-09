@@ -2,7 +2,7 @@
   {% for r in choices -%}
     {% if r.parent == parent %}
       <option value="{{r.value}}"
-        {%- if value and r.value == value %} selected{% endif -%}
+        {%- if r.value == value %} selected{% endif -%}
         {%- if r.disabled %} disabled{% endif -%}
       >{% for i in range(0, level) %}　{% endfor %}{{r.label}}</option>
       {{- eachOption(value, choices, r.value, level+1) -}}
