@@ -3,7 +3,7 @@ import { MessageCodeResolver } from '@zenweb/messagecode';
 import { GetPickReturnType, RequiredError, typeCast, ValidateError } from 'typecasts';
 import { WidgetFail, Widget } from './widgets/widget';
 import { FormFields, FormLayout, PlainFormFields, WidgetResult } from './types';
-import { propertyAt } from './utils';
+import { propertyAt } from 'property-at';
 
 const objectSpliter = '$';
 

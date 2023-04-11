@@ -1,6 +1,6 @@
 {
   "name": "@zenweb/form",
-  "version": "4.3.2",
+  "version": "4.3.3",
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "moment": "^2.29.4",
+    "property-at": "^1.0.1",
     "ts-enum-util": "^4.0.2"
   }
 }
