@@ -31,7 +31,17 @@ export abstract class Form<O extends FormFields> {
   /**
    * 初始化完成的字段
    */
-  fields!: PlainFormFields;
+  plainFields!: PlainFormFields;
+
+  /**
+   * 布局结果
+   */
+  _layout?: FormLayout[];
+
+  /**
+   * 字段结果
+   */
+  _fields?: WidgetsResult;
 
   /**
    * 表单数据
@@ -47,6 +57,27 @@ export abstract class Form<O extends FormFields> {
    * 是否有校验错误
    */
   hasErrors: boolean = false;
+
+  /**
+   * 已格式化错误消息
+   */
+  _errorMessages?: ErrorMessages;
+
+  /**
+   * 重置表单
+   * - 清除已处理数据
+   * - 清除已处理字段
+   * - 清除已处理布局
+   * - 清除错误消息
+   */
+  reset() {
+    delete this._fields;
+    delete this._layout;
+    this._data = {};
+    this.errors = {};
+    this.hasErrors = false;
+    delete this._errorMessages;
+  }
 
   /**
    * 取得表单提交结果
@@ -65,45 +96,48 @@ export abstract class Form<O extends FormFields> {
   /**
    * 输出字段
    */
-  get widgetResult(): WidgetsResult {
-    const widgetResult: WidgetsResult = {};
-    for (const [name, opt] of Object.entries(this.fields)) {
-      widgetResult[name] = {
-        type: 'Text',
-        ...opt.option,
-        required: opt.cast.type.startsWith('!'),
-        valueType: opt.cast.type,
-        default: propertyAt(this._data, name.split(objectSpliter)) || opt.cast.default,
-        validate: opt.cast.validate,
-      };
-      if (opt.widget) {
-        Object.assign(widgetResult[name], opt.widget instanceof Widget ? opt.widget.output() : opt.widget);
+  get fields() {
+    if (!this._fields) {
+      this._fields = {};
+      for (const [name, opt] of Object.entries(this.plainFields)) {
+        this._fields[name] = {
+          type: 'Text',
+          ...opt.option,
+          required: opt.cast.type.startsWith('!'),
+          valueType: opt.cast.type,
+          default: propertyAt(this._data, name.split(objectSpliter)) || opt.cast.default,
+          validate: opt.cast.validate,
+        };
+        if (opt.widget) {
+          Object.assign(this._fields[name], opt.widget instanceof Widget ? opt.widget.output() : opt.widget);
+        }
       }
     }
-    return widgetResult;
+    return this._fields;
   }
 
   /**
    * 表单布局，如果不设置或者缺少字段，则自动按顺序追加到结尾
    */
-  get layout(): FormLayout[] {
-    const layout: FormLayout[] = [];
-    for (const name of Object.keys(this.fields)) {
-      if (!layoutExists(layout, name)) {
-        layout.push(name);
+  get layout() {
+    if (!this._layout) {
+      this._layout = [];
+      for (const name of Object.keys(this.plainFields)) {
+        if (!layoutExists(this._layout, name)) {
+          this._layout.push(name);
+        }
       }
     }
-    return layout;
+    return this._layout;
   }
 
   /**
    * 输出表单给前端
    */
-  get result(): FormResult {
+  toJSON(): FormResult {
     return {
-      fields: this.widgetResult,
+      fields: this.fields,
       layout: this.layout,
-      errors: this.hasErrors ? this.errorMessages : undefined,
     };
   }
 
@@ -113,7 +147,8 @@ export abstract class Form<O extends FormFields> {
    * @returns 是否有错误
    */
   async validate(input: any) {
-    for (const [ name, opt ] of Object.entries(this.fields)) {
+    this.reset();
+    for (const [ name, opt ] of Object.entries(this.plainFields)) {
       // 忽略只读字段
       if (opt.option.readonly) continue;
       try {
@@ -168,26 +203,30 @@ export abstract class Form<O extends FormFields> {
 
   /**
    * 错误消息
+   * - 当发生错误时 key 对应字段名称
    */
   get errorMessages() {
-    const messages: ErrorMessages = {};
-    Object.entries(this.errors).map(([field, e]) => {
-      if (e instanceof RequiredError) {
-        messages[field] = this.messageCodeResolver.format(`form.required.${field}`, {});
-      }
-      else if (e instanceof ValidateError) {
-        let code = e.validate;
-        if (e.validate === 'cast') code += `.${typeof e.target === 'function' ? e.target.name || '-' : e.target}`;
-        messages[field] = this.messageCodeResolver.format(`form.validate.${code}.${field}`, e);
-      }
-      else if (e instanceof WidgetFail) {
-        messages[field] = this.messageCodeResolver.format(`${e.code}.${field}`, e.params);
-      }
-      else {
-        messages[field] = e.message;
-      }
-    });
-    return messages;
+    if (!this._errorMessages) {
+      const messages: ErrorMessages = {};
+      Object.entries(this.errors).map(([field, e]) => {
+        if (e instanceof RequiredError) {
+          messages[field] = this.messageCodeResolver.format(`form.required.${field}`, {});
+        }
+        else if (e instanceof ValidateError) {
+          let code = e.validate;
+          if (e.validate === 'cast') code += `.${typeof e.target === 'function' ? e.target.name || '-' : e.target}`;
+          messages[field] = this.messageCodeResolver.format(`form.validate.${code}.${field}`, e);
+        }
+        else if (e instanceof WidgetFail) {
+          messages[field] = this.messageCodeResolver.format(`${e.code}.${field}`, e.params);
+        }
+        else {
+          messages[field] = e.message;
+        }
+      });
+      this._errorMessages = messages;
+    }
+    return this._errorMessages;
   }
 }
 
@@ -234,6 +273,6 @@ export function FormBase<O extends FormFields>(fields: O): { new (): Form<O> } {
   eachFields(fields);
 
   return class extends Form<O> {
-    fields = plainFields;
+    plainFields = plainFields;
   }
 }

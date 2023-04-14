@@ -153,7 +153,7 @@ export class DemoController {
         // some code
       }
     }
-    return { form: form.result, input, ok };
+    return { form, input, ok };
   }
 }
 ```

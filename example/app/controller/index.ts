@@ -13,7 +13,7 @@ export class IndexController {
   @mapping()
   form(form: ExampleForm) {
     form.data = { username: '默认名字' };
-    return form.result;
+    return form;
   }
 
   @mapping({ path: '/form', method: 'POST' })
@@ -32,7 +32,7 @@ export class IndexController {
       await form.assert(input);
       return form.data;
     }
-    return form.result;
+    return form;
   }
 
   @mapping({ method: ['GET', 'POST'] })
@@ -56,6 +56,6 @@ export class IndexController {
         // some code
       }
     }
-    return { form: form.result, input, ok };
+    return { form, input, ok };
   }
 }

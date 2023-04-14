@@ -111,10 +111,4 @@ export interface FormResult {
    * 字段布局
    */
   layout: FormLayout[];
-
-  /**
-   * 字段错误信息
-   * - 当发生错误时 key 对应字段名称
-   */
-  errors?: ErrorMessages;
 }

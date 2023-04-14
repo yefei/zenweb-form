@@ -83,8 +83,8 @@
       <div class="zenform-item-field">
         {% include "./fields/" + field.type + ".html.njk" -%}
       </div>
-      {%- if form.errors and form.errors[name] %}
-        <div class="zenform-item-error">{{form.errors[name]}}</div>
+      {%- if form.errorMessages[name] %}
+        <div class="zenform-item-error">{{form.errorMessages[name]}}</div>
       {% endif -%}
       {%- if field.help %}
         <div class="zenform-item-help">{{field.help}}</div>
