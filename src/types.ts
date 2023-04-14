@@ -86,3 +86,35 @@ export interface FieldOption extends CastOption {
    */
   widget?: Widget | WidgetOption;
 }
+
+/**
+ * 字段控件结果
+ */
+export type WidgetsResult = { [name: string]: WidgetResult };
+
+/**
+ * 字段错误消息
+ */
+export type ErrorMessages = { [field: string]: string | number };
+
+/**
+ * 表单结果
+ */
+export interface FormResult {
+  /**
+   * 字段结果
+   * - key 为字段名
+   */
+  fields: WidgetsResult;
+
+  /**
+   * 字段布局
+   */
+  layout: FormLayout[];
+
+  /**
+   * 字段错误信息
+   * - 当发生错误时 key 对应字段名称
+   */
+  errors?: ErrorMessages;
+}

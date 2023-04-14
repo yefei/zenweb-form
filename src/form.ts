@@ -2,7 +2,7 @@ import { inject } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import { GetPickReturnType, RequiredError, typeCast, ValidateError } from 'typecasts';
 import { WidgetFail, Widget } from './widgets/widget';
-import { FormFields, FormLayout, PlainFormFields, WidgetResult } from './types';
+import { ErrorMessages, FormFields, FormLayout, FormResult, PlainFormFields, WidgetResult, WidgetsResult } from './types';
 import { propertyAt } from 'property-at';
 
 const objectSpliter = '$';
@@ -65,8 +65,8 @@ export abstract class Form<O extends FormFields> {
   /**
    * 输出字段
    */
-  get widgetResult(): { [name: string]: WidgetResult } {
-    const widgetResult: { [name: string]: WidgetResult } = {};
+  get widgetResult(): WidgetsResult {
+    const widgetResult: WidgetsResult = {};
     for (const [name, opt] of Object.entries(this.fields)) {
       widgetResult[name] = {
         type: 'Text',
@@ -99,7 +99,7 @@ export abstract class Form<O extends FormFields> {
   /**
    * 输出表单给前端
    */
-  get result() {
+  get result(): FormResult {
     return {
       fields: this.widgetResult,
       layout: this.layout,
@@ -170,7 +170,7 @@ export abstract class Form<O extends FormFields> {
    * 错误消息
    */
   get errorMessages() {
-    const messages: { [field: string]: string | number } = {};
+    const messages: ErrorMessages = {};
     Object.entries(this.errors).map(([field, e]) => {
       if (e instanceof RequiredError) {
         messages[field] = this.messageCodeResolver.format(`form.required.${field}`, {});
