@@ -89,8 +89,21 @@ export abstract class Form<O extends FormFields> {
   /**
    * 设置表单提交结果或初始值
    */
-  set data(data: Partial<{ [K in keyof O]: GetPickReturnType<O, K> }> | null | undefined) {
-    Object.assign(this._data, data);
+  set data(data: { [K in keyof O]?: GetPickReturnType<O, K> } | null | undefined) {
+    if (data) {
+      /*
+      for (const [name, opt] of Object.entries(this.plainFields)) {
+        const kpath = name.split(objectSpliter);
+        const value = propertyAt(data, kpath);
+        if (typeof value !== 'undefined') {
+          propertyAt(this._data, kpath, typeCast(value, opt.cast));
+        }
+      }
+      */
+      Object.assign(this._data, data);
+    } else {
+      this._data = {};
+    }
   }
 
   /**
@@ -240,6 +253,9 @@ export function FormBase<O extends FormFields>(fields: O): { new (): Form<O> } {
 
   const plainFields: PlainFormFields = {};
 
+  /**
+   * 将嵌套类型转换为平面类型
+   */
   function eachFields(fields: O, parent?: string) {
     for (let [name, opt] of Object.entries(fields)) {
       if (parent) {
