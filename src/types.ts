@@ -4,7 +4,7 @@ import { Widget } from './widgets/widget';
 /**
  * 定义字段
  */
-export type FormFields = { [name: string]: FieldOption | TypeKeys };
+// export type FormFields = { [name: string]: FieldOption | TypeKeys };
 
 /**
  * 初始化完成的字段

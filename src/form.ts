@@ -1,8 +1,8 @@
-import { inject } from '@zenweb/inject';
+import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
-import { GetPickReturnType, RequiredError, typeCast, ValidateError } from 'typecasts';
+import { GetPickReturnType, RequiredError, typeCast, ValidateError, TypeKeys } from 'typecasts';
 import { WidgetFail, Widget } from './widgets/widget';
-import { ErrorMessages, FormFields, FormLayout, FormResult, PlainFormFields, WidgetResult, WidgetsResult } from './types';
+import { ErrorMessages, FieldOption, FormLayout, FormResult, PlainFormFields, WidgetsResult } from './types';
 import { propertyAt } from 'property-at';
 
 const objectSpliter = '$';
@@ -15,7 +15,7 @@ function layoutExists(layout: FormLayout[], name: string): boolean {
   return false;
 }
 
-export interface Form<O extends FormFields> {
+export interface Form {
   /**
    * 总体数据验证清理
    * - 在所有字段验证通过后调用
@@ -25,7 +25,10 @@ export interface Form<O extends FormFields> {
   clean?(): void | Promise<void>;
 }
 
-export abstract class Form<O extends FormFields> {
+export abstract class Form<
+  T extends { [key: string]: unknown } = {},
+  O = { [K in keyof T]: FieldOption | TypeKeys }
+> {
   @inject messageCodeResolver!: MessageCodeResolver;
 
   /**
@@ -62,6 +65,52 @@ export abstract class Form<O extends FormFields> {
    * 已格式化错误消息
    */
   _errorMessages?: ErrorMessages;
+
+  /**
+   * 安装初始化字段
+   */
+  abstract setup(): O | Promise<O>;
+
+  /**
+   * 初始化
+   */
+  @init [Symbol()]() {
+    const form = this;
+    /**
+     * 将嵌套类型转换为平面类型
+     */
+    function eachFields(fields: O, parent?: string) {
+      for (let [name, opt] of Object.entries(fields)) {
+        if (parent) {
+          name = `${parent}${objectSpliter}${name}`;
+        }
+        if (typeof opt === 'string') {
+          form.plainFields[name] = {
+            cast: { type: opt, field: name },
+            option: {},
+          };
+        }
+        else if (opt.pick && opt.type.includes('object')) {
+          eachFields(<O> opt.pick, name);
+          continue;
+        }
+        else {
+          opt = Object.assign({ field: name }, opt); // pure CastOption
+          const widget = opt.widget || {};
+          delete opt.widget;
+          form.plainFields[name] = {
+            cast: opt,
+            option: widget instanceof Widget ? widget.output() : widget,
+          };
+          if (widget instanceof Widget) {
+            plainFields[name].widget = widget;
+          }
+        }
+      }
+    }
+
+    eachFields(fields);
+  }
 
   /**
    * 重置表单
