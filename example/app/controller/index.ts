@@ -38,7 +38,7 @@ export class IndexController {
   @mapping({ method: ['GET', 'POST'] })
   async html(ctx: Context, form: ExampleForm, upload: Upload) {
     ctx.template('form.html.njk');
-    form.data = { username: '默认名字', obj: { title: 'testtitle', comment: 'ccccc' } };
+    form.data = { username: '默认名字' };
     let ok = false;
     const input = upload.fields;
     if (ctx.method === 'POST') {

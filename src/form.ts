@@ -1,11 +1,12 @@
 import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
-import { GetPickReturnType, RequiredError, typeCast, ValidateError, TypeKeys } from 'typecasts';
+import { CastKeys, RequiredError, typeCast, ValidateError } from 'typecasts';
 import { WidgetFail, Widget } from './widgets/widget';
-import { ErrorMessages, FieldOption, FormLayout, FormResult, PlainFormFields, WidgetsResult } from './types';
-import { propertyAt } from 'property-at';
+import { ErrorMessages, FormData, FormLayout, FormResult, PlainFormFields, WidgetOption, WidgetsResult } from './types';
+import { GET_FIELD_OPTION, GetFieldType, TypeField, TypeListField } from './field';
+import { Text } from './widgets/text';
 
-const objectSpliter = '$';
+// const objectSpliter = '$';
 
 function layoutExists(layout: FormLayout[], name: string): boolean {
   for (const i of layout) {
@@ -25,31 +26,28 @@ export interface Form {
   clean?(): void | Promise<void>;
 }
 
-export abstract class Form<
-  T extends { [key: string]: unknown } = {},
-  O = { [K in keyof T]: FieldOption | TypeKeys }
-> {
-  @inject messageCodeResolver!: MessageCodeResolver;
+export class Form<T extends FormData = FormData> {
+  @inject protected messageCodeResolver!: MessageCodeResolver;
 
   /**
    * 初始化完成的字段
    */
-  plainFields!: PlainFormFields;
+  protected plainFields!: PlainFormFields;
 
   /**
    * 布局结果
    */
-  _layout?: FormLayout[];
+  private _layout?: FormLayout[];
 
   /**
    * 字段结果
    */
-  _fields?: WidgetsResult;
+  private _fields?: WidgetsResult;
 
   /**
    * 表单数据
    */
-  _data: any = {};
+  protected _data?: T;
 
   /**
    * 表单校验错误信息
@@ -64,53 +62,7 @@ export abstract class Form<
   /**
    * 已格式化错误消息
    */
-  _errorMessages?: ErrorMessages;
-
-  /**
-   * 安装初始化字段
-   */
-  abstract setup(): O | Promise<O>;
-
-  /**
-   * 初始化
-   */
-  @init [Symbol()]() {
-    const form = this;
-    /**
-     * 将嵌套类型转换为平面类型
-     */
-    function eachFields(fields: O, parent?: string) {
-      for (let [name, opt] of Object.entries(fields)) {
-        if (parent) {
-          name = `${parent}${objectSpliter}${name}`;
-        }
-        if (typeof opt === 'string') {
-          form.plainFields[name] = {
-            cast: { type: opt, field: name },
-            option: {},
-          };
-        }
-        else if (opt.pick && opt.type.includes('object')) {
-          eachFields(<O> opt.pick, name);
-          continue;
-        }
-        else {
-          opt = Object.assign({ field: name }, opt); // pure CastOption
-          const widget = opt.widget || {};
-          delete opt.widget;
-          form.plainFields[name] = {
-            cast: opt,
-            option: widget instanceof Widget ? widget.output() : widget,
-          };
-          if (widget instanceof Widget) {
-            plainFields[name].widget = widget;
-          }
-        }
-      }
-    }
-
-    eachFields(fields);
-  }
+  private _errorMessages?: ErrorMessages;
 
   /**
    * 重置表单
@@ -122,7 +74,7 @@ export abstract class Form<
   reset() {
     delete this._fields;
     delete this._layout;
-    this._data = {};
+    delete this._data;
     this.errors = {};
     this.hasErrors = false;
     delete this._errorMessages;
@@ -131,14 +83,14 @@ export abstract class Form<
   /**
    * 取得表单提交结果
    */
-  get data(): { [K in keyof O]: GetPickReturnType<O, K> } {
+  get data() {
     return this._data;
   }
 
   /**
    * 设置表单提交结果或初始值
    */
-  set data(data: { [K in keyof O]?: GetPickReturnType<O, K> } | null | undefined) {
+  set data(data: Partial<T> | null | undefined) {
     if (data) {
       /*
       for (const [name, opt] of Object.entries(this.plainFields)) {
@@ -149,9 +101,9 @@ export abstract class Form<
         }
       }
       */
-      Object.assign(this._data, data);
+      this._data = Object.assign({}, this._data, data);
     } else {
-      this._data = {};
+      delete this._data;
     }
   }
 
@@ -167,7 +119,8 @@ export abstract class Form<
           ...opt.option,
           required: opt.cast.type.startsWith('!'),
           valueType: opt.cast.type,
-          default: propertyAt(this._data, name.split(objectSpliter)) || opt.cast.default,
+          // default: (this._data ? propertyAt(this._data, name.split(objectSpliter)) : null) || opt.cast.default,
+          default: (this._data ? this._data[name] : null) || opt.cast.default,
           validate: opt.cast.validate,
         };
         if (opt.widget) {
@@ -231,8 +184,10 @@ export abstract class Form<
           if (cleanField && typeof cleanField === 'function') {
             value = await cleanField.call(this, value);
           }
-          // this._data[name] = value;
-          propertyAt(this._data, name.split(objectSpliter), value);
+          if (!this._data) this._data = {} as T;
+          // @ts-ignore
+          this._data[name] = value;
+          // propertyAt(this._data, name.split(objectSpliter), value);
         }
       } catch (e) {
         this.errors[name] = e;
@@ -292,52 +247,65 @@ export abstract class Form<
   }
 }
 
-/**
- * 生成表单基类
- * @param fields 表单字段定义
- * @param cleans 字段数据清理方法
- * @returns 表单基类，需要使用类继承
- */
-export function FormBase<O extends FormFields>(fields: O): { new (): Form<O> } {
-
-  const plainFields: PlainFormFields = {};
+export abstract class FormBase extends Form {
+  /**
+   * 安装初始化
+   */
+  abstract setup(): {} | Promise<{}>;
 
   /**
-   * 将嵌套类型转换为平面类型
+   * 单值字段
+   * @param valueType 值类型
    */
-  function eachFields(fields: O, parent?: string) {
-    for (let [name, opt] of Object.entries(fields)) {
-      if (parent) {
-        name = `${parent}${objectSpliter}${name}`;
-      }
-      if (typeof opt === 'string') {
-        plainFields[name] = {
-          cast: { type: opt, field: name },
-          option: {},
-        };
-      }
-      else if (opt.pick && opt.type.includes('object')) {
-        eachFields(<O> opt.pick, name);
-        continue;
-      }
-      else {
-        opt = Object.assign({ field: name }, opt); // pure CastOption
-        const widget = opt.widget || {};
-        delete opt.widget;
-        plainFields[name] = {
-          cast: opt,
-          option: widget instanceof Widget ? widget.output() : widget,
-        };
-        if (widget instanceof Widget) {
-          plainFields[name].widget = widget;
-        }
-      }
+  field<T extends CastKeys>(valueType: T) {
+    return new TypeField<T>(valueType);
+  }
+
+  /**
+   * 值列表字段
+   * @param valueType 值类型
+   */
+  listField<T extends CastKeys>(valueType: T) {
+    return new TypeListField<T>(valueType);
+  }
+
+  get data(): { [K in keyof ReturnType<this['setup']>]: GetFieldType<ReturnType<this['setup']>[K]> }  {
+    return this._data as any;
+  }
+
+  set data(data: Partial<{ [K in keyof ReturnType<this['setup']>]: GetFieldType<ReturnType<this['setup']>[K]> }> | null | undefined) {
+    if (data) {
+      this._data = Object.assign({}, this._data, data);
+    } else {
+      delete this._data;
     }
   }
 
-  eachFields(fields);
-
-  return class extends Form<O> {
-    plainFields = plainFields;
+  /**
+   * 初始化
+   */
+  @init async [Symbol()]() {
+    const fields = await this.setup();
+    this.plainFields = {};
+    for (let [name, field] of Object.entries(fields)) {
+      const opt = Object.assign({}, (<TypeField<any>>field)[GET_FIELD_OPTION](name));
+      let widgetOption: WidgetOption = {};
+      if (opt.widget instanceof Widget) {
+        widgetOption = opt.widget.output();
+      } else if (typeof opt.widget === 'string') {
+        widgetOption = new Text().label(opt.widget).output();
+      } else if (opt.widget) {
+        widgetOption = opt.widget;
+      }
+      const widget = opt.widget || {};
+      delete opt.widget;
+      this.plainFields[name] = {
+        cast: opt,
+        option: widgetOption,
+      };
+      if (widget instanceof Widget) {
+        this.plainFields[name].widget = widget;
+      }
+    }
   }
 }

@@ -25,6 +25,7 @@ export class Onebox extends Widget {
     if (this._value !== data) {
       this.fail('form.onebox.not-eq', { value: this._value });
     }
+    return true;
   }
 }
 

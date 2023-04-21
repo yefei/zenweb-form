@@ -6,6 +6,8 @@ import { Widget } from './widgets/widget';
  */
 // export type FormFields = { [name: string]: FieldOption | TypeKeys };
 
+export type FormData = { [name: string]: unknown };
+
 /**
  * 初始化完成的字段
  * - 对象嵌套类型初始化成一维平面
@@ -83,8 +85,9 @@ export interface FieldOption extends CastOption {
   /**
    * 表单控件
    * - 不设置则默认使用 Text
+   * - 如指定 `string` 类型则表示 Text 字段的 label 名
    */
-  widget?: Widget | WidgetOption;
+  widget?: Widget | WidgetOption | string;
 }
 
 /**
