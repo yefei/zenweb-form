@@ -1,11 +1,27 @@
-import { Widget, simple } from './widget';
+import { TypeKeys, TypeMap } from 'typecasts';
+import { Field, simple } from '../field';
 
-export class Text extends Widget {
+export class Text<T extends TypeKeys> extends Field<T> {
+  /**
+   * 最大字符串长度
+   */
+  maxLength(maxLength: number) {
+    this.validate({ maxLength });
+    return this;
+  }
+
+  /**
+   * 最小字符串长度
+   */
+  minLength(minLength: number) {
+    this.validate({ minLength });
+    return this;
+  }
 }
 
-export class Textarea extends Text {
+export class Textarea<T extends TypeKeys> extends Text<T> {
   protected _rows?: { min: number, max: number };
-  
+
   /**
    * 文本输入域尺寸，注意：并不是限制文本输入长度
    * @param min 最小行数高度

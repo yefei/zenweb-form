@@ -1,4 +1,5 @@
-import { Widget, simple } from './widget';
+import { TypeKeys } from 'typecasts';
+import { Field, simple } from '../field';
 
 export interface ChoiceType {
   /**
@@ -23,7 +24,7 @@ export interface ChoiceType {
   parent?: number | string;
 }
 
-export class Cascader extends Widget {
+export class Cascader<T extends TypeKeys> extends Field<T> {
   private _choices: ChoiceType[] = [];
   private _max?: number;
   private _min?: number;
@@ -92,6 +93,8 @@ export class Cascader extends Widget {
   }
 
   clean(data: any) {
+    data = super.clean(data);
+    if (data === undefined) return;
     data = Array.isArray(data) ? data : [data];
     const max = Math.min(this._max || Number.MAX_VALUE, this._choices.length);
     if (data.length > max) {

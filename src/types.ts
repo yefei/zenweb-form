@@ -1,24 +1,20 @@
-import { CastOption, ObjectKeys, TypeKeys, ValidateOption } from 'typecasts';
-import { Widget } from './widgets/widget';
+import { TypeKeys, ValidateOption } from 'typecasts';
+import { Field } from './field';
+
+/**
+ * 取得 `Field` 的值类型
+ */
+export type GetFieldType<T> = T extends Field<infer _, infer R> ? R : never;
 
 /**
  * 定义字段
  */
-// export type FormFields = { [name: string]: FieldOption | TypeKeys };
-
-export type FormData = { [name: string]: unknown };
+export type FormFields = { [name: string]: Field<any> };
 
 /**
- * 初始化完成的字段
- * - 对象嵌套类型初始化成一维平面
+ * 默认的字段数据结构
  */
-export type PlainFormFields = {
-  [name: string]: {
-    cast: CastOption,
-    option: WidgetOption,
-    widget?: Widget,
-  }
-};
+export type FormData = { [name: string]: unknown };
 
 /**
  * 表单布局信息
@@ -59,11 +55,11 @@ export interface WidgetOption {
 /**
  * 表单控件结果
  */
-export interface WidgetResult extends WidgetOption {
+export interface FieldResult extends WidgetOption {
   /**
    * 值类型
    */
-  valueType?: TypeKeys | ObjectKeys;
+  valueType?: TypeKeys;
 
   /**
    * 默认值
@@ -79,21 +75,17 @@ export interface WidgetResult extends WidgetOption {
    * 必填项
    */
   required?: boolean;
-}
 
-export interface FieldOption extends CastOption {
   /**
-   * 表单控件
-   * - 不设置则默认使用 Text
-   * - 如指定 `string` 类型则表示 Text 字段的 label 名
+   * 是否允许 null 值
    */
-  widget?: Widget | WidgetOption | string;
+  nullable?: boolean;
 }
 
 /**
  * 字段控件结果
  */
-export type WidgetsResult = { [name: string]: WidgetResult };
+export type FieldsResult = { [name: string]: FieldResult };
 
 /**
  * 字段错误消息
@@ -108,7 +100,7 @@ export interface FormResult {
    * 字段结果
    * - key 为字段名
    */
-  fields: WidgetsResult;
+  fields: FieldsResult;
 
   /**
    * 字段布局

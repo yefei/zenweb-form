@@ -1,5 +1,6 @@
 import { $enum } from 'ts-enum-util';
-import { Widget, simple } from './widget';
+import { Field, simple } from '../field';
+import { TypeKeys } from 'typecasts';
 
 export type ChoiceValueType = number | string;
 
@@ -20,7 +21,7 @@ export interface ChoiceType {
   disabled?: boolean;
 }
 
-export class Select extends Widget {
+export class Select<T extends TypeKeys> extends Field<T> {
   protected _choices: ChoiceType[] = [];
 
   /**
@@ -74,6 +75,8 @@ export class Select extends Widget {
   }
 
   clean(data: any) {
+    data = super.clean(data);
+    if (data === undefined) return;
     this.assertEmpty();
     const item = this._choices.find(i => i.value == data);
     if (item) {
@@ -86,9 +89,9 @@ export class Select extends Widget {
   }
 }
 
-export class Radio extends Select {}
+export class Radio<T extends TypeKeys> extends Select<T> {}
 
-export class Multiple extends Select {
+export class Multiple<T extends TypeKeys> extends Select<T> {
   protected _max?: number;
   protected _min?: number;
 
@@ -112,6 +115,8 @@ export class Multiple extends Select {
   }
 
   clean(data: any) {
+    data = super.clean(data);
+    if (data === undefined) return;
     this.assertEmpty();
     data = Array.isArray(data) ? data : [data];
     const max = Math.min(this._max || Number.MAX_VALUE, this._choices.length);
@@ -135,7 +140,7 @@ export class Multiple extends Select {
   }
 }
 
-export class Checkbox extends Multiple {}
+export class Checkbox<T extends TypeKeys> extends Multiple<T> {}
 
 export const select = simple(Select);
 export const radio = simple(Radio);

@@ -1,6 +1,3 @@
-import { Widget } from './widget';
-export { Widget };
-
 import * as select from './select';
 import * as datetime from './datetime';
 import * as upload from './upload';
@@ -9,7 +6,7 @@ import * as cascader from './cascader';
 import * as suggest from './suggest';
 import * as other from './other';
 
-export const widgets = {
+export const fields = {
   ...select,
   ...datetime,
   ...upload,

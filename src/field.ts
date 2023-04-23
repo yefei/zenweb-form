@@ -1,48 +1,40 @@
-import { CastAndListReturns, CastAndListKeys, ValidateOption } from "typecasts";
-import { Widget } from "./widgets";
-import { FieldOption, WidgetOption } from "./types";
+import { ResultFail } from '@zenweb/result';
+import { TypeKeys, TypeMap, ValidateOption, typeCast } from 'typecasts';
+import { Widget } from './widget';
+import { FieldResult, FormData } from './types';
 
-export const GET_FIELD_OPTION = Symbol('TypeField#getFieldOption');
-
-/**
- * 取得 `Field` 的值类型
- */
-export type GetFieldType<T> = T extends Field<infer _, infer R> ? R : never;
+export class FieldFail extends ResultFail {
+  constructor(code: string | number, params?: any, data?: any) {
+    super({
+      code,
+      params,
+      data,
+    });
+  }
+}
 
 /**
  * 使用链式编程生成带有类型标注的字段
  */
-export class Field<
-  T extends CastAndListKeys,
-  R = NonNullable<CastAndListReturns[T]>,
-> {
-  protected _optional = false;
-  protected _nullable = false;
-  protected _default?: R;
+export class Field<T extends TypeKeys, R = TypeMap[T]> extends Widget {
   protected _validate?: ValidateOption;
-
   protected _splitter?: string;
   protected _maxItems?: number;
   protected _minItems?: number;
-
-  protected _widget?: Widget | WidgetOption | string;
-
-  constructor(protected _valueType: T) {}
+  protected _default?: R;
 
   /**
-   * 可选项，允许不传值
+   * 是否为必填项
    */
-  optional(): Field<T, R | undefined> {
-    this._optional = true;
-    return this;
-  }
+  protected _required = this._valueType.startsWith('!');
 
   /**
-   * 允许 `null` 值
+   * 是否允许 null 值
    */
-  nullable(): Field<T, R | null> {
-    this._nullable = true;
-    return this;
+  protected _nullable = !this._valueType.startsWith('!') && !this._valueType.startsWith('?');
+
+  constructor(protected readonly _valueType: T) {
+    super();
   }
 
   /**
@@ -89,36 +81,47 @@ export class Field<
   }
 
   /**
-   * 设置表单控件
-   * - 不指定则使用 Text
-   * - 如指定 `string` 类型则表示 Text 字段的 label 名
+   * 验证失败 - 抛出异常
    */
-  widget(widget: Widget | WidgetOption | string) {
-    this._widget = widget;
-    return this;
+  protected fail(code: string, params?: any) {
+    throw new FieldFail(code, params);
   }
 
   /**
-   * 内部安装使用
+   * 数据验证清理
+   * - 在字段数据验证通过后调用
+   * - 如果验证不通过需要抛出异常可以使用 `this.fail('code')`
+   * - 需要返回清理完成的数据
    */
-  [GET_FIELD_OPTION](fieldName?: string): FieldOption {
-    let type = this._valueType as string;
-    if (!this._optional && !this._nullable) {
-      type = '!' + type;
-    } else if (!this._optional) {
-      type = '~' + type;
-    } else if (!this._nullable) {
-      type = '?' + type;
-    }
-    return {
-      type: <CastAndListKeys> type,
+  clean(data: any): any {
+    return typeCast(data, {
+      type: this._valueType,
       default: this._default,
       validate: this._validate,
-      field: fieldName,
       splitter: this._splitter,
       maxItems: this._maxItems,
       minItems: this._minItems,
-      widget: this._widget,
-    };
+    });
+  }
+
+  output(formData?: FormData, fieldName?: string) {
+    return Object.assign({}, super.output(), {
+      required: this._required,
+      nullable: this._nullable,
+      valueType: this._valueType,
+      // default: (this._data ? propertyAt(this._data, name.split(objectSpliter)) : null) || opt.cast.default,
+      default: (formData && fieldName ? formData[fieldName] : null) || this._default,
+      validate: this._validate,
+    } as FieldResult);
+  }
+}
+
+/**
+ * 使用函数方式初始化字段类
+ * @param clazz 字段类
+ */
+export function simple<T extends TypeKeys, F extends Field<T>>(clazz: { new (valueType: T): F }) {
+  return (valueType: T) => {
+    return new clazz(valueType);
   }
 }

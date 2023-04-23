@@ -1,6 +1,7 @@
-import { Widget, simple } from './widget';
+import { TypeKeys } from 'typecasts';
+import { Field, simple } from '../field';
 
-class UploadBase extends Widget {
+class UploadBase<T extends TypeKeys> extends Field<T> {
   protected _minFiles = 1;
   protected _maxFiles = 1;
   protected _minSize = 1;
@@ -13,6 +14,7 @@ class UploadBase extends Widget {
    */
   maxFiles(limit: number) {
     this._maxFiles = limit;
+    this.maxItems(limit);
     return this;
   }
 
@@ -21,6 +23,7 @@ class UploadBase extends Widget {
    */
   minFiles(limit: number) {
     this._minFiles = limit;
+    this.minItems(limit);
     return this;
   }
 
@@ -72,14 +75,13 @@ class UploadBase extends Widget {
 /**
  * 本地上传
  */
-export class LocalUpload extends UploadBase {
-
+export class LocalUpload<T extends TypeKeys> extends UploadBase<T> {
 }
 
 /**
  * 远程上传组建
  */
-export class RemoteUpload extends UploadBase {
+export class RemoteUpload<T extends TypeKeys> extends UploadBase<T> {
   protected _to?: string;
 
   /**

@@ -1,5 +1,8 @@
 # Changelog
 
+## [5.2.0] - 2023-4-23
+- 所有字段使用 Field 继承
+
 ## [5.1.0] - 2023-4-23
 - 合并 TypeField, ListTypeField 为 Field 并导出
 

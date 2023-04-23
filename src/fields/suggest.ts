@@ -1,6 +1,7 @@
-import { Widget, simple } from "./widget";
+import { TypeKeys } from "typecasts";
+import { Field, simple } from '../field';
 
-export class Suggest extends Widget {
+export class Suggest<T extends TypeKeys> extends Field<T> {
   private _fetchUrl?: string;
 
   fetchUrl(url: string) {

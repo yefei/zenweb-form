@@ -1,10 +1,8 @@
 import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
-import { CastAndListKeys, RequiredError, typeCast, ValidateError } from 'typecasts';
-import { WidgetFail, Widget } from './widgets/widget';
-import { ErrorMessages, FormData, FormLayout, FormResult, PlainFormFields, WidgetOption, WidgetsResult } from './types';
-import { GET_FIELD_OPTION, GetFieldType, Field } from './field';
-import { Text } from './widgets/text';
+import { RequiredError, typeCast, ValidateError } from 'typecasts';
+import { ErrorMessages, FormData, FormLayout, FormResult, FormFields, FieldsResult, GetFieldType } from './types';
+import { FieldFail } from './field';
 
 // const objectSpliter = '$';
 
@@ -32,7 +30,7 @@ export class Form<T extends FormData = FormData> {
   /**
    * 初始化完成的字段
    */
-  protected plainFields!: PlainFormFields;
+  protected _fields!: FormFields;
 
   /**
    * 布局结果
@@ -42,7 +40,7 @@ export class Form<T extends FormData = FormData> {
   /**
    * 字段结果
    */
-  private _fields?: WidgetsResult;
+  private _fieldsResult?: FieldsResult;
 
   /**
    * 表单数据
@@ -72,7 +70,7 @@ export class Form<T extends FormData = FormData> {
    * - 清除错误消息
    */
   reset() {
-    delete this._fields;
+    delete this._fieldsResult;
     delete this._layout;
     delete this._data;
     this.errors = {};
@@ -111,24 +109,13 @@ export class Form<T extends FormData = FormData> {
    * 输出字段
    */
   get fields() {
-    if (!this._fields) {
-      this._fields = {};
-      for (const [name, opt] of Object.entries(this.plainFields)) {
-        this._fields[name] = {
-          type: 'Text',
-          ...opt.option,
-          required: opt.cast.type.startsWith('!'),
-          valueType: opt.cast.type,
-          // default: (this._data ? propertyAt(this._data, name.split(objectSpliter)) : null) || opt.cast.default,
-          default: (this._data ? this._data[name] : null) || opt.cast.default,
-          validate: opt.cast.validate,
-        };
-        if (opt.widget) {
-          Object.assign(this._fields[name], opt.widget instanceof Widget ? opt.widget.output() : opt.widget);
-        }
+    if (!this._fieldsResult) {
+      this._fieldsResult = {};
+      for (const [ name, field ] of Object.entries(this._fields)) {
+        this._fieldsResult[name] = field.output(this._data, name);
       }
     }
-    return this._fields;
+    return this._fieldsResult;
   }
 
   /**
@@ -137,7 +124,7 @@ export class Form<T extends FormData = FormData> {
   get layout() {
     if (!this._layout) {
       this._layout = [];
-      for (const name of Object.keys(this.plainFields)) {
+      for (const name of Object.keys(this._fields)) {
         if (!layoutExists(this._layout, name)) {
           this._layout.push(name);
         }
@@ -163,9 +150,9 @@ export class Form<T extends FormData = FormData> {
    */
   async validate(input: any) {
     this.reset();
-    for (const [ name, opt ] of Object.entries(this.plainFields)) {
+    for (const [ name, field ] of Object.entries(this._fields)) {
       // 忽略只读字段
-      if (opt.option.readonly) continue;
+      if (field.option.readonly) continue;
       try {
         // 尝试获取输入数据，先key匹配，如果没有尝试key列表匹配
         let _inputData;
@@ -173,11 +160,8 @@ export class Form<T extends FormData = FormData> {
           if (name in input) _inputData = input[name];
           else if (`${name}[]` in input) _inputData = input[`${name}[]`];
         }
-        let value: any = typeCast(_inputData, opt.cast);
+        let value: any = field.clean(_inputData);
         if (value !== undefined) {
-          if (opt.widget && opt.widget.clean) {
-            value = await opt.widget.clean(value);
-          }
           // 字段数据清理
           // 查找对象方法组合为 clean_{fieldname}() 的函数
           const cleanField = (<any>this)[`clean_${name}`] as (data: any) => any;
@@ -205,7 +189,7 @@ export class Form<T extends FormData = FormData> {
    */
   async assert(input: any) {
     if (!await this.validate(input)) {
-      throw new WidgetFail('form.fail', undefined, {
+      throw new FieldFail('form.fail', undefined, {
         errors: this.errorMessages,
       });
     }
@@ -215,7 +199,7 @@ export class Form<T extends FormData = FormData> {
    * 验证失败 - 抛出异常
    */
   fail(code: string | number, params?: any) {
-    throw new WidgetFail(code, params);
+    throw new FieldFail(code, params);
   }
 
   /**
@@ -234,7 +218,7 @@ export class Form<T extends FormData = FormData> {
           if (e.validate === 'cast') code += `.${typeof e.target === 'function' ? e.target.name || '-' : e.target}`;
           messages[field] = this.messageCodeResolver.format(`form.validate.${code}.${field}`, e);
         }
-        else if (e instanceof WidgetFail) {
+        else if (e instanceof FieldFail) {
           messages[field] = this.messageCodeResolver.format(`${e.code}.${field}`, e.params);
         }
         else {
@@ -253,19 +237,11 @@ export abstract class FormBase extends Form {
    */
   abstract setup(): {} | Promise<{}>;
 
-  /**
-   * 单值字段
-   * @param valueType 值类型
-   */
-  field<T extends CastAndListKeys>(valueType: T) {
-    return new Field<T>(valueType);
-  }
-
-  get data(): { [K in keyof ReturnType<this['setup']>]: GetFieldType<ReturnType<this['setup']>[K]> }  {
+  get data(): { [K in keyof Awaited<ReturnType<this['setup']>>]: GetFieldType<Awaited<ReturnType<this['setup']>>[K]> }  {
     return this._data as any;
   }
 
-  set data(data: Partial<{ [K in keyof ReturnType<this['setup']>]: GetFieldType<ReturnType<this['setup']>[K]> }> | null | undefined) {
+  set data(data: Partial<{ [K in keyof Awaited<ReturnType<this['setup']>>]: GetFieldType<Awaited<ReturnType<this['setup']>>[K]> }> | null | undefined) {
     if (data) {
       this._data = Object.assign({}, this._data, data);
     } else {
@@ -277,27 +253,6 @@ export abstract class FormBase extends Form {
    * 初始化
    */
   @init async [Symbol()]() {
-    const fields = await this.setup();
-    this.plainFields = {};
-    for (let [name, field] of Object.entries(fields)) {
-      const opt = Object.assign({}, (<Field<any>>field)[GET_FIELD_OPTION](name));
-      let widgetOption: WidgetOption = {};
-      if (opt.widget instanceof Widget) {
-        widgetOption = opt.widget.output();
-      } else if (typeof opt.widget === 'string') {
-        widgetOption = new Text().label(opt.widget).output();
-      } else if (opt.widget) {
-        widgetOption = opt.widget;
-      }
-      const widget = opt.widget || {};
-      delete opt.widget;
-      this.plainFields[name] = {
-        cast: opt,
-        option: widgetOption,
-      };
-      if (widget instanceof Widget) {
-        this.plainFields[name].widget = widget;
-      }
-    }
+    this._fields = await this.setup();
   }
 }
