@@ -1,9 +1,9 @@
 import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
-import { CastKeys, RequiredError, typeCast, ValidateError } from 'typecasts';
+import { CastAndListKeys, RequiredError, typeCast, ValidateError } from 'typecasts';
 import { WidgetFail, Widget } from './widgets/widget';
 import { ErrorMessages, FormData, FormLayout, FormResult, PlainFormFields, WidgetOption, WidgetsResult } from './types';
-import { GET_FIELD_OPTION, GetFieldType, TypeField, TypeListField } from './field';
+import { GET_FIELD_OPTION, GetFieldType, Field } from './field';
 import { Text } from './widgets/text';
 
 // const objectSpliter = '$';
@@ -257,16 +257,8 @@ export abstract class FormBase extends Form {
    * 单值字段
    * @param valueType 值类型
    */
-  field<T extends CastKeys>(valueType: T) {
-    return new TypeField<T>(valueType);
-  }
-
-  /**
-   * 值列表字段
-   * @param valueType 值类型
-   */
-  listField<T extends CastKeys>(valueType: T) {
-    return new TypeListField<T>(valueType);
+  field<T extends CastAndListKeys>(valueType: T) {
+    return new Field<T>(valueType);
   }
 
   get data(): { [K in keyof ReturnType<this['setup']>]: GetFieldType<ReturnType<this['setup']>[K]> }  {
@@ -288,7 +280,7 @@ export abstract class FormBase extends Form {
     const fields = await this.setup();
     this.plainFields = {};
     for (let [name, field] of Object.entries(fields)) {
-      const opt = Object.assign({}, (<TypeField<any>>field)[GET_FIELD_OPTION](name));
+      const opt = Object.assign({}, (<Field<any>>field)[GET_FIELD_OPTION](name));
       let widgetOption: WidgetOption = {};
       if (opt.widget instanceof Widget) {
         widgetOption = opt.widget.output();

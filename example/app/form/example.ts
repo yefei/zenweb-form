@@ -16,8 +16,8 @@ export class ExampleForm extends FormBase {
       date: this.field('trim1').widget(widgets.date('日期')),
       time: this.field('trim1').widget(widgets.time('时间')),
       datetime: this.field('trim1').widget(widgets.datetime('日期时间')),
-      upload: this.listField('trim').widget(widgets.localUpload('本地上传')),
-      remote: this.listField('trim').widget(widgets.remoteUpload('远程上传').to('/upload').maxFiles(3)),
+      upload: this.field('trim[]').widget(widgets.localUpload('本地上传')),
+      remote: this.field('trim[]').widget(widgets.remoteUpload('远程上传').to('/upload').maxFiles(3)),
       gender: this.field('string').widget(widgets.radio('性别').choices([
         '男',
         {value: 2, label: '女'},
@@ -28,7 +28,7 @@ export class ExampleForm extends FormBase {
         {value: 3, label: '🐯'},
         {value: 4, label: '🐰', disabled: true},
       ])),
-      interest: this.listField('int').widget(widgets.multiple('感兴趣的').choices([
+      interest: this.field('int[]').widget(widgets.multiple('感兴趣的').choices([
         {value: 1, label: '钓鱼'},
         {value: 2, label: '编程'},
         {value: 3, label: '厨艺'},
@@ -36,8 +36,8 @@ export class ExampleForm extends FormBase {
       ]).max(3).min(1)),
       agreement: this.field('bool').widget(widgets.onebox('同意并遵守注册协议')),
       readonly: this.field('string').optional().widget(widgets.text('只读字段').readonly().placeholder('看看')),
-      daterange: this.listField('string').widget(widgets.dateRange('日期范围')),
-      cas: this.field('int').widget(widgets.cascader("级连选择").choices([
+      daterange: this.field('string[]').widget(widgets.dateRange('日期范围')),
+      cas: this.field('int[]').widget(widgets.cascader("级连选择").choices([
         { label: "第一层", value: 1 },
         { label: "第二层1", value: 2, parent: 1 },
         { label: "第二层2", value: 3, parent: 1 },

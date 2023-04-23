@@ -1,5 +1,8 @@
 # Changelog
 
+## [5.1.0] - 2023-4-23
+- 合并 TypeField, ListTypeField 为 Field 并导出
+
 ## [5.0.0] - 2023-4-23
 - 使用 Form.setup 方式初始化表单字段
 

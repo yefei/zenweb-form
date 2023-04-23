@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { SetupFunction } from '@zenweb/core';
 export { Form, FormBase } from './form';
+export { Field, GetFieldType } from './field';
 export * from './widgets';
 export * from './types';
 
