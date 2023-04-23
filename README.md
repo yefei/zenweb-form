@@ -37,11 +37,9 @@ import { FormBase, fields } from '@zenweb/form';
 export class ExampleForm extends FormBase {
   setup() {
     return {
-      username: fields.text('!string').validate({ minLength: 2, maxLength: 12 }).label('用户名'),
-      desc: fields.textarea('string').default('descdefault').validate({
-        minLength: 3,
-        maxLength: 1000,
-      }).label('自我描述').rows(3, 10).help('自我描述不要超过1000字，最少3个字'),
+      username: fields.text('!string').minLength(2).maxLength(12).label('用户名'),
+      desc: fields.textarea('string').default('descdefault').minLength(3).maxLength(1000)
+      .label('自我描述').rows(3, 10).help('自我描述不要超过1000字，最少3个字'),
       age: fields.text('int').validate({
         gte: 18,
         lte: 50,
