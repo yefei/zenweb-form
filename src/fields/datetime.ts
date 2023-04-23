@@ -4,6 +4,10 @@ import { Field, simple } from '../field';
 
 export type DatetimeKeys = 'date' | '~date' | '!date' | '?date';
 
+function fmt(date: Date) {
+  return moment(date).format('YYYY-MM-DD');
+}
+
 /**
  * 日期类型 - 默认返回全部日期+时间，可以使用 startOf 控制输出
  */
@@ -118,13 +122,19 @@ export class DateRange<T extends DatetimeKeys> extends Field<`${T}[]`> {
     const dataS = this._clean(data && data[0]);
     if (dataS) {
       if (this._start && moment(dataS).isBefore(this._start)) {
-        this.fail('form.daterange.start.out');
+        this.fail('form.daterange.start.before', { start: fmt(this._start) });
+      }
+      if (this._end && moment(dataS).isAfter(this._end)) {
+        this.fail('form.daterange.start.after', { end: fmt(this._end) });
       }
     }
     const dataE = this._clean(data && data[1]);
     if (dataE) {
+      if (this._start && moment(dataE).isBefore(this._start)) {
+        this.fail('form.daterange.end.before', { start: fmt(this._start) });
+      }
       if (this._end && moment(dataE).isAfter(this._end)) {
-        this.fail('form.daterange.end.out');
+        this.fail('form.daterange.end.after', { end: fmt(this._end) });
       }
       if (dataS && moment(dataE).isBefore(dataS)) {
         this.fail('form.daterange.end.lt-start');
