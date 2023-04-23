@@ -75,7 +75,8 @@
   </script>
 {% endmacro %}
 
-{% macro formFields(form, input) %}
+{% macro formFields(form, input, errors) %}
+  {%- set errs = errors or form.errorMessages -%}
   {% for name in form.layout -%}
     {%- set field = form.fields[name] -%}
     {%- set value = input[name]|default(field.default) -%}
@@ -83,8 +84,8 @@
       <div class="zenform-item-field">
         {% include "./fields/" + field.type + ".html.njk" -%}
       </div>
-      {%- if form.errorMessages[name] %}
-        <div class="zenform-item-error">{{form.errorMessages[name]}}</div>
+      {%- if errs[name] %}
+        <div class="zenform-item-error">{{errs[name]}}</div>
       {% endif -%}
       {%- if field.help %}
         <div class="zenform-item-help">{{field.help}}</div>
