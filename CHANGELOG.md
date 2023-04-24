@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.3] - 2023-4-23
+- Field 公开 splitter maxItems minItems 方法
+- 更新说明文档
+
 ## [5.2.0] - 2023-4-23
 - 所有字段使用 Field 继承
 

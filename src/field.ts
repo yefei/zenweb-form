@@ -59,7 +59,7 @@ export class Field<T extends TypeKeys, R = TypeMap[T]> extends Widget {
    * - 如果原始数据为字符串时使用的切割符
    * @param sep 默认 `,`
    */
-  protected splitter(sep: string) {
+  splitter(sep: string) {
     this._splitter = sep;
     return this;
   }
@@ -67,7 +67,7 @@ export class Field<T extends TypeKeys, R = TypeMap[T]> extends Widget {
   /**
    * 限制列表最大数量
    */
-  protected maxItems(count: number) {
+  maxItems(count: number) {
     this._maxItems = count;
     return this;
   }
@@ -75,7 +75,7 @@ export class Field<T extends TypeKeys, R = TypeMap[T]> extends Widget {
   /**
    * 限制列表最小数量
    */
-  protected minItems(count: number) {
+  minItems(count: number) {
     this._minItems = count;
     return this;
   }
