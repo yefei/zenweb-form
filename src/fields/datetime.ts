@@ -2,11 +2,8 @@ import * as moment from 'moment';
 import { unitOfTime } from 'moment';
 import { Field, simple } from '../field';
 
-export type DatetimeKeys = 'date' | '~date' | '!date' | '?date';
-
-function fmt(date: Date) {
-  return moment(date).format('YYYY-MM-DD');
-}
+type StringKeys = 'string' | '!string' | '?string' | '~string';
+export type DatetimeKeys = 'date' | '~date' | '!date' | '?date' | StringKeys;
 
 /**
  * 日期类型 - 默认返回全部日期+时间，可以使用 startOf 控制输出
@@ -68,9 +65,20 @@ export class DateRange<T extends DatetimeKeys> extends Field<`${T}[]`> {
   protected _of?: unitOfTime.StartOf;
   private _start?: Date;
   private _end?: Date;
+  protected _format: string = 'YYYY-MM-DD';
+
+  /**
+   * 设置输出格式，在使用 `string` 类型有效
+   * - 默认: `YYYY-MM-DD`
+   */
+  format(fmt: string) {
+    this._format = fmt;
+    return this;
+  }
 
   /**
    * 设置保留精度
+   * - 默认: `day`
    */
   of(unitOfTime: unitOfTime.StartOf) {
     this._of = unitOfTime;
@@ -112,41 +120,62 @@ export class DateRange<T extends DatetimeKeys> extends Field<`${T}[]`> {
     if (!m.isValid()) {
       this.fail('form.datetime.format-error', { data });
     }
-    if (this._of) {
-      m = m.startOf(this._of);
-    }
     return m;
   }
 
   clean(data: any) {
-    const dataS = this._clean(data && data[0]);
-    if (dataS) {
-      if (this._start && moment(dataS).isBefore(this._start)) {
-        this.fail('form.daterange.start.before', { start: fmt(this._start) });
-      }
-      if (this._end && moment(dataS).isAfter(this._end)) {
-        this.fail('form.daterange.start.after', { end: fmt(this._end) });
+    let _start;
+    if (this._start) {
+      _start = moment(this._start);
+      if (this._of) {
+        _start = _start.startOf(this._of);
       }
     }
-    const dataE = this._clean(data && data[1]);
+    let _end;
+    if (this._end) {
+      _end = moment(this._end);
+      if (this._of) {
+        _end = _end.endOf(this._of);
+      }
+    }
+
+    let dataS = this._clean(data && data[0]);
+    if (dataS) {
+      if (this._of) {
+        dataS = dataS.startOf(this._of);
+      }
+      if (_start && dataS.isBefore(_start)) {
+        this.fail('form.daterange.start.before', { start: _start.format(this._format) });
+      }
+      if (_end && dataS.isAfter(_end)) {
+        this.fail('form.daterange.start.after', { end: _end.format(this._format) });
+      }
+    }
+    let dataE = this._clean(data && data[1]);
     if (dataE) {
-      if (this._start && moment(dataE).isBefore(this._start)) {
-        this.fail('form.daterange.end.before', { start: fmt(this._start) });
+      if (this._of) {
+        dataE = dataE.endOf(this._of);
       }
-      if (this._end && moment(dataE).isAfter(this._end)) {
-        this.fail('form.daterange.end.after', { end: fmt(this._end) });
+      if (_start && dataE.isBefore(_start)) {
+        this.fail('form.daterange.end.before', { start: _start.format(this._format) });
       }
-      if (dataS && moment(dataE).isBefore(dataS)) {
+      if (_end && dataE.isAfter(_end)) {
+        this.fail('form.daterange.end.after', { end: _end.format(this._format) });
+      }
+      if (dataS && dataE.isBefore(dataS)) {
         this.fail('form.daterange.end.lt-start');
       }
     }
     if (dataS || dataE) {
+      if (this._valueType.includes('string')) {
+        return [dataS?.format(this._format), dataE?.format(this._format)];
+      }
       return [dataS?.toDate(), dataE?.toDate()];
     }
   }
 }
 
-export class Time<T extends 'string' | '!string' | '?string' | '~string'> extends Field<T> {
+export class Time<T extends StringKeys> extends Field<T> {
   protected _format: string = 'HH:mm:ss';
 
   format(fmt: string) {

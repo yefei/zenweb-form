@@ -35,6 +35,7 @@ export class ExampleForm extends FormBase {
       agreement: fields.onebox('bool').label('同意并遵守注册协议'),
       readonly: fields.text('string').label('只读字段').readonly().placeholder('看看'),
       daterange: fields.dateRange('date[]').label('日期范围').start(new Date('2023-1-1')).end(new Date()),
+      daterange2: fields.dateRange('string[]').label('日期范围2').of('day').start(new Date('2022-1-1')).end(new Date()),
       cas: fields.cascader('int[]').label("级连选择").choices([
         { label: "第一层", value: 1 },
         { label: "第二层1", value: 2, parent: 1 },

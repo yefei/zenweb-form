@@ -1,5 +1,8 @@
 # Changelog
 
+## [5.3.0] - 2023-5-12
+- DateRange 字段支持 string 类型，并改进日期范围判断
+
 ## [5.2.3] - 2023-4-23
 - Field 公开 splitter maxItems minItems 方法
 - 更新说明文档
