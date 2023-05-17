@@ -12,11 +12,9 @@
 
 {%- include './label.inc.html.njk' %}
 {%- set __v = '' if value === undefined else value|string -%}
-<div class="zenfrom-layout">
-  <select name="{{name}}" id="form_{{name}}">
-    {% if not field.required %}
-      <option></option>
-    {% endif %}
-    {{- eachOption(__v, field.choices)}}
-  </select>
-</div>
+<select class="form-select" name="{{name}}" id="form_{{name}}">
+  {% if not field.required %}
+    <option></option>
+  {% endif %}
+  {{- eachOption(__v, field.choices)}}
+</select>

@@ -3,31 +3,6 @@
 .zenform-item {
   margin-bottom: 15px;
 }
-.zenform-item-field {
-  display: flex;
-  flex-direction: column;
-}
-.zenform-item-error {
-  font-size: 80%;
-  color: #ff0000;
-}
-.zenform-item-help {
-  font-size: 80%;
-  color: #909399;
-}
-.zenfrom-layout {
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-}
-.zenfrom-layout > * {
-  flex: 1;
-}
-.zenfrom-spliter {
-  flex: 0;
-  flex-basis: 2rem;
-  text-align: center;
-}
 </style>
 {% endmacro %}
 
@@ -85,10 +60,10 @@
         {% include "./fields/" + field.type + ".html.njk" -%}
       </div>
       {%- if errs[name] %}
-        <div class="zenform-item-error">{{errs[name]}}</div>
+        <div class="form-text text-danger">{{errs[name]}}</div>
       {% endif -%}
       {%- if field.help %}
-        <div class="zenform-item-help">{{field.help}}</div>
+        <div class="form-text">{{field.help}}</div>
       {% endif -%}
     </div>
   {% endfor %}

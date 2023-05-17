@@ -1,9 +1,9 @@
 {% include './label.inc.html.njk' %}
 {% for r in field.choices -%}
-  <div>
-    <input type="checkbox" name="{{name}}" id="form_{{name}}_{{loop.index}}" value="{{r.value}}"
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" name="{{name}}" id="form_{{name}}_{{loop.index}}" value="{{r.value}}"
       {%- if value and value.includes(r.value|string) %} checked {% endif -%}
     />
-    <label for="form_{{name}}_{{loop.index}}">{{r.label}}</label>
+    <label class="form-check-label" for="form_{{name}}_{{loop.index}}">{{r.label}}</label>
   </div>
 {% endfor -%}

@@ -1,13 +1,13 @@
 {% include './label.inc.html.njk' %}
-<input id="form_{{name}}" name="{{name}}"
+<input class="form-control" id="form_{{name}}" name="{{name}}"
   {%- if value %} type="hidden" value="{{value}}"
   {% else %} type="file"{% endif -%}
   {%- if field.accept %} accept="{{field.accept}}"{% endif %}
   {%- if field.maxFiles > 1 %} data-max-files="{{field.maxFiles}}" multiple{% endif -%}
 />
 {% if value %}
-  <div id="form_{{name}}_uploaded" class="form-upload-uploaded">
-    <button type="button" class="form-upload-delete" data-name="{{name}}">删除</button>
-    已上传文件: {{value}}
+  <div id="form_{{name}}_uploaded" class="input-group form-upload-uploaded">
+    <span class="form-control">已上传文件: {{value}}</span>
+    <button type="button" class="btn btn-outline-secondary form-upload-delete" data-name="{{name}}">删除</button>
   </div>
 {% endif %}

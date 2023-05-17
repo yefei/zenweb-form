@@ -1,6 +1,6 @@
 {% include './label.inc.html.njk' %}
 {%- set __v = '' if value === undefined else value|string -%}
-<select name="{{name}}" id="form_{{name}}">
+<select class="form-select" name="{{name}}" id="form_{{name}}">
   {% if not field.required %}
     <option></option>
   {% endif %}

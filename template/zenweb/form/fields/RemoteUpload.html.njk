@@ -1,12 +1,12 @@
 {% include './label.inc.html.njk' %}
-<input id="form_{{name}}" name="{{name}}" class="form-upload-remote" data-to="{{field.to}}"
+<input id="form_{{name}}" name="{{name}}" class="form-control form-upload-remote" data-to="{{field.to}}"
   {%- if value %} type="hidden" value="{{value}}"
   {% else %} type="file"{% endif -%}
   {%- if field.accept %} accept="{{field.accept}}"{% endif %}
   {%- if field.maxFiles > 1 %} data-max-files="{{field.maxFiles}}" multiple{% endif -%}
 />
-<div id="form_{{name}}_uploaded" class="form-upload-uploaded"
+<div id="form_{{name}}_uploaded" class="input-group form-upload-uploaded"
   {%- if not value %} style="display: none;"{% endif %}>
-  <button type="button" class="form-upload-delete" data-name="{{name}}">删除</button>
-  已上传文件: <span id="form_{{name}}_uploaded_value">{{value}}</span>
+  <span class="form-control">已上传文件: <span id="form_{{name}}_uploaded_value">{{value}}</span></span>
+  <button type="button" class="btn btn-outline-secondary form-upload-delete" data-name="{{name}}">删除</button>
 </div>

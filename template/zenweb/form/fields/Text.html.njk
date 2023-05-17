@@ -1,5 +1,5 @@
 {% include './label.inc.html.njk' %}
-<input type="text" id="form_{{name}}" name="{{name}}" value="{{value}}"
+<input class="form-control" type="text" id="form_{{name}}" name="{{name}}" value="{{value}}"
   {%- if field.placeholder %} placeholder="{{field.placeholder}}"{% endif -%}
   {%- if field.readonly %} readonly{% endif -%}
 />
