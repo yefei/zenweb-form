@@ -21,15 +21,6 @@ export class Onebox<T extends TypeKeys> extends Field<T> {
       value: this._value,
     };
   }
-
-  clean(data: any) {
-    data = super.clean(data);
-    if (data === undefined) return;
-    if (this._value !== data) {
-      this.fail('form.onebox.not-eq', { value: this._value });
-    }
-    return true;
-  }
 }
 
 export const onebox = simple(Onebox);
