@@ -110,7 +110,7 @@ export class Field<T extends TypeKeys, R = TypeMap[T]> extends Widget {
       nullable: this._nullable,
       valueType: this._valueType,
       // default: (this._data ? propertyAt(this._data, name.split(objectSpliter)) : null) || opt.cast.default,
-      default: (formData && fieldName ? formData[fieldName] : null) || this._default,
+      default: (formData && fieldName && fieldName in formData) ? formData[fieldName] : this._default,
       validate: this._validate,
     } as FieldResult);
   }
