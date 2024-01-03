@@ -4,10 +4,10 @@ import { Widget } from './widget';
 import { FieldResult, FormData } from './types';
 
 export class FieldFail extends ResultFail {
-  constructor(code: string | number, params?: any, data?: any) {
+  constructor(public mcode: string, extra?: any, data?: any) {
     super({
-      code,
-      params,
+      message: mcode,
+      extra,
       data,
     });
   }

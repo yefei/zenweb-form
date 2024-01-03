@@ -1,6 +1,6 @@
 import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
-import { RequiredError, typeCast, ValidateError } from 'typecasts';
+import { RequiredError, ValidateError } from 'typecasts';
 import { ErrorMessages, FormData, FormLayout, FormResult, FormFields, FieldsResult, GetFieldType } from './types';
 import { FieldFail } from './field';
 
@@ -198,7 +198,7 @@ export class Form<T extends FormData = FormData> {
   /**
    * 验证失败 - 抛出异常
    */
-  fail(code: string | number, params?: any) {
+  fail(code: string, params?: any) {
     throw new FieldFail(code, params);
   }
 
@@ -219,7 +219,7 @@ export class Form<T extends FormData = FormData> {
           messages[field] = this.messageCodeResolver.format(`form.validate.${code}.${field}`, e);
         }
         else if (e instanceof FieldFail) {
-          messages[field] = this.messageCodeResolver.format(`${e.code}.${field}`, e.params);
+          messages[field] = this.messageCodeResolver.format(`${e.mcode}.${field}`, e.extra);
         }
         else {
           messages[field] = e.message;

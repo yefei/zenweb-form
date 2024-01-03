@@ -12,3 +12,6 @@ run/
 *.un~
 .npmrc
 dist/
+.vscode/
+.yarn/
+.pnp.*

@@ -90,7 +90,7 @@ export type FieldsResult = { [name: string]: FieldResult };
 /**
  * 字段错误消息
  */
-export type ErrorMessages = { [field: string]: string | number };
+export type ErrorMessages = { [field: string]: string | undefined };
 
 /**
  * 表单结果
