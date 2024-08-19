@@ -1,7 +1,7 @@
 {
   "name": "@zenweb/form",
   "packageManager": "yarn@4.0.2",
-  "version": "5.4.3",
+  "version": "5.5.0",
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",

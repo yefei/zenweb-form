@@ -46,6 +46,13 @@ export class Select<T extends TypeKeys> extends Field<T> {
   }
 
   /**
+   * 设置选项，使用对象的 key 和 value
+   */
+  choicesObject(obj: object) {
+    return this.choices(Object.entries(obj).map(([value, label]) => ({ value, label })));
+  }
+
+  /**
    * 使用 ts 的 enum 类型作为选择项
    */
   choicesEnum<T extends Record<Extract<keyof T, string>, ChoiceValueType>>(enumObj: T) {
