@@ -1,8 +1,8 @@
 import { inject, init } from '@zenweb/inject';
 import { MessageCodeResolver } from '@zenweb/messagecode';
 import { RequiredError, ValidateError } from 'typecasts';
-import { ErrorMessages, FormData, FormLayout, FormResult, FormFields, FieldsResult, GetFieldType } from './types';
-import { FieldFail } from './field';
+import { ErrorMessages, FormData, FormLayout, FormResult, FormFields, FieldsResult, GetFieldType } from './types.js';
+import { FieldFail } from './field.js';
 
 // const objectSpliter = '$';
 

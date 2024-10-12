@@ -1,5 +1,5 @@
 import { TypeKeys } from 'typecasts';
-import { Field, simple } from '../field';
+import { Field, simple } from '../field.js';
 
 /**
  * 一个勾选框

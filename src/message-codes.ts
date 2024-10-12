@@ -1,4 +1,4 @@
-{
+export default {
   "form.fail": "表单验证失败",
   "form.required": "必填项",
   "form.nonnull": "不能为空",

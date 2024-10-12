@@ -1,15 +1,14 @@
 {
   "name": "@zenweb/form",
-  "packageManager": "yarn@4.0.2",
-  "version": "5.5.1",
+  "type": "module",
+  "version": "6.0.0",
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "vscode": "yarn dlx @yarnpkg/sdks vscode",
     "build": "rimraf dist && tsc",
-    "prepublishOnly": "yarn run build",
-    "dev": "cd example && cross-env DEBUG=\\* NODE_ENV=development ts-node app"
+    "prepack": "npm run build",
+    "dev": "cd example && node --env-file=.env --loader ts-node/esm app.ts"
   },
   "author": {
     "name": "YeFei",
@@ -31,24 +30,26 @@
     "message-codes.json"
   ],
   "devDependencies": {
-    "@zenweb/cors": "^5.0.1",
-    "@zenweb/template": "^4.1.0",
-    "@zenweb/template-nunjucks": "^3.3.0",
-    "@zenweb/upload": "^4.0.1",
-    "cross-env": "^7.0.3",
+    "@zenweb/cors": "^5.1.0",
+    "@zenweb/template": "^5.1.0",
+    "@zenweb/template-nunjucks": "^4.0.0",
+    "@zenweb/upload": "^5.0.0",
     "rimraf": "^4.3.1",
-    "ts-node": "^10.9.1",
     "typescript": "^5.3.3",
-    "zenweb": "^4.2.7"
+    "zenweb": "^5.1.0"
   },
   "dependencies": {
     "@types/node": "^20.10.6",
-    "@zenweb/core": "^4.3.2",
-    "@zenweb/inject": "^4.1.1",
-    "@zenweb/messagecode": "^4.0.0",
-    "@zenweb/result": "^4.0.0",
-    "moment": "^2.29.4",
+    "@zenweb/core": "^5.1.0",
+    "@zenweb/inject": "^5.1.0",
+    "@zenweb/messagecode": "^5.1.0",
+    "@zenweb/result": "^5.0.0",
+    "dayjs": "^1.11.13",
     "ts-enum-util": "^4.0.2",
+    "ts-node": "^10.9.2",
     "typecasts": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

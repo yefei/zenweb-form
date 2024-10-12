@@ -1,5 +1,5 @@
 import { Context, inject } from "zenweb";
-import { FormBase, fields } from "../../../src";
+import { FormBase, fields } from "../../../src/index.js";
 
 export class ExampleForm extends FormBase {
   setup() {

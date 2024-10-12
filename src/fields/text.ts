@@ -1,5 +1,5 @@
-import { TypeKeys, TypeMap } from 'typecasts';
-import { Field, simple } from '../field';
+import { TypeKeys } from 'typecasts';
+import { Field, simple } from '../field.js';
 
 export class Text<T extends TypeKeys> extends Field<T> {
   /**

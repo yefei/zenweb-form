@@ -1,5 +1,5 @@
 import { $enum } from 'ts-enum-util';
-import { Field, simple } from '../field';
+import { Field, simple } from '../field.js';
 import { TypeKeys } from 'typecasts';
 
 export type ChoiceValueType = number | string;

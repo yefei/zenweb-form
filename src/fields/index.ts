@@ -1,10 +1,10 @@
-import * as select from './select';
-import * as datetime from './datetime';
-import * as upload from './upload';
-import * as text from './text';
-import * as cascader from './cascader';
-import * as suggest from './suggest';
-import * as other from './other';
+import * as select from './select.js';
+import * as datetime from './datetime.js';
+import * as upload from './upload.js';
+import * as text from './text.js';
+import * as cascader from './cascader.js';
+import * as suggest from './suggest.js';
+import * as other from './other.js';
 
 export const fields = {
   ...select,

@@ -1,6 +1,6 @@
-import * as moment from 'moment';
-import { unitOfTime } from 'moment';
-import { Field, simple } from '../field';
+import dayjs from 'dayjs';
+import { OpUnitType } from 'dayjs';
+import { Field, simple } from '../field.js';
 
 type StringKeys = 'string' | '!string' | '?string' | '~string';
 export type DatetimeKeys = 'date' | '~date' | '!date' | '?date' | StringKeys;
@@ -9,12 +9,12 @@ export type DatetimeKeys = 'date' | '~date' | '!date' | '?date' | StringKeys;
  * 日期类型 - 默认返回全部日期+时间，可以使用 startOf 控制输出
  */
 export class Datetime<T extends DatetimeKeys> extends Field<T> {
-  protected _of?: unitOfTime.StartOf;
+  protected _of?: OpUnitType;
 
   /**
    * 设置保留的精度
    */
-  of(unitOfTime: unitOfTime.StartOf) {
+  of(unitOfTime: OpUnitType) {
     this._of = unitOfTime;
     return this;
   }
@@ -32,7 +32,7 @@ export class Datetime<T extends DatetimeKeys> extends Field<T> {
       }
       return;
     }
-    const m = moment(data);
+    const m = dayjs(data);
     if (!m.isValid()) {
       this.fail('form.datetime.format-error', { data });
     }
@@ -55,14 +55,14 @@ export class Datetime<T extends DatetimeKeys> extends Field<T> {
  * 日期类型 - 只保留 年月日
  */
 export class _Date<T extends DatetimeKeys> extends Datetime<T> {
-  override _of: unitOfTime.StartOf = 'day';
+  override _of: OpUnitType = 'day';
   override option = {
     type: 'Date',
   };
 }
 
 export class DateRange<T extends DatetimeKeys> extends Field<`${T}[]`> {
-  protected _of?: unitOfTime.StartOf;
+  protected _of?: OpUnitType;
   private _start?: Date;
   private _end?: Date;
   protected _format: string = 'YYYY-MM-DD';
@@ -80,7 +80,7 @@ export class DateRange<T extends DatetimeKeys> extends Field<`${T}[]`> {
    * 设置保留精度
    * - 默认: `day`
    */
-  of(unitOfTime: unitOfTime.StartOf) {
+  of(unitOfTime: OpUnitType) {
     this._of = unitOfTime;
     return this;
   }
@@ -116,7 +116,7 @@ export class DateRange<T extends DatetimeKeys> extends Field<`${T}[]`> {
       }
       return;
     }
-    let m = moment(data);
+    let m = dayjs(data);
     if (!m.isValid()) {
       this.fail('form.datetime.format-error', { data });
     }
@@ -126,14 +126,14 @@ export class DateRange<T extends DatetimeKeys> extends Field<`${T}[]`> {
   clean(data: any) {
     let _start;
     if (this._start) {
-      _start = moment(this._start);
+      _start = dayjs(this._start);
       if (this._of) {
         _start = _start.startOf(this._of);
       }
     }
     let _end;
     if (this._end) {
-      _end = moment(this._end);
+      _end = dayjs(this._end);
       if (this._of) {
         _end = _end.endOf(this._of);
       }
@@ -190,7 +190,7 @@ export class Time<T extends StringKeys> extends Field<T> {
       }
       return;
     }
-    let m = moment(data, this._format);
+    let m = dayjs(data, this._format);
     if (!m.isValid()) {
       this.fail('form.datetime.format-error', { data });
     }

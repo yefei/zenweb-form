@@ -3,16 +3,14 @@ import cros from '@zenweb/cors';
 import upload from '@zenweb/upload';
 import template from '@zenweb/template';
 import nunjucks from '@zenweb/template-nunjucks';
-import form, { formTemplate } from '../src/index';
+import form, { formTemplate } from '../src/index.js';
 
 create({
   result: {
     failCode: 500,
     failStatus: 200,
-    json: {
-      success(ctx, data) {
-        return { code: 200, data };
-      },
+    successWrap(ctx, data) {
+      return { code: 200, data };
     },
   },
 })

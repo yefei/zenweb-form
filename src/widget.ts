@@ -1,4 +1,4 @@
-import { WidgetOption } from "./types";
+import { WidgetOption } from "./types.js";
 
 export class Widget {
   option: WidgetOption = {

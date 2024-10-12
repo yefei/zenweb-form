@@ -1,5 +1,5 @@
 import { TypeKeys } from "typecasts";
-import { Field, simple } from '../field';
+import { Field, simple } from '../field.js';
 
 export class Suggest<T extends TypeKeys> extends Field<T> {
   private _fetchUrl?: string;

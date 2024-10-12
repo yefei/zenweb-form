@@ -1,6 +1,6 @@
 import { Upload, UploadHelper } from '@zenweb/upload';
 import { Context, mapping, ObjectBody } from 'zenweb';
-import { ExampleForm } from '../form/example';
+import { ExampleForm } from '../form/example.js';
 
 export class IndexController {
   @mapping({ method: 'POST' })

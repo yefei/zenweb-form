@@ -1,7 +1,7 @@
 import { ResultFail } from '@zenweb/result';
 import { TypeKeys, TypeMap, ValidateOption, typeCast } from 'typecasts';
-import { Widget } from './widget';
-import { FieldResult, FormData } from './types';
+import { Widget } from './widget.js';
+import { FieldResult, FormData } from './types.js';
 
 export class FieldFail extends ResultFail {
   constructor(public mcode: string, extra?: any, data?: any) {
@@ -26,15 +26,17 @@ export class Field<T extends TypeKeys, R = TypeMap[T]> extends Widget {
   /**
    * 是否为必填项
    */
-  protected _required = this._valueType.startsWith('!');
+  protected _required;
 
   /**
    * 是否允许 null 值
    */
-  protected _nullable = !this._valueType.startsWith('!') && !this._valueType.startsWith('?');
+  protected _nullable;
 
   constructor(protected readonly _valueType: T) {
     super();
+    this._required = _valueType.startsWith('!');
+    this._nullable = !_valueType.startsWith('!') && !_valueType.startsWith('?');
   }
 
   /**

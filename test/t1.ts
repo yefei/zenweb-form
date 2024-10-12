@@ -1,4 +1,4 @@
-import { GetFieldType, TypeField, TypeListField } from "../src/field";
+import { GetFieldType, TypeField, TypeListField } from "../src/field/js";
 
 type ObjectFieldType = {
   [x: string]: TypeField<any> | TypeListField<any> | ObjectField<any>;

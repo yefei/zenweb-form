@@ -1,5 +1,5 @@
 import { TypeKeys, ValidateOption } from 'typecasts';
-import { Field } from './field';
+import { Field } from './field.js';
 
 /**
  * 取得 `Field` 的值类型
