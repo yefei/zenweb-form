@@ -21,7 +21,7 @@ export interface ChoiceType {
   disabled?: boolean;
 }
 
-export class Select<T extends TypeKeys> extends Field<T> {
+class BaseSelect<T extends TypeKeys> extends Field<T> {
   protected _choices: ChoiceType[] = [];
 
   /**
@@ -80,7 +80,9 @@ export class Select<T extends TypeKeys> extends Field<T> {
       choices: this._choices,
     };
   }
+}
 
+export class Select<T extends TypeKeys> extends BaseSelect<T> {
   clean(data: any) {
     data = super.clean(data);
     if (data === undefined) return;
@@ -98,7 +100,7 @@ export class Select<T extends TypeKeys> extends Field<T> {
 
 export class Radio<T extends TypeKeys> extends Select<T> {}
 
-export class Multiple<T extends TypeKeys> extends Select<T> {
+export class Multiple<T extends TypeKeys> extends BaseSelect<T> {
   protected _max?: number;
   protected _min?: number;
 
@@ -122,6 +124,7 @@ export class Multiple<T extends TypeKeys> extends Select<T> {
   }
 
   clean(data: any) {
+    data = super.clean(data);
     if (data === undefined) return;
     this.assertEmpty();
     data = Array.isArray(data) ? data : [data];
