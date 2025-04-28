@@ -122,7 +122,6 @@ export class Multiple<T extends TypeKeys> extends Select<T> {
   }
 
   clean(data: any) {
-    data = super.clean(data);
     if (data === undefined) return;
     this.assertEmpty();
     data = Array.isArray(data) ? data : [data];

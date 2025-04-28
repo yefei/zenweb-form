@@ -1,7 +1,7 @@
 {
   "name": "@zenweb/form",
   "type": "module",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Zenweb Form module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,20 +34,20 @@
     "@zenweb/template": "^5.1.0",
     "@zenweb/template-nunjucks": "^4.0.0",
     "@zenweb/upload": "^5.0.0",
-    "rimraf": "^4.3.1",
-    "typescript": "^5.3.3",
-    "zenweb": "^5.1.0"
+    "rimraf": "^4.4.1",
+    "typescript": "^5.8.3",
+    "zenweb": "^5.1.2"
   },
   "dependencies": {
-    "@types/node": "^20.10.6",
+    "@types/node": "^20.17.32",
     "@zenweb/core": "^5.1.0",
     "@zenweb/inject": "^5.1.0",
-    "@zenweb/messagecode": "^5.1.0",
+    "@zenweb/messagecode": "^5.1.1",
     "@zenweb/result": "^5.0.0",
     "dayjs": "^1.11.13",
-    "ts-enum-util": "^4.0.2",
+    "ts-enum-util": "^4.1.0",
     "ts-node": "^10.9.2",
-    "typecasts": "^3.2.0"
+    "typecasts": "^3.2.1"
   },
   "engines": {
     "node": ">=20"
