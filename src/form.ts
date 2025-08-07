@@ -55,7 +55,9 @@ export class Form<T extends FormData = FormData> {
   /**
    * 是否有校验错误
    */
-  hasErrors: boolean = false;
+  get hasErrors() {
+    return Object.keys(this.errors).length > 0;
+  }
 
   /**
    * 已格式化错误消息
@@ -74,7 +76,6 @@ export class Form<T extends FormData = FormData> {
     delete this._layout;
     delete this._data;
     this.errors = {};
-    this.hasErrors = false;
     delete this._errorMessages;
   }
 
@@ -175,7 +176,6 @@ export class Form<T extends FormData = FormData> {
         }
       } catch (e) {
         this.errors[name] = e;
-        this.hasErrors = true;
       }
     }
     if (!this.hasErrors && this.clean) {

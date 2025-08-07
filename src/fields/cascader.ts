@@ -104,7 +104,12 @@ export class Cascader<T extends TypeKeys> extends Field<T> {
       this.fail('form.select.choice-min', { min: this._min });
     }
     for (const i of data) {
-      if (this._choices.filter(i => !i.disabled).findIndex(c => c.value == i) === -1) {
+      const item = this._choices.find(c => c.value == i);
+      if (item) {
+        if (item.disabled) {
+          this.fail('form.select.choice-disabled', { data: i, label: item.label });
+        }
+      } else {
         this.fail('form.select.choice-invalid', { data: i });
       }
     }

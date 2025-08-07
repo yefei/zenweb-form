@@ -1,5 +1,8 @@
 # Changelog
 
+## [6.0.3] - 2025-8-7
+- fix: choicesObject 数值被转换为字符串key问题
+
 ## [6.0.2] - 2025-4-28
 - fix: Multiple 多选类型丢失
 

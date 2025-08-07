@@ -1,6 +1,6 @@
 import { $enum } from 'ts-enum-util';
 import { Field, simple } from '../field.js';
-import { TypeKeys } from 'typecasts';
+import { typeCast, TypeKeys } from 'typecasts';
 
 export type ChoiceValueType = number | string;
 
@@ -49,7 +49,10 @@ class BaseSelect<T extends TypeKeys> extends Field<T> {
    * 设置选项，使用对象的 key 和 value
    */
   choicesObject(obj: object) {
-    return this.choices(Object.entries(obj).map(([value, label]) => ({ value, label })));
+    return this.choices(Object.entries(obj).map(([value, label]) => ({
+      value: typeCast(value, { type: this._valueType as TypeKeys }),
+      label,
+    })));
   }
 
   /**
